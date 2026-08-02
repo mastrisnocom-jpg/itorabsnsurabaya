@@ -300,10 +300,39 @@
       box-shadow: 0 4px 15px rgba(0,0,0,0.03);
     }
 
+    /* DESAIN BANNER DENGAN GRADASI EMERALD & AKSEN GEOMETRY */
     .banner-card {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      background: linear-gradient(135deg, #009968 0%, #005E3E 100%);
       color: white;
       border: none;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(0, 135, 90, 0.22);
+    }
+
+    /* Lingkaran abstrak pemanis di latar belakang banner */
+    .banner-card::before {
+      content: '';
+      position: absolute;
+      top: -30px;
+      right: -30px;
+      width: 140px;
+      height: 140px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .banner-card::after {
+      content: '';
+      position: absolute;
+      bottom: -50px;
+      right: 20px;
+      width: 180px;
+      height: 180px;
+      background: rgba(212, 175, 55, 0.12);
+      border-radius: 50%;
+      pointer-events: none;
     }
 
     .stats-grid {
@@ -1191,7 +1220,6 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT LOGIC LENGKAP TANPA SINGKATAN -->
   <script>
     const SUPABASE_URL = 'https://lfusrctizdydnsiopzfi.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxmdXNyY3RpemR5ZG5zaW9wemZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU2NjI0OTQsImV4cCI6MjEwMTIzODQ5NH0.vWd4l9zbRg3HxHVECN8I67h7gGUsZdaRJ9bD-gmEDUY';
@@ -1913,7 +1941,7 @@
         const catatan = document.getElementById('iuran-catatan').value;
         const rawFile = document.getElementById('iuran-bukti').files[0];
 
-        const userName = this.currentProfile?.full_name || this.currentUser.email.split('@')[0];
+        const userName = this.currentProfile?.full_name || 'Sutrisno';
 
         try {
           let compressedFile = null;
