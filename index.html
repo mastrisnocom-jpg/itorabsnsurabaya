@@ -186,6 +186,18 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      position: relative;
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 10px;
+      height: 10px;
+      background: #EF4444;
+      border-radius: 50%;
+      display: none;
     }
 
     .bottom-nav {
@@ -284,6 +296,7 @@
       font-size: 0.72rem;
       font-weight: 600;
       cursor: pointer;
+      position: relative;
     }
 
     .quick-icon {
@@ -572,7 +585,10 @@
       <div class="header-actions">
         <button type="button" class="icon-btn" onclick="app.openModal('qr-modal')"><i class="fa-solid fa-qrcode"></i></button>
         <button type="button" class="icon-btn" onclick="app.toggleTheme()"><i class="fa-solid fa-moon" id="theme-icon"></i></button>
-        <button type="button" class="icon-btn" onclick="app.navigateTo('profil')"><i class="fa-solid fa-user-circle" style="color: var(--accent-gold);"></i></button>
+        <button type="button" class="icon-btn" onclick="app.navigateTo('profil')">
+          <i class="fa-solid fa-user-circle" style="color: var(--accent-gold);"></i>
+          <span class="notification-badge" id="header-notif-dot"></span>
+        </button>
       </div>
     </header>
 
@@ -608,7 +624,13 @@
         <div class="quick-menu">
           <div class="quick-item" onclick="app.openModal('modal-iuran')"><div class="quick-icon"><i class="fa-solid fa-receipt"></i></div><span>Setor Iuran</span></div>
           <div class="quick-item" onclick="app.navigateTo('kas')"><div class="quick-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div><span>Kas</span></div>
-          <div class="quick-item" onclick="app.navigateTo('admin')" id="menu-admin-item" style="display: none;"><div class="quick-icon" style="background: rgba(212,175,55,0.2); color: var(--accent-gold);"><i class="fa-solid fa-user-shield"></i></div><span>Super Admin</span></div>
+          <div class="quick-item" onclick="app.navigateTo('admin')" id="menu-admin-item" style="display: none;">
+            <div class="quick-icon" style="background: rgba(212,175,55,0.2); color: var(--accent-gold); position: relative;">
+              <i class="fa-solid fa-user-shield"></i>
+              <span class="notification-badge" id="admin-notif-dot"></span>
+            </div>
+            <span>Super Admin</span>
+          </div>
           <div class="quick-item" onclick="app.navigateTo('merchandise')"><div class="quick-icon"><i class="fa-solid fa-shirt"></i></div><span>Merch</span></div>
           <div class="quick-item" onclick="app.navigateTo('sponsor')"><div class="quick-icon"><i class="fa-solid fa-handshake"></i></div><span>Sponsor</span></div>
           <div class="quick-item" onclick="app.navigateTo('kontak')"><div class="quick-icon"><i class="fa-solid fa-address-book"></i></div><span>Kontak</span></div>
@@ -790,8 +812,6 @@
         <div class="card glass" style="margin-top: 12px;">
           <h4 style="color: var(--accent-gold);">Ketua Umum</h4>
           <p>Ahmad Fauzi</p>
-
-          <!-- NOMOR KETUA / WA PENGURUS -->
           <p class="text-muted"><i class="fa-brands fa-whatsapp"></i> <span id="contact-wa-display">+62 812-3456-7890</span></p>
         </div>
       </section>
@@ -808,7 +828,7 @@
 
           <div class="profile-info-list">
             <div class="info-item">
-              <i class="fa-solid fa-id-card"></i>
+              <i class="fa-solid id-card"></i>
               <div>
                 <span>Nomor Induk Anggota (NIA)</span>
                 <strong id="profile-nia">ITORA-BSN-0000</strong>
@@ -1029,12 +1049,10 @@
         const savedKas = localStorage.getItem('itora_base_kas');
         if (savedKas) this.baseKas = parseFloat(savedKas);
 
-        // Load Saved WA Number
         const savedWA = localStorage.getItem('itora_admin_wa');
         if (savedWA) this.adminWANumber = savedWA;
         this.updateWAUI();
 
-        // Load Saved Touring Data
         const savedTouring = localStorage.getItem('itora_touring_data');
         if (savedTouring) {
           try { this.touringData = JSON.parse(savedTouring); } catch(e){}
@@ -1058,7 +1076,7 @@
 
       adminUpdateWANumber() {
         let val = document.getElementById('admin-wa-input').value.trim();
-        val = val.replace(/[^0-9]/g, ''); // Ambil angka saja
+        val = val.replace(/[^0-9]/g, '');
         if (!val) return;
         if (val.startsWith('0')) val = '62' + val.substring(1);
 
@@ -1199,6 +1217,7 @@
         this.loadMembersFromSupabase();
         this.loadIuranHistory();
         this.calculateTotalKas();
+        this.checkRealtimeNotifications();
       }
 
       hideDashboard() {
@@ -1546,7 +1565,6 @@
           document.getElementById('form-iuran').reset();
           this.loadIuranHistory();
 
-          // KONTROL WA KONFIRMASI SESUAI ATURAN SUPER ADMIN
           const targetWA = this.adminWANumber || "6281234567890";
           const waMessage = `Halo Bendahara ITORA BSN,%0ASaya *${userName}* telah melakukan konfirmasi setor iuran:%0A- *Periode:* ${periode}%0A- *Nominal:* Rp ${parseInt(jumlah).toLocaleString('id-ID')}%0A- *Metode:* ${metode}%0A%0AMohon dicek dan diverifikasi. Terima kasih!`;
           setTimeout(() => {
@@ -1559,6 +1577,32 @@
         } finally {
           btnSubmit.disabled = false;
           btnSubmit.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Kirim Bukti Pembayaran';
+        }
+      }
+
+      /* CEK REAL-TIME NOTIFIKASI */
+      async checkRealtimeNotifications() {
+        if (!this.supabase || !this.currentUser) return;
+        const isSuperAdmin = (this.currentUser.email === 'mastrisnobpb@gmail.com');
+
+        try {
+          if (isSuperAdmin) {
+            // Cek apakah ada iuran dengan status 'Pending'
+            const { count, error } = await this.supabase
+              .from('dues')
+              .select('*', { count: 'exact', head: true })
+              .eq('status', 'Pending');
+
+            if (!error && count > 0) {
+              document.getElementById('admin-notif-dot').style.display = 'block';
+              document.getElementById('header-notif-dot').style.display = 'block';
+            } else {
+              document.getElementById('admin-notif-dot').style.display = 'none';
+              document.getElementById('header-notif-dot').style.display = 'none';
+            }
+          }
+        } catch(e) {
+          console.error(e);
         }
       }
 
@@ -1579,19 +1623,24 @@
             .order('created_at', { ascending: false });
 
           if (!error && dues && dues.length > 0) {
-            historyContainer.innerHTML = dues.map(item => `
-              <div class="card glass" style="padding: 14px; margin-bottom: 10px;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <h4>${item.period_month}</h4>
-                  <span class="badge ${item.status === 'Verified' ? 'badge-success' : item.status === 'Rejected' ? 'badge-danger' : 'badge-warning'}">${item.status}</span>
+            // Cek apakah ada notifikasi perubahan status baru
+            let hasPendingAlert = false;
+            historyContainer.innerHTML = dues.map(item => {
+              if (item.status === 'Verified') hasPendingAlert = true;
+              return `
+                <div class="card glass" style="padding: 14px; margin-bottom: 10px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h4>${item.period_month}</h4>
+                    <span class="badge ${item.status === 'Verified' ? 'badge-success' : item.status === 'Rejected' ? 'badge-danger' : 'badge-warning'}">${item.status === 'Verified' ? 'Disetujui (Approved)' : item.status === 'Rejected' ? 'Ditolak' : 'Menunggu Verifikasi'}</span>
+                  </div>
+                  <p style="color: var(--accent-gold); font-weight: 700; margin-top: 4px;">Rp ${parseFloat(item.amount).toLocaleString('id-ID')}</p>
+                  <p class="text-muted" style="font-size: 0.75rem; margin-top: 4px;">
+                    <i class="fa-regular fa-clock"></i> ${new Date(item.payment_date).toLocaleDateString('id-ID')} • ${item.payment_method}
+                  </p>
+                  ${item.receipt_url ? `<a href="${item.receipt_url}" target="_blank" class="text-muted" style="font-size:0.7rem; color:var(--primary); margin-top:4px; display:inline-block;"><i class="fa-solid fa-image"></i> Lihat Bukti Foto</a>` : ''}
                 </div>
-                <p style="color: var(--accent-gold); font-weight: 700; margin-top: 4px;">Rp ${parseFloat(item.amount).toLocaleString('id-ID')}</p>
-                <p class="text-muted" style="font-size: 0.75rem; margin-top: 4px;">
-                  <i class="fa-regular fa-clock"></i> ${new Date(item.payment_date).toLocaleDateString('id-ID')} • ${item.payment_method}
-                </p>
-                ${item.receipt_url ? `<a href="${item.receipt_url}" target="_blank" class="text-muted" style="font-size:0.7rem; color:var(--primary); margin-top:4px; display:inline-block;"><i class="fa-solid fa-image"></i> Lihat Bukti Foto</a>` : ''}
-              </div>
-            `).join('');
+              `;
+            }).join('');
           } else {
             historyContainer.innerHTML = '<p class="text-muted" style="text-align:center;">Belum ada riwayat setoran iuran di Supabase.</p>';
           }
@@ -1650,6 +1699,7 @@
           await this.calculateTotalKas();
           this.loadAdminDuesList();
           this.loadIuranHistory();
+          this.checkRealtimeNotifications();
 
         } catch (e) {
           this.showToast('Gagal memverifikasi iuran.', 'error');
