@@ -22,7 +22,6 @@
     :root {
       --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       
-      /* SKALA UKURAN FONT PRESISI UI MOBILE */
       --font-xs: 0.68rem;    /* 11px */
       --font-sm: 0.75rem;    /* 12px */
       --font-base: 0.85rem;  /* 13.6px */
@@ -36,7 +35,6 @@
       --fw-bold: 700;
       --fw-extrabold: 800;
 
-      /* TEMA TERANG UI MODERN */
       --primary: #00875A;
       --primary-dark: #005E3E;
       --accent-gold: #D4AF37;
@@ -48,7 +46,6 @@
       --radius-sm: 10px;
       --radius-md: 16px;
       --radius-lg: 24px;
-      --shadow-glass: 0 4px 20px rgba(0, 0, 0, 0.05);
     }
 
     * {
@@ -129,7 +126,7 @@
       to { transform: rotate(360deg); }
     }
 
-    /* AUTH OVERLAY / ONBOARDING OVERLAY */
+    /* AUTH OVERLAY */
     .auth-overlay {
       position: fixed;
       inset: 0;
@@ -396,6 +393,72 @@
       margin-top: 6px;
       text-align: center;
       line-height: 1.2;
+    }
+
+    /* GRID TOKO ONLINE (E-COMMERCE) */
+    .shop-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .product-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-dark);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      position: relative;
+    }
+
+    .product-img-wrapper {
+      width: 100%;
+      height: 135px;
+      background: #F1F5F9;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .product-img-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .product-badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      font-size: 0.62rem;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: var(--fw-bold);
+    }
+
+    .product-info {
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: space-between;
+    }
+
+    .product-title {
+      font-size: 0.8rem;
+      font-weight: var(--fw-bold);
+      color: var(--text-main-dark);
+      line-height: 1.25;
+      margin-bottom: 4px;
+    }
+
+    .product-price {
+      font-size: 0.88rem;
+      font-weight: var(--fw-extrabold);
+      color: var(--primary);
+      margin-bottom: 8px;
     }
 
     .profile-info-list {
@@ -820,10 +883,10 @@
         </div>
       </section>
 
-      <!-- 2. PANEL SUPER ADMIN DENGAN MENU MODAL -->
+      <!-- 2. PANEL SUPER ADMIN -->
       <section id="page-admin" class="page">
         <h2 style="color: var(--primary); font-size: var(--font-lg); font-weight: var(--fw-bold);"><i class="fa-solid fa-user-shield"></i> Panel Super Admin</h2>
-        <p class="text-muted" style="margin-bottom: 15px;">Kontrol penuh sistem, menu dinamis, persetujuan anggota, kas, dan merchandise</p>
+        <p class="text-muted" style="margin-bottom: 15px;">Kontrol penuh sistem, menu dinamis, persetujuan anggota, kas, & toko produk</p>
 
         <div class="quick-menu" style="grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px;">
           
@@ -855,11 +918,19 @@
 
           <div class="card" style="margin:0; padding:16px; text-align:center; cursor:pointer; position:relative;" onclick="app.openModal('modal-admin-orders')">
             <div class="quick-icon" style="margin: 0 auto 8px; width:48px; height:48px; background:#F3E8FF; color:#9333EA;">
-              <i class="fa-solid fa-shirt"></i>
+              <i class="fa-solid fa-cart-shopping"></i>
               <span class="notification-badge" id="admin-order-notif-dot" style="top:2px; right:2px;"></span>
             </div>
             <strong style="font-size:var(--font-base); font-weight:var(--fw-bold);">Pesanan Merch</strong>
-            <span class="text-muted" style="display:block; font-size:var(--font-xs);">Konfirmasi Pemesanan</span>
+            <span class="text-muted" style="display:block; font-size:var(--font-xs);">Konfirmasi Toko Online</span>
+          </div>
+
+          <div class="card" style="margin:0; padding:16px; text-align:center; cursor:pointer;" onclick="app.openModal('modal-admin-products')">
+            <div class="quick-icon" style="margin: 0 auto 8px; width:48px; height:48px; background:#ECFDF5; color:#10B981;">
+              <i class="fa-solid fa-box-open"></i>
+            </div>
+            <strong style="font-size:var(--font-base); font-weight:var(--fw-bold);">Kelola Katalog Toko</strong>
+            <span class="text-muted" style="display:block; font-size:var(--font-xs);">Tambah / Edit Produk Merch</span>
           </div>
 
           <div class="card" style="margin:0; padding:16px; text-align:center; cursor:pointer;" onclick="app.openModal('modal-admin-settings')">
@@ -870,7 +941,7 @@
             <span class="text-muted" style="display:block; font-size:var(--font-xs);">Kas Pokok & WhatsApp</span>
           </div>
 
-          <div class="card" style="margin:0; padding:16px; text-align:center; cursor:pointer;" onclick="app.openModal('modal-admin-touring')">
+          <div class="card" style="margin:0; padding:16px; text-align:center; cursor:pointer; grid-column: span 2;" onclick="app.openModal('modal-admin-touring')">
             <div class="quick-icon" style="margin: 0 auto 8px; width:48px; height:48px; background:#FEE2E2; color:#DC2626;">
               <i class="fa-solid fa-route"></i>
             </div>
@@ -946,13 +1017,17 @@
         <div id="iuran-history-list"></div>
       </section>
 
-      <!-- 8. MERCHANDISE -->
+      <!-- 8. MERCHANDISE (TOKO ONLINE GRID E-COMMERCE) -->
       <section id="page-merchandise" class="page">
-        <h2 style="font-size: var(--font-lg); font-weight: var(--fw-bold);">Merchandise Resmi</h2>
-        <div class="card" style="margin-top: 12px;">
-          <h4 style="font-size: var(--font-base); font-weight: var(--fw-bold);">Kaos Official ITORA BSN</h4>
-          <p style="color: var(--primary); font-weight: var(--fw-bold); margin: 6px 0;">Rp 125.000</p>
-          <button type="button" class="btn btn-primary" onclick="app.openModal('modal-order-merch')">Pesan Sekarang</button>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <h2 style="font-size: var(--font-lg); font-weight: var(--fw-bold);">Merchandise Resmi</h2>
+            <p class="text-muted">Katalog Toko Komunitas ITORA BSN</p>
+          </div>
+        </div>
+
+        <div class="shop-grid" id="public-products-grid">
+          <p class="text-muted" style="grid-column: span 2; text-align:center; padding:20px;">Memuat katalog produk...</p>
         </div>
       </section>
 
@@ -1069,17 +1144,18 @@
       <form id="form-order-merch" onsubmit="app.handleOrderMerchSubmit(event)">
         <div class="form-group">
           <label>Nama Barang</label>
-          <input type="text" class="input-control" id="merch-item-name" value="Kaos Official ITORA BSN" readonly>
+          <input type="text" class="input-control" id="merch-item-name" readonly>
         </div>
 
         <div class="form-group">
           <label>Harga Satuan</label>
-          <input type="text" class="input-control" id="merch-item-price" value="Rp 125.000" readonly>
+          <input type="text" class="input-control" id="merch-item-price" readonly>
         </div>
 
         <div class="form-group">
-          <label>Ukuran Kaos</label>
+          <label>Ukuran / Varian</label>
           <select class="input-control" id="merch-item-size" required>
+            <option value="All Size">Ukuran All Size</option>
             <option value="M">Ukuran M</option>
             <option value="L" selected>Ukuran L</option>
             <option value="XL">Ukuran XL</option>
@@ -1093,13 +1169,70 @@
         </div>
 
         <div class="form-group">
-          <label>Catatan Tambahan (Lengan Panjang/Pendek)</label>
-          <input type="text" class="input-control" id="merch-item-note" placeholder="Misal: Lengan Panjang">
+          <label>Catatan Tambahan (Lengan Panjang/Pendek/Warna)</label>
+          <input type="text" class="input-control" id="merch-item-note" placeholder="Misal: Lengan Panjang Hitam">
         </div>
 
         <button type="submit" class="btn btn-primary" id="btn-submit-merch">
           <i class="fa-brands fa-whatsapp"></i> Pesan & Kirim ke WA Admin
         </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL POP-UP ADMIN: KELOLA PRODUK KATALOG TOKO -->
+  <div class="modal-overlay" id="modal-admin-products">
+    <div class="modal-card">
+      <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-products')"><i class="fa-solid fa-xmark"></i></button>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h3 style="font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-box-open" style="color: #10B981;"></i> Kelola Produk Merch</h3>
+        <button class="btn btn-sm btn-gold" style="width:auto;" onclick="app.openModal('modal-add-product')"><i class="fa-solid fa-plus"></i> Tambah Produk</button>
+      </div>
+      <div id="admin-products-list">
+        <p class="text-muted" style="text-align:center;">Memuat katalog produk admin...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL FORM TAMBAH / EDIT PRODUK MERCHANDISE -->
+  <div class="modal-overlay" id="modal-add-product">
+    <div class="modal-card">
+      <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-add-product')"><i class="fa-solid fa-xmark"></i></button>
+      <h3 style="text-align: center; margin-bottom: 15px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-box-archive" style="color: var(--primary);"></i> Tambah / Edit Produk</h3>
+      
+      <form id="form-product" onsubmit="app.handleSaveProduct(event)">
+        <input type="hidden" id="product-id">
+        <div class="form-group">
+          <label>Nama Produk Merchandise</label>
+          <input type="text" class="input-control" id="product-title" placeholder="e.g. Kaos Official ITORA" required>
+        </div>
+
+        <div class="form-group">
+          <label>Harga Produk (Rp)</label>
+          <input type="number" class="input-control" id="product-price" placeholder="125000" required>
+        </div>
+
+        <div class="form-group">
+          <label>Status Stok / Badge</label>
+          <select class="input-control" id="product-stock" required>
+            <option value="Ready Stock">Ready Stock</option>
+            <option value="Pre-Order">Pre-Order</option>
+            <option value="Stok Terbatas">Stok Terbatas</option>
+            <option value="Habis">Stok Habis</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Foto Produk (Otomatis Kompres & Upload)</label>
+          <input type="file" class="input-control" id="product-image-file" accept="image/*">
+        </div>
+
+        <div class="form-group">
+          <label>Deskripsi Singkat</label>
+          <input type="text" class="input-control" id="product-desc" placeholder="Bahan Combed 30s">
+        </div>
+
+        <button type="submit" class="btn btn-gold" id="btn-save-product"><i class="fa-solid fa-floppy-disk"></i> Simpan Produk</button>
       </form>
     </div>
   </div>
@@ -1144,7 +1277,7 @@
   <div class="modal-overlay" id="modal-admin-orders">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-orders')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="margin-bottom: 12px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-shirt" style="color: #9333EA;"></i> Pemesanan Merchandise</h3>
+      <h3 style="margin-bottom: 12px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-cart-shopping" style="color: #9333EA;"></i> Pemesanan Merchandise</h3>
       <div id="admin-orders-list">
         <p class="text-muted" style="text-align:center;">Memuat data pesanan merchandise...</p>
       </div>
@@ -1341,7 +1474,7 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT LOGIC LENGKAP UTUH TANPA SINGKATAN -->
+  <!-- JAVASCRIPT LOGIC LENGKAP UTUH -->
   <script>
     const SUPABASE_URL = 'https://lfusrctizdydnsiopzfi.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxmdXNyY3RpemR5ZG5zaW9wemZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU2NjI0OTQsImV4cCI6MjEwMTIzODQ5NH0.vWd4l9zbRg3HxHVECN8I67h7gGUsZdaRJ9bD-gmEDUY';
@@ -1354,6 +1487,7 @@
         this.currentProfile = null;
         this.menus = [];
         this.members = [];
+        this.products = [];
         this.iuranHistory = [];
         this.baseKas = 0;
         this.approvedKasTotal = 0;
@@ -1592,6 +1726,7 @@
         document.getElementById('app-dashboard').style.display = 'block';
 
         this.loadMenusFromSupabase();
+        this.loadProductsFromSupabase();
         this.updateUserUI();
         this.loadMembersFromSupabase();
         this.loadIuranHistory();
@@ -1755,6 +1890,7 @@
           this.loadAdminPendingMembersList();
           this.loadAdminDuesList();
           this.loadAdminOrdersList();
+          this.loadAdminProductsList();
         }
 
         const niaCode = this.currentProfile?.member_number || `ITORA-BSN-${this.currentUser.id ? this.currentUser.id.substring(0, 4).toUpperCase() : '0000'}`;
@@ -1801,6 +1937,175 @@
           this.showToast('Gagal memperbarui profil.', 'error');
         } finally {
           btnSave.disabled = false;
+        }
+      }
+
+      /* FITUR KELOLA KATALOG TOKO ONLINE (E-COMMERCE) */
+      async loadProductsFromSupabase() {
+        if (!this.supabase) return;
+        try {
+          const { data, error } = await this.supabase
+            .from('products')
+            .select('*')
+            .eq('is_active', true)
+            .order('created_at', { ascending: false });
+
+          if (!error && data) {
+            this.products = data;
+            this.renderShopGrid();
+          }
+        } catch(e) {
+          console.error(e);
+        }
+      }
+
+      renderShopGrid() {
+        const container = document.getElementById('public-products-grid');
+        if (!container) return;
+
+        if (this.products.length === 0) {
+          container.innerHTML = '<p class="text-muted" style="grid-column: span 2; text-align:center; padding:20px;">Belum ada produk merchandise tersedia.</p>';
+          return;
+        }
+
+        container.innerHTML = this.products.map(p => `
+          <div class="product-card">
+            <div class="product-img-wrapper">
+              <img src="${p.image_url || 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500'}" alt="${p.title}">
+              <span class="product-badge ${p.stock_status === 'Ready Stock' ? 'badge-success' : 'badge-warning'}">${p.stock_status || 'Ready'}</span>
+            </div>
+            <div class="product-info">
+              <div>
+                <div class="product-title">${p.title}</div>
+                <div class="product-price">Rp ${parseFloat(p.price).toLocaleString('id-ID')}</div>
+              </div>
+              <button type="button" class="btn btn-sm btn-primary" onclick="app.openOrderMerchModal('${p.id}')">
+                <i class="fa-solid fa-cart-plus"></i> Pesan
+              </button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      openOrderMerchModal(productId) {
+        const p = this.products.find(item => item.id === productId);
+        if (p) {
+          document.getElementById('merch-item-name').value = p.title;
+          document.getElementById('merch-item-price').value = `Rp ${parseFloat(p.price).toLocaleString('id-ID')}`;
+        }
+        this.openModal('modal-order-merch');
+      }
+
+      async loadAdminProductsList() {
+        const container = document.getElementById('admin-products-list');
+        if (!container || !this.supabase) return;
+
+        try {
+          const { data: prods, error } = await this.supabase
+            .from('products')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+          if (!error && prods && prods.length > 0) {
+            container.innerHTML = prods.map(p => `
+              <div class="menu-admin-item">
+                <div class="menu-admin-info">
+                  <img src="${p.image_url || 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500'}" style="border-radius:6px;">
+                  <div>
+                    <strong style="font-size:var(--font-base); font-weight:var(--fw-bold);">${p.title}</strong>
+                    <span class="text-muted" style="display:block;">Rp ${parseFloat(p.price).toLocaleString('id-ID')} (${p.stock_status})</span>
+                  </div>
+                </div>
+                <div style="display:flex; gap:6px;">
+                  <button class="btn btn-sm btn-gold" onclick="app.editProductModal('${p.id}')"><i class="fa-solid fa-pen"></i></button>
+                  <button class="btn btn-sm btn-danger" onclick="app.adminDeleteProduct('${p.id}')"><i class="fa-solid fa-trash"></i></button>
+                </div>
+              </div>
+            `).join('');
+          } else {
+            container.innerHTML = '<p class="text-muted" style="text-align:center;">Belum ada produk di katalog.</p>';
+          }
+        } catch(e) {}
+      }
+
+      editProductModal(productId) {
+        const p = this.products.find(item => item.id === productId);
+        if (!p) return;
+
+        document.getElementById('product-id').value = p.id;
+        document.getElementById('product-title').value = p.title;
+        document.getElementById('product-price').value = p.price;
+        document.getElementById('product-stock').value = p.stock_status || 'Ready Stock';
+        document.getElementById('product-desc').value = p.description || '';
+
+        this.openModal('modal-add-product');
+      }
+
+      async handleSaveProduct(e) {
+        e.preventDefault();
+        if (!this.supabase) return;
+
+        const btnSave = document.getElementById('btn-save-product');
+        btnSave.disabled = true;
+
+        const id = document.getElementById('product-id').value;
+        const imageFile = document.getElementById('product-image-file').files[0];
+        let imageUrl = '';
+
+        try {
+          if (imageFile) {
+            const compressed = await this.compressImage(imageFile, 200);
+            const fileName = `product_${Date.now()}_${compressed.name}`;
+            const { error: uploadErr } = await this.supabase.storage.from('product-images').upload(fileName, compressed, { upsert: true });
+            if (!uploadErr) {
+              const { data: urlData } = this.supabase.storage.from('product-images').getPublicUrl(fileName);
+              imageUrl = urlData ? urlData.publicUrl : '';
+            }
+          }
+
+          const payload = {
+            title: document.getElementById('product-title').value.trim(),
+            price: parseFloat(document.getElementById('product-price').value) || 0,
+            stock_status: document.getElementById('product-stock').value,
+            description: document.getElementById('product-desc').value.trim(),
+            is_active: true
+          };
+
+          if (imageUrl) payload.image_url = imageUrl;
+
+          let dbError;
+          if (id) {
+            ({ error: dbError } = await this.supabase.from('products').update(payload).eq('id', id));
+          } else {
+            ({ error: dbError } = await this.supabase.from('products').insert([payload]));
+          }
+
+          if (dbError) throw dbError;
+
+          this.showToast('Produk Berhasil Disimpan!', 'success');
+          this.closeModal('modal-add-product');
+          document.getElementById('form-product').reset();
+          document.getElementById('product-id').value = '';
+          this.loadProductsFromSupabase();
+          this.loadAdminProductsList();
+
+        } catch(err) {
+          this.showToast('Gagal menyimpan produk: ' + err.message, 'error');
+        } finally {
+          btnSave.disabled = false;
+        }
+      }
+
+      async adminDeleteProduct(productId) {
+        if (!confirm('Hapus produk ini dari katalog toko?')) return;
+        if (!this.supabase) return;
+        try {
+          await this.supabase.from('products').delete().eq('id', productId);
+          this.showToast('Produk berhasil dihapus!', 'success');
+          this.loadProductsFromSupabase();
+          this.loadAdminProductsList();
+        } catch(e) {
+          this.showToast('Gagal menghapus produk.', 'error');
         }
       }
 
@@ -1994,7 +2299,8 @@
         const qty = parseInt(document.getElementById('merch-item-qty').value) || 1;
         const note = document.getElementById('merch-item-note').value.trim();
 
-        let basePrice = 125000;
+        const rawPriceText = document.getElementById('merch-item-price').value.replace(/[^0-9]/g, '');
+        let basePrice = parseInt(rawPriceText) || 125000;
         if (size === 'XXL') basePrice += 10000;
         const totalPrice = basePrice * qty;
 
