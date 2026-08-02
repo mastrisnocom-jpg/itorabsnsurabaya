@@ -89,9 +89,7 @@
       box-shadow: var(--shadow-glass);
     }
 
-    /* ==========================================
-       SPLASH SCREEN
-       ========================================== */
+    /* SPLASH SCREEN (Konfigurasi Ringan & Cepat Hilang) */
     #splash-screen {
       position: fixed;
       inset: 0;
@@ -102,47 +100,39 @@
       align-items: center;
       justify-content: center;
       color: white;
-      transition: opacity 0.5s ease, visibility 0.5s;
+      transition: opacity 0.4s ease, visibility 0.4s;
     }
 
     .splash-logo {
-      width: 110px;
-      height: 110px;
+      width: 100px;
+      height: 100px;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.15);
       border: 2px solid var(--accent-gold);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 3rem;
+      font-size: 2.8rem;
       color: var(--accent-gold);
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
     }
 
     .spinner {
-      width: 32px;
-      height: 32px;
+      width: 28px;
+      height: 28px;
       border: 3px solid rgba(255, 255, 255, 0.3);
       border-radius: 50%;
       border-top-color: var(--accent-gold);
       animation: spin 1s linear infinite;
-      margin-top: 25px;
+      margin-top: 20px;
     }
 
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
 
-    /* ==========================================
-       HEADER & NAVIGATION
-       ========================================== */
+    /* HEADER & NAVIGATION */
     .app-header {
       position: sticky;
       top: 0;
@@ -234,9 +224,7 @@
       color: var(--primary);
     }
 
-    /* ==========================================
-       CONTAINER & PAGES
-       ========================================== */
+    /* CONTAINER & PAGES */
     .container {
       padding: 16px;
       max-width: 600px;
@@ -253,7 +241,7 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
+      from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
@@ -270,17 +258,6 @@
       position: relative;
       overflow: hidden;
       border: none;
-    }
-
-    .banner-card::after {
-      content: '';
-      position: absolute;
-      top: -30px;
-      right: -30px;
-      width: 120px;
-      height: 120px;
-      background: rgba(212, 175, 55, 0.2);
-      border-radius: 50%;
     }
 
     .badge {
@@ -422,15 +399,8 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      animation: slideDown 0.3s ease;
     }
 
-    @keyframes slideDown {
-      from { transform: translateY(-20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    /* Member Card Specifics */
     .member-avatar {
       width: 70px;
       height: 70px;
@@ -447,7 +417,6 @@
       margin: 15px 0;
     }
 
-    /* List grids */
     .data-list {
       display: flex;
       flex-direction: column;
@@ -464,7 +433,6 @@
       height: 140px;
       border-radius: var(--radius-md);
       overflow: hidden;
-      position: relative;
     }
 
     .gallery-item img {
@@ -489,7 +457,7 @@
   <!-- TOAST CONTAINER -->
   <div id="toast-container"></div>
 
-  <!-- MAIN APP HEADER -->
+  <!-- HEADER -->
   <header class="app-header glass">
     <div class="brand-title">
       <h1>ITORA BSN</h1>
@@ -505,23 +473,21 @@
     </div>
   </header>
 
-  <!-- MAIN VIEWPORT CONTAINER -->
+  <!-- MAIN CONTAINER -->
   <main class="container">
 
-    <!-- 1. PAGE BERANDA (DASHBOARD) -->
+    <!-- 1. PAGE BERANDA -->
     <section id="page-beranda" class="page active">
-      <!-- Banner -->
       <div class="card banner-card glass">
         <span class="badge badge-gold">Komunitas Resmi</span>
         <h2 style="margin-top: 8px; font-size: 1.4rem;">Salam Satu Jalur!</h2>
         <p style="font-size: 0.85rem; opacity: 0.9; margin-top: 4px;">Bank Syariah Nasional Cabang Surabaya</p>
       </div>
 
-      <!-- Quick Stats -->
       <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px;">
         <div class="card glass" style="padding: 12px; text-align: center;">
           <i class="fa-solid fa-users" style="color: var(--primary);"></i>
-          <h3 style="font-size: 1.1rem; margin-top: 4px;" id="stat-members">0</h3>
+          <h3 style="font-size: 1.1rem; margin-top: 4px;" id="stat-members">4</h3>
           <span style="font-size: 0.68rem; color: var(--text-muted);">Anggota</span>
         </div>
         <div class="card glass" style="padding: 12px; text-align: center;">
@@ -536,7 +502,6 @@
         </div>
       </div>
 
-      <!-- Quick Nav Menu -->
       <div class="quick-menu">
         <div class="quick-item" onclick="navigateTo('pengumuman')">
           <div class="quick-icon"><i class="fa-solid fa-bullhorn"></i></div>
@@ -556,7 +521,6 @@
         </div>
       </div>
 
-      <!-- Touring Terdekat -->
       <div class="card glass">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
           <h3 style="font-size: 0.95rem; font-weight: 700;"><i class="fa-solid fa-compass" style="color: var(--accent-gold);"></i> Touring Terdekat</h3>
@@ -568,7 +532,6 @@
         <button class="btn btn-gold" style="margin-top: 14px; padding: 10px;" onclick="navigateTo('touring')">Lihat Rute & Detail</button>
       </div>
 
-      <!-- Pengumuman Terbaru -->
       <div class="card glass">
         <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 12px;"><i class="fa-solid fa-newspaper" style="color: var(--primary);"></i> Pengumuman Terbaru</h3>
         <div style="border-left: 3px solid var(--accent-gold); padding-left: 10px;">
@@ -595,16 +558,8 @@
           <div><i class="fa-solid fa-clock" style="width: 20px; color: var(--primary);"></i> <strong>Waktu Tempuh:</strong> ~3.5 Jam</div>
           <div><i class="fa-solid fa-map-pin" style="width: 20px; color: var(--primary);"></i> <strong>Titik Kumpul:</strong> Halaman BSN KC Surabaya</div>
         </div>
-        <hr style="border: none; border-top: 1px solid var(--border); margin: 12px 0;">
-        <h4 style="font-size: 0.85rem; margin-bottom: 8px;">Checklist Perlengkapan:</h4>
-        <ul style="font-size: 0.8rem; color: var(--text-muted); padding-left: 20px;">
-          <li>Helm SNI Full Face / 3/4</li>
-          <li>Jaket Touring & Sarung Tangan</li>
-          <li>Jas Hujan & P3K Standar</li>
-          <li>Surat Vehicle (STNK & SIM C Aktif)</li>
-        </ul>
-        <button class="btn btn-primary" style="margin-top: 16px;" onclick="openMapsRoute()">
-          <i class="fa-solid fa-map-location-dot"></i> Buka Rute Google Maps
+        <button class="btn btn-primary" style="margin-top: 16px;" onclick="window.open('https://maps.google.com/?q=Bromo', '_blank')">
+          <i class="fa-solid fa-map-location-dot"></i> Buka Google Maps
         </button>
       </div>
     </section>
@@ -636,20 +591,6 @@
         <h1 style="color: var(--primary); font-size: 2rem; margin: 4px 0;">Rp 12.500.000</h1>
         <p style="font-size: 0.75rem; color: var(--text-muted);">Diperbarui: Agustus 2026</p>
       </div>
-
-      <div class="card glass">
-        <h3 style="font-size: 0.95rem; margin-bottom: 12px;">Pemasukan & Pengeluaran Terakhir</h3>
-        <div class="data-list">
-          <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
-            <span><i class="fa-solid fa-arrow-down" style="color: #10B981;"></i> Iuran Bulanan 10 Anggota</span>
-            <strong style="color: #10B981;">+ Rp 500.000</strong>
-          </div>
-          <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
-            <span><i class="fa-solid fa-arrow-up" style="color: #EF4444;"></i> DP Merchandise Kaos</span>
-            <strong style="color: #EF4444;">- Rp 1.200.000</strong>
-          </div>
-        </div>
-      </div>
     </section>
 
     <!-- 7. PAGE MERCHANDISE -->
@@ -662,14 +603,6 @@
           </div>
           <h4 style="font-size: 0.85rem; margin-top: 8px;">Kaos Official ITORA</h4>
           <p style="font-size: 0.8rem; color: var(--primary); font-weight: 700;">Rp 125.000</p>
-          <button class="btn btn-primary" style="padding: 6px; font-size: 0.75rem; margin-top: 8px;" onclick="toast('Pemesanan dicatat!')">Pesan</button>
-        </div>
-        <div class="card glass" style="padding: 12px;">
-          <div style="height: 120px; background: #333; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: white;">
-            <i class="fa-solid fa-user-ninja" style="font-size: 2.5rem; color: var(--accent-gold);"></i>
-          </div>
-          <h4 style="font-size: 0.85rem; margin-top: 8px;">Jaket Touring Official</h4>
-          <p style="font-size: 0.8rem; color: var(--primary); font-weight: 700;">Rp 350.000</p>
           <button class="btn btn-primary" style="padding: 6px; font-size: 0.75rem; margin-top: 8px;" onclick="toast('Pemesanan dicatat!')">Pesan</button>
         </div>
       </div>
@@ -702,16 +635,6 @@
         <h3 style="margin-top: 8px;">Ahmad Fauzi</h3>
         <span class="badge badge-gold" style="margin-top: 4px;">Ketua Komunitas</span>
         <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">ID Member: ITORA-BSN-001</p>
-      </div>
-
-      <div class="card glass">
-        <h4 style="font-size: 0.9rem; margin-bottom: 12px;">Pengaturan Aplikasi</h4>
-        <button class="btn btn-primary" style="margin-bottom: 8px; justify-content: flex-start;" onclick="toast('Profil berhasil diperbarui')">
-          <i class="fa-solid fa-user-pen"></i> Edit Profil
-        </button>
-        <button class="btn btn-gold" style="justify-content: flex-start;" onclick="toast('Logout Berhasil')">
-          <i class="fa-solid fa-right-from-bracket"></i> Logout
-        </button>
       </div>
     </section>
 
@@ -754,27 +677,23 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT LOGIC -->
+  <!-- JAVASCRIPT APP LOGIC -->
   <script>
-    /* ==========================================
-       1. SPLASH SCREEN HANDLER (WITH SAFETY)
-       ========================================== */
-    function hideSplashScreen() {
+    /* 1. SPLASH SCREEN HIDE (TUTUP OTOMATIS) */
+    function forceDismissSplash() {
       const splash = document.getElementById('splash-screen');
-      if (splash && splash.style.display !== 'none') {
+      if (splash) {
         splash.style.opacity = '0';
         setTimeout(() => {
           splash.style.display = 'none';
-        }, 500);
+        }, 400);
       }
     }
 
-    // Safety timeout: buka layar otomatis maksimal setelah 2 detik
-    const splashSafetyTimeout = setTimeout(hideSplashScreen, 2000);
+    // Safety fallback: Maksimal 1 detik splash screen WAJIB hilang
+    setTimeout(forceDismissSplash, 1000);
 
-    /* ==========================================
-       2. SUPABASE INITIALIZATION
-       ========================================== */
+    /* 2. CONFIG SUPABASE & MOCK DATA */
     const SUPABASE_URL = 'https://lfusrctizdydnsiopzfi.supabase.co';
     const SUPABASE_ANON_KEY = 'Sb_publishable_AKKR_z1iI5-Bi9-pAQnGOw_1gG7jj-q';
     
@@ -788,98 +707,76 @@
     }
 
     let loadedMembers = [
-      { id: 'ITORA-001', name: 'Ahmad Fauzi', role: 'Ketua', bike: 'Honda CB500X', plate: 'L 1234 BS', blood: 'O' },
-      { id: 'ITORA-002', name: 'Budi Santoso', role: 'Sekretaris', bike: 'Yamaha NMAX 155', plate: 'L 5678 AA', blood: 'A' },
-      { id: 'ITORA-003', name: 'Citra Dewi', role: 'Bendahara', bike: 'Vespa Sprint 150', plate: 'L 9101 BSN', blood: 'B' },
-      { id: 'ITORA-004', name: 'Dedi Kurniawan', role: 'Anggota', bike: 'Kawasaki Versys 250', plate: 'L 4321 XY', blood: 'AB' }
+      { id: 'ITORA-001', name: 'Ahmad Fauzi', role: 'Ketua', bike: 'Honda CB500X', plate: 'L 1234 BS' },
+      { id: 'ITORA-002', name: 'Budi Santoso', role: 'Sekretaris', bike: 'Yamaha NMAX 155', plate: 'L 5678 AA' },
+      { id: 'ITORA-003', name: 'Citra Dewi', role: 'Bendahara', bike: 'Vespa Sprint 150', plate: 'L 9101 BSN' },
+      { id: 'ITORA-004', name: 'Dedi Kurniawan', role: 'Anggota', bike: 'Kawasaki Versys 250', plate: 'L 4321 XY' }
     ];
 
     const mockEvents = [
-      { title: 'Kopdar Rutin Bulanan', date: '10 Agustus 2026', location: 'Sekretariat BSN Surabaya', desc: 'Pembahasan agenda turing dan kas.' },
-      { title: 'Bakti Sosial & Santunan', date: '25 Agustus 2026', location: 'Panti Asuhan Surabaya', desc: 'Penyaluran bantuan BSN Peduli.' }
+      { title: 'Kopdar Rutin Bulanan', date: '10 Agustus 2026', location: 'Sekretariat BSN Surabaya' },
+      { title: 'Bakti Sosial & Santunan', date: '25 Agustus 2026', location: 'Panti Asuhan Surabaya' }
     ];
 
-    /* ==========================================
-       3. FETCH DATA FROM SUPABASE
-       ========================================== */
+    /* 3. INIT ENGINE ON LOAD */
+    document.addEventListener('DOMContentLoaded', () => {
+      renderMembers(loadedMembers);
+      renderEvents(mockEvents);
+
+      // Render QR Code
+      if (typeof QRCode !== 'undefined') {
+        const qrContainer = document.getElementById("qrcode");
+        if (qrContainer) {
+          qrContainer.innerHTML = '';
+          new QRCode(qrContainer, {
+            text: "ITORA-BSN-001-AHMAD_FAUZI",
+            width: 150,
+            height: 150
+          });
+        }
+      }
+
+      // Load Supabase Data Background
+      loadDataFromSupabase();
+      
+      // Force Hide Splash Screen
+      forceDismissSplash();
+    });
+
     async function loadDataFromSupabase() {
       if (!supabase) return;
       try {
-        // Load Members Data
-        const { data: members, error: mError } = await supabase.from('members').select('*');
-        if (!mError && members && members.length > 0) {
+        const { data: members } = await supabase.from('members').select('*');
+        if (members && members.length > 0) {
           loadedMembers = members.map(m => ({
             id: m.member_number || m.id,
             name: m.full_name,
             role: m.jabatan || m.role,
             bike: m.motor_model || 'Motor',
-            plate: m.plate_number || '-',
-            blood: m.blood_type || '-'
+            plate: m.plate_number || '-'
           }));
+          renderMembers(loadedMembers);
+          const statEl = document.getElementById('stat-members');
+          if (statEl) statEl.innerText = loadedMembers.length;
         }
 
-        // Update Counter Member
-        const statEl = document.getElementById('stat-members');
-        if (statEl) statEl.innerText = loadedMembers.length;
-
-        // Load Events Data
-        const { data: events, error: eError } = await supabase.from('events').select('*');
-        if (!eError && events && events.length > 0) {
+        const { data: events } = await supabase.from('events').select('*');
+        if (events && events.length > 0) {
           const formattedEvents = events.map(e => ({
             title: e.title,
             date: new Date(e.event_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
-            location: e.location,
-            desc: e.description
+            location: e.location
           }));
           renderEvents(formattedEvents);
-        } else {
-          renderEvents(mockEvents);
         }
       } catch (e) {
-        console.warn('Fallback to mock data:', e);
-        renderEvents(mockEvents);
-      } finally {
-        renderMembers(loadedMembers);
+        console.log('Supabase offline / standby');
       }
     }
 
-    /* ==========================================
-       4. INITIALIZATION ON DOM READY
-       ========================================== */
-    document.addEventListener('DOMContentLoaded', () => {
-      try {
-        renderMembers(loadedMembers);
-        renderEvents(mockEvents);
-        
-        loadDataFromSupabase();
-
-        if (typeof QRCode !== 'undefined') {
-          const qrContainer = document.getElementById("qrcode");
-          if (qrContainer) {
-            qrContainer.innerHTML = '';
-            new QRCode(qrContainer, {
-              text: "ITORA-BSN-001-AHMAD_FAUZI",
-              width: 160,
-              height: 160
-            });
-          }
-        }
-
-        registerPWA();
-      } catch (err) {
-        console.error('Init Error:', err);
-      } finally {
-        clearTimeout(splashSafetyTimeout);
-        setTimeout(hideSplashScreen, 800);
-      }
-    });
-
-    /* ==========================================
-       5. HELPER FUNCTIONS & ROUTING
-       ========================================== */
+    /* 4. NAVIGATION & UI FUNCTIONS */
     function navigateTo(pageId) {
       document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-      
       const targetPage = document.getElementById(`page-${pageId}`);
       if (targetPage) targetPage.classList.add('active');
 
@@ -925,16 +822,12 @@
       setTimeout(() => toastEl.remove(), 3000);
     }
 
-    function openMapsRoute() {
-      window.open('https://maps.google.com/?q=Bromo', '_blank');
-    }
-
     function renderMembers(data) {
       const container = document.getElementById('members-list');
       if (!container) return;
       container.innerHTML = data.map(m => `
         <div class="card glass" style="display: flex; align-items: center; gap: 14px; padding: 14px;">
-          <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">
+          <div style="width: 44px; height: 44px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">
             ${m.name.charAt(0)}
           </div>
           <div style="flex: 1;">
@@ -968,44 +861,6 @@
           <button class="btn btn-gold" style="margin-top: 10px; padding: 8px; font-size: 0.8rem;" onclick="toast('RSVP Hadir Terkirim!')">RSVP Hadir</button>
         </div>
       `).join('');
-    }
-
-    function registerPWA() {
-      try {
-        const manifest = {
-          name: "ITORA BSN SURABAYA",
-          short_name: "ITORA",
-          start_url: ".",
-          display: "standalone",
-          background_color: "#0F172A",
-          theme_color: "#00875A",
-          icons: [{
-            src: "https://via.placeholder.com/192x192/00875A/FFFFFF?text=ITORA",
-            sizes: "192x192",
-            type: "image/png"
-          }]
-        };
-        
-        const manifestStr = JSON.stringify(manifest);
-        const blobManifest = new Blob([manifestStr], {type: 'application/json'});
-        const manifestLink = document.getElementById('pwa-manifest');
-        if (manifestLink) {
-          manifestLink.setAttribute('href', URL.createObjectURL(blobManifest));
-        }
-
-        if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
-          const swCode = `
-            const CACHE_NAME = 'itora-v1';
-            self.addEventListener('install', e => self.skipWaiting());
-            self.addEventListener('activate', e => self.clients.claim());
-            self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => caches.match(e.request))));
-          `;
-          const blobSW = new Blob([swCode], {type: 'application/javascript'});
-          navigator.serviceWorker.register(URL.createObjectURL(blobSW)).catch(() => {});
-        }
-      } catch(e) {
-        console.warn('PWA init issue:', e);
-      }
     }
   </script>
 </body>
