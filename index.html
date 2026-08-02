@@ -314,6 +314,43 @@
       border: 1px solid var(--border-dark);
     }
 
+    /* DETAIL PROFILE STYLES */
+    .profile-info-list {
+      margin-top: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      text-align: left;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(15, 23, 42, 0.4);
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-dark);
+    }
+
+    .info-item i {
+      font-size: 1.2rem;
+      color: var(--accent-gold);
+      width: 24px;
+      text-align: center;
+    }
+
+    .info-item div span {
+      display: block;
+      font-size: 0.7rem;
+      color: var(--text-muted-dark);
+    }
+
+    .info-item div strong {
+      font-size: 0.88rem;
+      color: var(--text-main-dark);
+    }
+
     /* FORMS & BUTTONS */
     .form-group { margin-bottom: 16px; }
     .form-group label {
@@ -471,6 +508,24 @@
       margin: 0 auto 10px;
     }
 
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .gallery-item {
+      height: 130px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
     /* MENU ADMIN STYLES */
     .menu-admin-item {
       display: flex;
@@ -512,7 +567,7 @@
     <div class="spinner"></div>
   </div>
 
-  <!-- 1. AUTH SCREEN -->
+  <!-- 1. AUTH SCREEN (LOGIN / REGISTER) -->
   <div id="auth-screen" class="auth-overlay">
     <div class="auth-card glass">
       <div class="auth-header">
@@ -561,18 +616,22 @@
           <label><i class="fa-solid fa-user"></i> Nama Lengkap</label>
           <input type="text" class="input-control" id="init-fullname" placeholder="Sutrisno" required>
         </div>
+
         <div class="form-group">
           <label><i class="fa-brands fa-whatsapp"></i> Nomor WhatsApp</label>
           <input type="text" class="input-control" id="init-phone" placeholder="081234567890" required>
         </div>
+
         <div class="form-group">
           <label><i class="fa-solid fa-motorcycle"></i> Merek / Tipe Motor</label>
           <input type="text" class="input-control" id="init-bike" placeholder="Honda Vario 160 / Yamaha NMAX" required>
         </div>
+
         <div class="form-group">
           <label><i class="fa-solid fa-rectangle-ad"></i> Nomor Plat Kendaraan</label>
           <input type="text" class="input-control" id="init-plate" placeholder="L 1234 ABC" required>
         </div>
+
         <button type="submit" class="btn btn-gold" id="btn-submit-init-data">
           <i class="fa-solid fa-paper-plane"></i> Kirim Data & Ajukan Verifikasi
         </button>
@@ -594,14 +653,18 @@
 
       <p style="font-size: 0.88rem; color: var(--text-muted-dark); line-height: 1.5; margin-bottom: 20px;">
         Data diri Anda telah dikirim. Akun Anda sedang ditinjau oleh <strong>Super Admin ITORA BSN SURABAYA</strong>.
+        <br><br>
+        Silakan hubungi Super Admin untuk mempercepat proses persetujuan.
       </p>
 
       <button type="button" class="btn btn-primary" onclick="app.contactAdminForApproval()">
         <i class="fa-brands fa-whatsapp"></i> Hubungi Super Admin via WA
       </button>
+
       <button type="button" class="btn btn-outline" onclick="app.checkSession()" style="margin-top:10px;">
         <i class="fa-solid fa-rotate"></i> Cek Status Ulang
       </button>
+
       <button type="button" class="btn btn-outline" onclick="app.handleLogout()" style="margin-top:8px;">
         <i class="fa-solid fa-right-from-bracket"></i> Keluar
       </button>
@@ -611,6 +674,7 @@
   <!-- 4. MAIN APP DASHBOARD -->
   <div id="app-dashboard" class="app-container" style="display: none;">
 
+    <!-- APP HEADER -->
     <header class="app-header glass">
       <div class="brand-title">
         <h1>ITORA BSN</h1>
@@ -626,9 +690,10 @@
       </div>
     </header>
 
+    <!-- MAIN VIEW / PAGES -->
     <main class="container">
 
-      <!-- 1. BERANDA -->
+      <!-- 1. BERANDA / DASHBOARD -->
       <section id="page-beranda" class="page active">
         <div class="card banner-card glass">
           <span class="badge badge-gold">Komunitas Resmi</span>
@@ -654,7 +719,7 @@
           </div>
         </div>
 
-        <!-- QUICK MENU CONTAINER DINAMIS DARI SUPABASE -->
+        <!-- QUICK MENU DINAMIS DARI SUPABASE -->
         <div class="quick-menu" id="dynamic-quick-menu"></div>
 
         <div class="card glass">
@@ -695,14 +760,52 @@
           </div>
         </div>
 
-        <!-- PENGATURAN WHATSAPP -->
+        <!-- PENGATURAN NOMOR WHATSAPP KONFIRMASI -->
         <div class="card glass">
           <h3 style="margin-bottom: 6px;"><i class="fa-brands fa-whatsapp" style="color: #25D366;"></i> Pengaturan WhatsApp Konfirmasi</h3>
+          <p class="text-muted" style="font-size: 0.75rem; margin-bottom: 10px;">Nomor WA ini akan menerima konfirmasi otomatis dari anggota</p>
           <div class="form-group">
             <label>Nomor WA Penerima (Format: 628xxxxxxxxxx)</label>
-            <input type="text" class="input-control" id="admin-wa-input" placeholder="6281234567890">
+            <input type="text" class="input-control" id="admin-wa-input" placeholder="6281234567890" value="6281234567890">
           </div>
           <button type="button" class="btn btn-gold" onclick="app.adminUpdateWANumber()"><i class="fa-solid fa-floppy-disk"></i> Simpan Nomor WhatsApp</button>
+        </div>
+
+        <!-- UPDATE JADWAL TOURING -->
+        <div class="card glass">
+          <h3 style="margin-bottom: 6px;"><i class="fa-solid fa-route" style="color: var(--accent-gold);"></i> Update Jadwal Touring Utama</h3>
+          <p class="text-muted" style="font-size: 0.75rem; margin-bottom: 10px;">Perbarui agenda touring yang tampil di Beranda dan Halaman Touring</p>
+          
+          <form onsubmit="app.adminUpdateTouring(event)">
+            <div class="form-group">
+              <label>Nama Destinasi / Judul Touring</label>
+              <input type="text" class="input-control" id="admin-touring-title" required>
+            </div>
+            <div class="form-group">
+              <label>Tanggal & Waktu</label>
+              <input type="text" class="input-control" id="admin-touring-date" required>
+            </div>
+            <div class="form-group">
+              <label>Titik Kumpul (Meeting Point)</label>
+              <input type="text" class="input-control" id="admin-touring-meeting" required>
+            </div>
+            <div class="form-group">
+              <label>Link Google Maps Rute</label>
+              <input type="text" class="input-control" id="admin-touring-maps" placeholder="https://maps.google.com/?q=..." required>
+            </div>
+            <button type="submit" class="btn btn-gold"><i class="fa-solid fa-floppy-disk"></i> Simpan Jadwal Touring</button>
+          </form>
+        </div>
+
+        <!-- PENGATURAN KAS POKOK/BASE -->
+        <div class="card glass">
+          <h3 style="margin-bottom: 6px;"><i class="fa-solid fa-wallet" style="color: #10B981;"></i> Pengaturan Kas Utama</h3>
+          <p class="text-muted" style="font-size: 0.75rem; margin-bottom: 10px;">Saldo Kas Awal/Sisa + Otomatis Penambahan Iuran yang Disetujui</p>
+          <div class="form-group">
+            <label>Saldo Kas Pokok Awal (Rp)</label>
+            <input type="number" class="input-control" id="admin-kas-input" placeholder="0" value="0">
+          </div>
+          <button type="button" class="btn btn-gold" onclick="app.adminUpdateBaseKas()"><i class="fa-solid fa-floppy-disk"></i> Simpan Kas Pokok</button>
         </div>
 
         <!-- VERIFIKASI IURAN ANGGOTA -->
@@ -739,11 +842,12 @@
       <section id="page-touring" class="page">
         <h2>Jadwal & Rute Touring</h2>
         <div class="card glass" style="margin-top: 12px;">
-          <span class="badge badge-gold">Destinasi Utama</span>
+          <span class="badge badge-gold" id="touring-badge-tag">Destinasi Utama</span>
           <h3 style="margin-top: 6px;" id="touring-page-title">Bromo Sunrise Ride</h3>
           <p class="text-muted" style="margin-top: 4px;"><i class="fa-regular fa-calendar"></i> <span id="touring-page-schedule">17 Agustus 2026 | 05:00 WIB</span></p>
           <p class="text-muted"><i class="fa-solid fa-location-dot"></i> Meeting Point: <span id="touring-page-meeting">Alun-Alun Surabaya</span></p>
-          <button type="button" class="btn btn-primary" style="margin-top: 16px;" onclick="window.open('https://maps.google.com/?q=Bromo', '_blank')">
+          
+          <button type="button" class="btn btn-primary" style="margin-top: 16px;" id="touring-maps-btn" onclick="window.open('https://maps.google.com/?q=Bromo', '_blank')">
             <i class="fa-solid fa-map-location-dot"></i> Buka Rute Google Maps
           </button>
         </div>
@@ -752,22 +856,29 @@
       <!-- 6. GALERI -->
       <section id="page-galeri" class="page">
         <h2>Dokumentasi Kegiatan</h2>
-        <div class="gallery-grid" style="margin-top: 12px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-          <div class="gallery-item glass" style="height:130px; border-radius: var(--radius-md); overflow:hidden;"><img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=500" style="width:100%; height:100%; object-fit:cover;"></div>
-          <div class="gallery-item glass" style="height:130px; border-radius: var(--radius-md); overflow:hidden;"><img src="https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=500" style="width:100%; height:100%; object-fit:cover;"></div>
+        <div class="gallery-grid" style="margin-top: 12px;">
+          <div class="gallery-item glass"><img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=500" alt="Galeri 1"></div>
+          <div class="gallery-item glass"><img src="https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=500" alt="Galeri 2"></div>
         </div>
       </section>
 
-      <!-- 7. KAS -->
+      <!-- 7. KAS & IURAN -->
       <section id="page-kas" class="page">
         <h2>Kas & Iuran Komunitas</h2>
         <div class="card glass" style="margin-top: 12px; text-align: center;">
           <span class="text-muted">Total Saldo Kas Terkumpul</span>
           <h1 style="color: var(--primary); font-size: 2.2rem; margin: 8px 0;" id="kas-page-amount">Rp 0</h1>
+          
           <button type="button" class="btn btn-gold" style="margin-top: 10px;" onclick="app.openModal('modal-iuran')">
             <i class="fa-solid fa-receipt"></i> Setor Bukti Iuran Baru
           </button>
+
+          <div style="display: flex; gap: 10px; margin-top: 10px;">
+            <button type="button" class="btn btn-primary" onclick="app.exportData('Kas', 'PDF')"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
+            <button type="button" class="btn btn-primary" onclick="app.exportData('Kas', 'Excel')"><i class="fa-solid fa-file-excel"></i> Export Excel</button>
+          </div>
         </div>
+
         <h3 style="font-size: 1.1rem; margin: 20px 0 10px;">Riwayat Setoran Iuran Saya</h3>
         <div id="iuran-history-list"></div>
       </section>
@@ -778,11 +889,20 @@
         <div class="card glass" style="margin-top: 12px;">
           <h4>Kaos Official ITORA BSN</h4>
           <p style="color: var(--accent-gold); font-weight: 700; margin: 6px 0;">Rp 125.000</p>
-          <button type="button" class="btn btn-primary" onclick="app.showToast('Pesanan dicatat!', 'success')">Pesan Sekarang</button>
+          <button type="button" class="btn btn-primary" onclick="app.showToast('Pesanan dicatat! Admin akan menghubungi Anda.', 'success')">Pesan Sekarang</button>
         </div>
       </section>
 
-      <!-- 9. SPONSOR -->
+      <!-- 9. PENGUMUMAN -->
+      <section id="page-pengumuman" class="page">
+        <h2>Pengumuman Resmi</h2>
+        <div class="card glass" style="margin-top: 12px;">
+          <h4>Penting: Pelunasan Iuran Kas</h4>
+          <p class="text-muted" style="margin-top: 4px;">Diharapkan seluruh anggota melunasi iuran kas paling lambat tanggal 10 tiap bulannya.</p>
+        </div>
+      </section>
+
+      <!-- 10. SPONSOR -->
       <section id="page-sponsor" class="page">
         <h2>Sponsor Utama</h2>
         <div class="card glass" style="margin-top: 12px; text-align: center;">
@@ -791,7 +911,7 @@
         </div>
       </section>
 
-      <!-- 10. KONTAK -->
+      <!-- 11. KONTAK -->
       <section id="page-kontak" class="page">
         <h2>Kontak Pengurus</h2>
         <div class="card glass" style="margin-top: 12px;">
@@ -801,18 +921,73 @@
         </div>
       </section>
 
-      <!-- 11. PROFIL SAYA -->
+      <!-- 12. PROFIL SAYA -->
       <section id="page-profil" class="page">
         <h2>Profil Anggota Digital</h2>
+        
         <div class="card glass" style="margin-top: 12px; text-align: center;">
           <div class="avatar-placeholder" id="profile-avatar">A</div>
           <h3 id="profile-name">Anggota</h3>
           <span class="badge badge-gold" id="profile-role" style="margin-top: 6px;">Anggota Resmi</span>
           <p class="text-muted" id="profile-email" style="margin-top: 4px;">-</p>
+
+          <div class="profile-info-list">
+            <div class="info-item">
+              <i class="fa-solid fa-id-card"></i>
+              <div>
+                <span>Nomor Induk Anggota (NIA)</span>
+                <strong id="profile-nia">ITORA-BSN-0000</strong>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <i class="fa-brands fa-whatsapp"></i>
+              <div>
+                <span>Nomor Telepon / WhatsApp</span>
+                <strong id="profile-phone">+62 812-XXXX-XXXX</strong>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <i class="fa-solid fa-motorcycle"></i>
+              <div>
+                <span>Merek / Tipe Kendaraan</span>
+                <strong id="profile-bike">Motor BSN</strong>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <i class="fa-solid fa-rectangle-ad"></i>
+              <div>
+                <span>Nomor Plat Kendaraan</span>
+                <strong id="profile-plate">L 1234 IT</strong>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <i class="fa-solid fa-shield-check"></i>
+              <div>
+                <span>Status Keanggotaan</span>
+                <strong style="color: #10B981;" id="profile-status-text">Aktif & Terverifikasi</strong>
+              </div>
+            </div>
+          </div>
+          
           <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
             <button type="button" class="btn btn-primary" onclick="app.openModal('qr-modal')"><i class="fa-solid fa-qrcode"></i> Tampilkan QR Card Member</button>
+            <button type="button" class="btn btn-gold" onclick="app.openModal('modal-edit-profile')"><i class="fa-solid fa-user-pen"></i> Edit Data Profil Saya</button>
             <button type="button" class="btn btn-gold" id="btn-admin-panel-profile" style="display: none;" onclick="app.navigateTo('admin')"><i class="fa-solid fa-user-shield"></i> Masuk Panel Super Admin</button>
           </div>
+        </div>
+      </section>
+
+      <!-- 13. SETELAN -->
+      <section id="page-pengaturan" class="page">
+        <h2>Setelan App</h2>
+        <div class="card glass" style="margin-top: 12px;">
+          <button type="button" class="btn btn-gold" onclick="app.handleLogout()">
+            <i class="fa-solid fa-right-from-bracket"></i> Keluar (Logout)
+          </button>
         </div>
       </section>
 
@@ -821,6 +996,40 @@
     <!-- BOTTOM NAVIGATION BAR DINAMIS DARI SUPABASE -->
     <nav class="bottom-nav glass" id="dynamic-bottom-nav"></nav>
 
+  </div>
+
+  <!-- MODAL EDIT PROFIL -->
+  <div class="modal-overlay" id="modal-edit-profile">
+    <div class="modal-card glass">
+      <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-edit-profile')"><i class="fa-solid fa-xmark"></i></button>
+      <h3 style="text-align: center; margin-bottom: 15px;"><i class="fa-solid fa-user-pen" style="color: var(--accent-gold);"></i> Edit Profil Anggota</h3>
+      
+      <form id="form-edit-profile" onsubmit="app.handleSaveProfile(event)">
+        <div class="form-group">
+          <label>Nama Lengkap</label>
+          <input type="text" class="input-control" id="edit-fullname" required>
+        </div>
+
+        <div class="form-group">
+          <label>Nomor WhatsApp / Telepon</label>
+          <input type="text" class="input-control" id="edit-phone" placeholder="081234567890">
+        </div>
+
+        <div class="form-group">
+          <label>Merek / Tipe Motor</label>
+          <input type="text" class="input-control" id="edit-bike" placeholder="Honda Vario / Yamaha NMAX">
+        </div>
+
+        <div class="form-group">
+          <label>Nomor Plat Kendaraan</label>
+          <input type="text" class="input-control" id="edit-plate" placeholder="L 1234 ABC">
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="btn-save-profile">
+          <i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan Profil
+        </button>
+      </form>
+    </div>
   </div>
 
   <!-- MODAL ADD/EDIT MENU (KHUSUS SUPER ADMIN) -->
@@ -833,15 +1042,15 @@
         <input type="hidden" id="menu-id">
         <div class="form-group">
           <label>Key Identifier (Unik, huruf kecil tanpa spasi)</label>
-          <input type="text" class="input-control" id="menu-key" placeholder="e.g. berita" required>
+          <input type="text" class="input-control" id="menu-key" placeholder="e.g. pengumuman" required>
         </div>
         <div class="form-group">
           <label>Judul Tampilan Menu</label>
-          <input type="text" class="input-control" id="menu-title" placeholder="e.g. Berita Komunitas" required>
+          <input type="text" class="input-control" id="menu-title" placeholder="e.g. Pengumuman Resmi" required>
         </div>
         <div class="form-group">
           <label>Icon FontAwesome Class</label>
-          <input type="text" class="input-control" id="menu-icon" placeholder="fa-solid fa-newspaper">
+          <input type="text" class="input-control" id="menu-icon" placeholder="fa-solid fa-bullhorn">
         </div>
         <div class="form-group">
           <label>Gambar / Ikon Kustom (Upload ke Storage)</label>
@@ -876,11 +1085,12 @@
     </div>
   </div>
 
-  <!-- MODAL SETOR IURAN -->
+  <!-- MODAL POP-UP FORM SETOR IURAN -->
   <div class="modal-overlay" id="modal-iuran">
     <div class="modal-card glass">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-iuran')"><i class="fa-solid fa-xmark"></i></button>
       <h3 style="text-align: center; margin-bottom: 15px;"><i class="fa-solid fa-receipt" style="color: var(--accent-gold);"></i> Setor Iuran Anggota</h3>
+      
       <form id="form-iuran" onsubmit="app.handleSubmitIuran(event)">
         <div class="form-group">
           <label>Periode Bulan Iuran</label>
@@ -888,22 +1098,48 @@
             <option value="Agustus 2026">Agustus 2026</option>
             <option value="September 2026">September 2026</option>
             <option value="Oktober 2026">Oktober 2026</option>
+            <option value="November 2026">November 2026</option>
+            <option value="Desember 2026">Desember 2026</option>
           </select>
         </div>
+
         <div class="form-group">
-          <label>Nominal (Rp)</label>
-          <input type="number" class="input-control" id="iuran-jumlah" value="25000" required>
+          <label>Jumlah / Nominal (Rp)</label>
+          <input type="number" class="input-control" id="iuran-jumlah" placeholder="25000" value="25000" required>
         </div>
+
         <div class="form-group">
-          <label>Upload Bukti Transfer</label>
+          <label>Tanggal & Waktu Transfer</label>
+          <input type="datetime-local" class="input-control" id="iuran-tanggal" required>
+        </div>
+
+        <div class="form-group">
+          <label>Metode Pembayaran</label>
+          <select class="input-control" id="iuran-metode">
+            <option value="Transfer BSN">Transfer Rekening BSN</option>
+            <option value="QRIS">QRIS Komunitas</option>
+            <option value="Tunai">Tunai (via Bendahara)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Upload Bukti Transfer (Otomatis &lt; 200KB)</label>
           <input type="file" class="input-control" id="iuran-bukti" accept="image/*" required>
         </div>
-        <button type="submit" class="btn btn-primary" id="btn-submit-iuran"><i class="fa-solid fa-paper-plane"></i> Kirim Bukti Pembayaran</button>
+
+        <div class="form-group">
+          <label>Catatan Tambahan (Opsional)</label>
+          <input type="text" class="input-control" id="iuran-catatan" placeholder="Misal: Lunas iuran Agustus">
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="btn-submit-iuran">
+          <i class="fa-solid fa-paper-plane"></i> Kirim Bukti Pembayaran
+        </button>
       </form>
     </div>
   </div>
 
-  <!-- JAVASCRIPT LOGIC LENGKAP -->
+  <!-- JAVASCRIPT LOGIC LENGKAP UTUH -->
   <script>
     const SUPABASE_URL = 'https://lfusrctizdydnsiopzfi.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxmdXNyY3RpemR5ZG5zaW9wemZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU2NjI0OTQsImV4cCI6MjEwMTIzODQ5NH0.vWd4l9zbRg3HxHVECN8I67h7gGUsZdaRJ9bD-gmEDUY';
@@ -916,7 +1152,16 @@
         this.currentProfile = null;
         this.menus = [];
         this.members = [];
+        this.iuranHistory = [];
+        this.baseKas = 0;
+        this.approvedKasTotal = 0;
         this.adminWANumber = "6281234567890";
+        this.touringData = {
+          title: "Touring Kemerdekaan Bromo",
+          schedule: "17 Agustus 2026 | 05:00 WIB",
+          meeting: "Alun-Alun Surabaya",
+          maps: "https://maps.google.com/?q=Bromo"
+        };
         this.initSupabase();
       }
 
@@ -933,11 +1178,142 @@
       }
 
       async init() {
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        const dateInput = document.getElementById('iuran-tanggal');
+        if (dateInput) dateInput.value = now.toISOString().slice(0,16);
+
+        const savedKas = localStorage.getItem('itora_base_kas');
+        if (savedKas) this.baseKas = parseFloat(savedKas);
+
+        const savedWA = localStorage.getItem('itora_admin_wa');
+        if (savedWA) this.adminWANumber = savedWA;
+        this.updateWAUI();
+
+        const savedTouring = localStorage.getItem('itora_touring_data');
+        if (savedTouring) {
+          try { this.touringData = JSON.parse(savedTouring); } catch(e){}
+        }
+        this.updateTouringUI();
+
         setTimeout(() => {
           const splash = document.getElementById('splash-screen');
           if (splash) splash.style.display = 'none';
           this.checkSession();
         }, 1000);
+      }
+
+      updateWAUI() {
+        const adminWAInput = document.getElementById('admin-wa-input');
+        if (adminWAInput) adminWAInput.value = this.adminWANumber;
+
+        const displayWA = document.getElementById('contact-wa-display');
+        if (displayWA) displayWA.innerText = `+${this.adminWANumber}`;
+      }
+
+      adminUpdateWANumber() {
+        let val = document.getElementById('admin-wa-input').value.trim();
+        val = val.replace(/[^0-9]/g, '');
+        if (!val) return;
+        if (val.startsWith('0')) val = '62' + val.substring(1);
+
+        this.adminWANumber = val;
+        localStorage.setItem('itora_admin_wa', val);
+        this.updateWAUI();
+        this.showToast('Nomor WhatsApp Konfirmasi Berhasil Diperbarui!', 'success');
+      }
+
+      updateTouringUI() {
+        const homeTitle = document.getElementById('home-touring-title');
+        const homeSchedule = document.getElementById('home-touring-schedule');
+        const homeMeeting = document.getElementById('home-touring-meeting');
+        if (homeTitle) homeTitle.innerText = this.touringData.title;
+        if (homeSchedule) homeSchedule.innerText = this.touringData.schedule;
+        if (homeMeeting) homeMeeting.innerText = this.touringData.meeting;
+
+        const pageTitle = document.getElementById('touring-page-title');
+        const pageSchedule = document.getElementById('touring-page-schedule');
+        const pageMeeting = document.getElementById('touring-page-meeting');
+        const pageMapsBtn = document.getElementById('touring-maps-btn');
+        if (pageTitle) pageTitle.innerText = this.touringData.title;
+        if (pageSchedule) pageSchedule.innerText = this.touringData.schedule;
+        if (pageMeeting) pageMeeting.innerText = this.touringData.meeting;
+        if (pageMapsBtn) pageMapsBtn.setAttribute('onclick', `window.open('${this.touringData.maps}', '_blank')`);
+
+        const adminTitle = document.getElementById('admin-touring-title');
+        const adminDate = document.getElementById('admin-touring-date');
+        const adminMeeting = document.getElementById('admin-touring-meeting');
+        const adminMaps = document.getElementById('admin-touring-maps');
+        if (adminTitle) adminTitle.value = this.touringData.title;
+        if (adminDate) adminDate.value = this.touringData.schedule;
+        if (adminMeeting) adminMeeting.value = this.touringData.meeting;
+        if (adminMaps) adminMaps.value = this.touringData.maps;
+      }
+
+      adminUpdateTouring(e) {
+        e.preventDefault();
+        this.touringData = {
+          title: document.getElementById('admin-touring-title').value.trim(),
+          schedule: document.getElementById('admin-touring-date').value.trim(),
+          meeting: document.getElementById('admin-touring-meeting').value.trim(),
+          maps: document.getElementById('admin-touring-maps').value.trim()
+        };
+
+        localStorage.setItem('itora_touring_data', JSON.stringify(this.touringData));
+        this.updateTouringUI();
+        this.showToast('Jadwal Touring Berhasil Diperbarui!', 'success');
+      }
+
+      compressImage(file, maxKB = 200) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = () => {
+              const canvas = document.createElement('canvas');
+              let width = img.width;
+              let height = img.height;
+
+              const maxDimension = 1200;
+              if (width > height && width > maxDimension) {
+                height = Math.round((height * maxDimension) / width);
+                width = maxDimension;
+              } else if (height > maxDimension) {
+                width = Math.round((width * maxDimension) / height);
+                height = maxDimension;
+              }
+
+              canvas.width = width;
+              canvas.height = height;
+
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0, width, height);
+
+              let quality = 0.85;
+              let dataUrl = canvas.toDataURL('image/jpeg', quality);
+
+              while (dataUrl.length / 1024 > maxKB && quality > 0.1) {
+                quality -= 0.1;
+                dataUrl = canvas.toDataURL('image/jpeg', quality);
+              }
+
+              fetch(dataUrl)
+                .then(res => res.blob())
+                .then(blob => {
+                  const compressedFile = new File([blob], `compressed_${file.name.split('.')[0]}.jpg`, {
+                    type: 'image/jpeg',
+                    lastModified: Date.now()
+                  });
+                  resolve(compressedFile);
+                })
+                .catch(err => reject(err));
+            };
+            img.onerror = (err) => reject(err);
+          };
+          reader.onerror = (err) => reject(err);
+        });
       }
 
       async checkSession() {
@@ -954,6 +1330,16 @@
           } else {
             this.hideDashboard();
           }
+
+          this.supabase.auth.onAuthStateChange(async (event, session) => {
+            if (session && session.user) {
+              this.currentUser = session.user;
+              await this.validateUserFlow();
+            } else if (event === 'SIGNED_OUT') {
+              this.currentUser = null;
+              this.hideDashboard();
+            }
+          });
         } catch (err) {
           this.hideDashboard();
         }
@@ -970,7 +1356,7 @@
 
         await this.loadUserProfileDetails();
 
-        if (!this.currentProfile || !this.currentProfile.full_name) {
+        if (!this.currentProfile || !this.currentProfile.full_name || this.currentProfile.full_name === email.split('@')[0]) {
           this.showCompleteDataScreen();
           return;
         }
@@ -1005,6 +1391,10 @@
 
         this.loadMenusFromSupabase();
         this.updateUserUI();
+        this.loadMembersFromSupabase();
+        this.loadIuranHistory();
+        this.calculateTotalKas();
+        this.checkRealtimeNotifications();
       }
 
       hideDashboard() {
@@ -1012,6 +1402,200 @@
         document.getElementById('complete-data-screen').style.display = 'none';
         document.getElementById('pending-approval-screen').style.display = 'none';
         document.getElementById('auth-screen').style.display = 'flex';
+      }
+
+      toggleAuthMode() {
+        this.isRegisterMode = !this.isRegisterMode;
+        const title = document.getElementById('auth-title');
+        const subtitle = document.getElementById('auth-subtitle');
+        const submitBtn = document.getElementById('auth-submit-btn');
+        const toggleBtn = document.getElementById('auth-toggle-btn');
+
+        if (this.isRegisterMode) {
+          title.innerText = 'Daftar Anggota Baru';
+          subtitle.innerText = 'Lengkapi data akun anggota ITORA Anda';
+          submitBtn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Daftar Sekarang';
+          toggleBtn.innerText = 'Sudah Memiliki Akun? Masuk Disini';
+        } else {
+          title.innerText = 'Masuk Anggota';
+          subtitle.innerText = 'Gunakan email & kata sandi akun ITORA Anda';
+          submitBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Masuk Sekarang';
+          toggleBtn.innerText = 'Belum Memiliki Akun? Daftar Disini';
+        }
+      }
+
+      async handleAuthSubmit(e) {
+        e.preventDefault();
+        const email = document.getElementById('auth-email').value.trim();
+        const password = document.getElementById('auth-password').value;
+
+        if (!this.supabase) {
+          this.showToast('Koneksi Supabase tidak tersedia!', 'error');
+          return;
+        }
+
+        const submitBtn = document.getElementById('auth-submit-btn');
+        submitBtn.disabled = true;
+
+        try {
+          if (this.isRegisterMode) {
+            const { error } = await this.supabase.auth.signUp({ email, password });
+            if (error) throw error;
+            this.showToast('Pendaftaran Akun Berhasil! Silakan Login.', 'success');
+            this.toggleAuthMode();
+          } else {
+            const { data, error } = await this.supabase.auth.signInWithPassword({ email, password });
+            if (error) throw error;
+            this.showToast('Login Berhasil!', 'success');
+            this.currentUser = data.user;
+            await this.validateUserFlow();
+          }
+        } catch (err) {
+          this.showToast(err.message || 'Gagal login/daftar.', 'error');
+        } finally {
+          submitBtn.disabled = false;
+        }
+      }
+
+      async handleSaveInitialData(e) {
+        e.preventDefault();
+        if (!this.currentUser || !this.supabase) return;
+
+        const btnSubmit = document.getElementById('btn-submit-init-data');
+        btnSubmit.disabled = true;
+
+        try {
+          const { error } = await this.supabase.from('members').upsert([{
+            id: this.currentUser.id,
+            full_name: document.getElementById('init-fullname').value.trim(),
+            email: this.currentUser.email,
+            phone: document.getElementById('init-phone').value.trim(),
+            bike: document.getElementById('init-bike').value.trim(),
+            plate: document.getElementById('init-plate').value.trim(),
+            role: 'Anggota Resmi',
+            approval_status: 'Pending'
+          }], { onConflict: 'id' });
+
+          if (error) throw error;
+          this.showToast('Data berhasil dikirim! Menunggu persetujuan Admin.', 'success');
+          await this.loadUserProfileDetails();
+          this.showPendingApprovalScreen();
+        } catch(err) {
+          this.showToast('Gagal menyimpan data diri.', 'error');
+        } finally {
+          btnSubmit.disabled = false;
+        }
+      }
+
+      contactAdminForApproval() {
+        const targetWA = this.adminWANumber || "6281234567890";
+        const myName = this.currentProfile?.full_name || this.currentUser.email;
+        const msg = `Halo Super Admin ITORA BSN SURABAYA,%0ASaya *${myName}* (${this.currentUser.email}) telah melengkapi data pendaftaran anggota.%0A%0AMohon bantuannya untuk verifikasi & persetujuan akun saya. Terima kasih!`;
+        window.open(`https://wa.me/${targetWA}?text=${msg}`, '_blank');
+      }
+
+      async handleLogout() {
+        if (this.supabase) await this.supabase.auth.signOut().catch(()=>{});
+        this.currentUser = null;
+        this.currentProfile = null;
+        this.hideDashboard();
+        this.showToast('Anda telah keluar dari akun.', 'info');
+      }
+
+      async loadUserProfileDetails() {
+        if (!this.currentUser || !this.supabase) return;
+        try {
+          const { data, error } = await this.supabase.from('members').select('*').eq('id', this.currentUser.id).single();
+          if (!error && data) {
+            this.currentProfile = data;
+          } else {
+            this.currentProfile = {
+              id: this.currentUser.id,
+              full_name: this.currentUser.email.split('@')[0],
+              email: this.currentUser.email,
+              phone: '-',
+              bike: 'Motor BSN',
+              plate: 'L 1234 IT',
+              role: (this.currentUser.email === 'mastrisnobpb@gmail.com') ? 'Super Admin' : 'Anggota Resmi',
+              approval_status: (this.currentUser.email === 'mastrisnobpb@gmail.com') ? 'Approved' : 'Pending'
+            };
+          }
+        } catch (e) {}
+      }
+
+      updateUserUI() {
+        if (!this.currentUser) return;
+        const email = this.currentUser.email || '';
+        const isSuperAdmin = (email === 'mastrisnobpb@gmail.com');
+        
+        const name = this.currentProfile?.full_name || email.split('@')[0];
+        const roleTitle = isSuperAdmin ? 'Super Admin' : (this.currentProfile?.role || 'Anggota Resmi');
+        const niaCode = `ITORA-BSN-${this.currentUser.id ? this.currentUser.id.substring(0, 4).toUpperCase() : '0000'}`;
+        const phone = this.currentProfile?.phone || '-';
+        const bike = this.currentProfile?.bike || 'Motor BSN';
+        const plate = this.currentProfile?.plate || 'L 1234 IT';
+
+        document.getElementById('user-greeting').innerText = `Salam, ${name}!`;
+        document.getElementById('profile-name').innerText = name;
+        document.getElementById('profile-email').innerText = email;
+        document.getElementById('profile-role').innerText = roleTitle;
+        document.getElementById('profile-avatar').innerText = name.charAt(0).toUpperCase();
+
+        document.getElementById('profile-nia').innerText = niaCode;
+        document.getElementById('profile-phone').innerText = phone;
+        document.getElementById('profile-bike').innerText = bike;
+        document.getElementById('profile-plate').innerText = plate;
+
+        document.getElementById('edit-fullname').value = name;
+        document.getElementById('edit-phone').value = phone !== '-' ? phone : '';
+        document.getElementById('edit-bike').value = bike;
+        document.getElementById('edit-plate').value = plate;
+
+        const adminProfileBtn = document.getElementById('btn-admin-panel-profile');
+
+        if (isSuperAdmin) {
+          if (adminProfileBtn) adminProfileBtn.style.display = 'flex';
+          this.loadAdminPendingMembersList();
+          this.loadAdminDuesList();
+        } else {
+          if (adminProfileBtn) adminProfileBtn.style.display = 'none';
+        }
+
+        const memberCode = `ITORA-BSN-${email.substring(0, 4).toUpperCase()}`;
+        document.getElementById('qr-member-id').innerText = memberCode;
+        this.generateQRCode(memberCode);
+      }
+
+      async handleSaveProfile(e) {
+        e.preventDefault();
+        if (!this.currentUser || !this.supabase) return;
+
+        const btnSave = document.getElementById('btn-save-profile');
+        btnSave.disabled = true;
+
+        try {
+          const { error } = await this.supabase.from('members').upsert([{
+            id: this.currentUser.id,
+            full_name: document.getElementById('edit-fullname').value.trim(),
+            email: this.currentUser.email,
+            phone: document.getElementById('edit-phone').value.trim() || '-',
+            bike: document.getElementById('edit-bike').value.trim() || 'Motor BSN',
+            plate: document.getElementById('edit-plate').value.trim() || '-',
+            role: (this.currentUser.email === 'mastrisnobpb@gmail.com') ? 'Super Admin' : 'Anggota Resmi',
+            approval_status: 'Approved'
+          }], { onConflict: 'id' });
+
+          if (error) throw error;
+          this.showToast('Profil Berhasil Diperbarui!', 'success');
+          this.closeModal('modal-edit-profile');
+          await this.loadUserProfileDetails();
+          this.updateUserUI();
+          this.loadMembersFromSupabase();
+        } catch (err) {
+          this.showToast('Gagal memperbarui profil.', 'error');
+        } finally {
+          btnSave.disabled = false;
+        }
       }
 
       /* FETCH & RENDER MENU DINAMIS DARI SUPABASE */
@@ -1039,7 +1623,7 @@
         const isSuperAdmin = (this.currentUser && this.currentUser.email === 'mastrisnobpb@gmail.com');
         const activeMenus = this.menus.filter(m => m.is_active);
 
-        // 1. Quick Menu Grid
+        // Quick Menu Grid Beranda
         const quickMenuContainer = document.getElementById('dynamic-quick-menu');
         if (quickMenuContainer) {
           const quickItems = activeMenus.filter(m => m.show_in_quick_menu);
@@ -1066,7 +1650,7 @@
           }).join('');
         }
 
-        // 2. Bottom Nav Bar
+        // Bottom Nav Bar
         const bottomNavContainer = document.getElementById('dynamic-bottom-nav');
         if (bottomNavContainer) {
           const navItems = activeMenus.filter(m => m.show_in_bottom_nav);
@@ -1085,7 +1669,6 @@
         }
       }
 
-      /* PANEL SUPER ADMIN MANAJEMEN MENU */
       renderAdminMenuList() {
         const container = document.getElementById('admin-menu-list');
         if (!container) return;
@@ -1148,7 +1731,6 @@
 
         const btnSave = document.getElementById('btn-save-menu');
         btnSave.disabled = true;
-        btnSave.innerText = 'Mengunggah & Menyimpan...';
 
         const id = document.getElementById('menu-id').value;
         const imageFileInput = document.getElementById('menu-image-file').files[0];
@@ -1159,7 +1741,7 @@
             const compressedFile = await this.compressImage(imageFileInput, 200);
             const fileName = `icon_${Date.now()}_${compressedFile.name}`;
 
-            const { data: uploadData, error: uploadErr } = await this.supabase.storage
+            const { error: uploadErr } = await this.supabase.storage
               .from('menu-icons')
               .upload(fileName, compressedFile, { upsert: true });
 
@@ -1196,148 +1778,326 @@
           this.loadMenusFromSupabase();
 
         } catch (err) {
-          console.error(err);
           this.showToast('Gagal menyimpan menu: ' + err.message, 'error');
         } finally {
           btnSave.disabled = false;
-          btnSave.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Menu';
         }
       }
 
-      /* KOMPRESI GAMBAR OTOMATIS (< 200 KB) */
-      compressImage(file, maxKB = 200) {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = (event) => {
-            const img = new Image();
-            img.src = event.target.result;
-            img.onload = () => {
-              const canvas = document.createElement('canvas');
-              let width = img.width;
-              let height = img.height;
-
-              const maxDimension = 1200;
-              if (width > height && width > maxDimension) {
-                height = Math.round((height * maxDimension) / width);
-                width = maxDimension;
-              } else if (height > maxDimension) {
-                width = Math.round((width * maxDimension) / height);
-                height = maxDimension;
-              }
-
-              canvas.width = width;
-              canvas.height = height;
-
-              const ctx = canvas.getContext('2d');
-              ctx.drawImage(img, 0, 0, width, height);
-
-              let quality = 0.85;
-              let dataUrl = canvas.toDataURL('image/jpeg', quality);
-
-              while (dataUrl.length / 1024 > maxKB && quality > 0.1) {
-                quality -= 0.1;
-                dataUrl = canvas.toDataURL('image/jpeg', quality);
-              }
-
-              fetch(dataUrl)
-                .then(res => res.blob())
-                .then(blob => {
-                  const compressedFile = new File([blob], `compressed_${file.name.split('.')[0]}.jpg`, {
-                    type: 'image/jpeg',
-                    lastModified: Date.now()
-                  });
-                  resolve(compressedFile);
-                })
-                .catch(err => reject(err));
-            };
-            img.onerror = (err) => reject(err);
-          };
-          reader.onerror = (err) => reject(err);
-        });
-      }
-
-      /* LOGIKA UTILITY */
-      toggleAuthMode() {
-        this.isRegisterMode = !this.isRegisterMode;
-        document.getElementById('auth-title').innerText = this.isRegisterMode ? 'Daftar Anggota Baru' : 'Masuk Anggota';
-        document.getElementById('auth-submit-btn').innerHTML = this.isRegisterMode ? '<i class="fa-solid fa-user-plus"></i> Daftar Sekarang' : '<i class="fa-solid fa-right-to-bracket"></i> Masuk Sekarang';
-      }
-
-      async handleAuthSubmit(e) {
-        e.preventDefault();
-        const email = document.getElementById('auth-email').value.trim();
-        const password = document.getElementById('auth-password').value;
+      async loadAdminPendingMembersList() {
+        const container = document.getElementById('admin-pending-members-list');
+        if (!container || !this.supabase) return;
 
         try {
-          if (this.isRegisterMode) {
-            const { error } = await this.supabase.auth.signUp({ email, password });
-            if (error) throw error;
-            this.showToast('Pendaftaran Berhasil! Silakan Login.', 'success');
-            this.toggleAuthMode();
+          const { data: pendingMembers, error } = await this.supabase
+            .from('members')
+            .select('*')
+            .eq('approval_status', 'Pending')
+            .order('created_at', { ascending: false });
+
+          if (!error && pendingMembers && pendingMembers.length > 0) {
+            container.innerHTML = pendingMembers.map(m => `
+              <div class="card glass" style="padding: 12px; margin-bottom: 10px; border-left: 4px solid #F59E0B;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <h4>${m.full_name || 'Calon Anggota'}</h4>
+                  <span class="badge badge-warning">Pending Approval</span>
+                </div>
+                <p class="text-muted" style="font-size:0.75rem; margin-top:2px;"><i class="fa-solid fa-envelope"></i> ${m.email} | <i class="fa-brands fa-whatsapp"></i> ${m.phone || '-'}</p>
+                <p class="text-muted" style="font-size:0.75rem;"><i class="fa-solid fa-motorcycle"></i> ${m.bike || '-'} (${m.plate || '-'})</p>
+
+                <div style="display: flex; gap: 8px; margin-top: 10px;">
+                  <button type="button" class="btn btn-sm btn-primary" onclick="app.adminApproveMember('${m.id}', 'Approved')"><i class="fa-solid fa-check"></i> Setujui Anggota</button>
+                  <button type="button" class="btn btn-sm btn-danger" onclick="app.adminApproveMember('${m.id}', 'Rejected')"><i class="fa-solid fa-xmark"></i> Tolak</button>
+                </div>
+              </div>
+            `).join('');
           } else {
-            const { data, error } = await this.supabase.auth.signInWithPassword({ email, password });
-            if (error) throw error;
-            this.currentUser = data.user;
-            this.validateUserFlow();
+            container.innerHTML = '<p class="text-muted" style="text-align:center;">Tidak ada pendaftaran anggota baru yang pending.</p>';
           }
-        } catch (err) {
-          this.showToast('Autentikasi Gagal: ' + err.message, 'error');
-        }
+        } catch (e) {}
       }
 
-      async handleSaveInitialData(e) {
-        e.preventDefault();
-        if (!this.currentUser || !this.supabase) return;
-
+      async adminApproveMember(memberId, status) {
+        if (!this.supabase) return;
         try {
-          const { error } = await this.supabase.from('members').upsert([{
-            id: this.currentUser.id,
-            full_name: document.getElementById('init-fullname').value.trim(),
-            email: this.currentUser.email,
-            phone: document.getElementById('init-phone').value.trim(),
-            bike: document.getElementById('init-bike').value.trim(),
-            plate: document.getElementById('init-plate').value.trim(),
-            role: 'Anggota Resmi',
-            approval_status: 'Pending'
-          }], { onConflict: 'id' });
-
+          const { error } = await this.supabase.from('members').update({ approval_status: status }).eq('id', memberId);
           if (error) throw error;
-          this.showToast('Data diri terkirim! Menunggu persetujuan.', 'success');
-          await this.loadUserProfileDetails();
-          this.showPendingApprovalScreen();
-        } catch(e) {
-          this.showToast('Gagal menyimpan data.', 'error');
+          this.showToast(`Pendaftaran Anggota Berhasil di-${status}!`, 'success');
+          this.loadAdminPendingMembersList();
+          this.loadMembersFromSupabase();
+          this.checkRealtimeNotifications();
+        } catch (e) {
+          this.showToast('Gagal memproses persetujuan anggota.', 'error');
         }
       }
 
-      async handleLogout() {
-        if (this.supabase) await this.supabase.auth.signOut();
-        this.currentUser = null;
-        this.hideDashboard();
-      }
-
-      async loadUserProfileDetails() {
-        if (!this.currentUser || !this.supabase) return;
+      async calculateTotalKas() {
+        if (!this.supabase) return;
         try {
-          const { data } = await this.supabase.from('members').select('*').eq('id', this.currentUser.id).single();
-          this.currentProfile = data;
-        } catch (e){}
+          const { data: approvedDues, error } = await this.supabase.from('dues').select('amount').eq('status', 'Verified');
+          if (!error && approvedDues) {
+            this.approvedKasTotal = approvedDues.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+          } else {
+            this.approvedKasTotal = 0;
+          }
+          this.updateKasUI();
+        } catch (e) {}
       }
 
-      updateUserUI() {
+      updateKasUI() {
+        const grandTotal = this.baseKas + this.approvedKasTotal;
+        const textFormatted = `Rp ${grandTotal.toLocaleString('id-ID')}`;
+        
+        const statEl = document.getElementById('stat-kas-amount');
+        const kasPageEl = document.getElementById('kas-page-amount');
+        
+        if (statEl) statEl.innerText = grandTotal >= 1000000 ? (grandTotal / 1000000).toFixed(2) + 'M' : textFormatted;
+        if (kasPageEl) kasPageEl.innerText = textFormatted;
+        
+        const adminInput = document.getElementById('admin-kas-input');
+        if (adminInput) adminInput.value = this.baseKas;
+      }
+
+      adminUpdateBaseKas() {
+        const val = parseFloat(document.getElementById('admin-kas-input').value);
+        if (isNaN(val)) return;
+        this.baseKas = val;
+        localStorage.setItem('itora_base_kas', val);
+        this.updateKasUI();
+        this.showToast('Saldo Kas Pokok Berhasil Diperbarui!', 'success');
+      }
+
+      async handleSubmitIuran(e) {
+        e.preventDefault();
         if (!this.currentUser) return;
+
+        const btnSubmit = document.getElementById('btn-submit-iuran');
+        btnSubmit.disabled = true;
+
+        const periode = document.getElementById('iuran-periode').value;
+        const jumlah = document.getElementById('iuran-jumlah').value;
+        const tanggal = document.getElementById('iuran-tanggal').value;
+        const metode = document.getElementById('iuran-metode').value;
+        const catatan = document.getElementById('iuran-catatan').value;
+        const rawFile = document.getElementById('iuran-bukti').files[0];
+
+        const userName = this.currentProfile?.full_name || this.currentUser.email.split('@')[0];
+
+        try {
+          let compressedFile = null;
+          if (rawFile) compressedFile = await this.compressImage(rawFile, 200);
+
+          let receiptUrl = '';
+          if (this.supabase && compressedFile) {
+            const fileName = `bukti_${Date.now()}_${compressedFile.name}`;
+            const { data: uploadData, error: uploadErr } = await this.supabase.storage.from('receipts').upload(fileName, compressedFile);
+            if (!uploadErr && uploadData) {
+              const { data: urlData } = this.supabase.storage.from('receipts').getPublicUrl(fileName);
+              receiptUrl = urlData ? urlData.publicUrl : '';
+            }
+          }
+
+          if (this.supabase) {
+            const { error: dbError } = await this.supabase.from('dues').insert([{
+              user_id: this.currentUser.id,
+              member_name: userName,
+              amount: parseFloat(jumlah),
+              period_month: periode,
+              payment_date: tanggal ? new Date(tanggal).toISOString() : new Date().toISOString(),
+              payment_method: metode,
+              receipt_url: receiptUrl,
+              note: catatan,
+              status: 'Pending'
+            }]);
+            if (dbError) throw dbError;
+          }
+
+          this.showToast('Bukti iuran tersimpan!', 'success');
+          this.closeModal('modal-iuran');
+          document.getElementById('form-iuran').reset();
+          this.loadIuranHistory();
+
+          const targetWA = this.adminWANumber || "6281234567890";
+          const waMessage = `Halo Bendahara ITORA BSN,%0ASaya *${userName}* telah melakukan konfirmasi setor iuran:%0A- *Periode:* ${periode}%0A- *Nominal:* Rp ${parseInt(jumlah).toLocaleString('id-ID')}%0A- *Metode:* ${metode}%0A%0AMohon dicek. Terima kasih!`;
+          setTimeout(() => window.open(`https://wa.me/${targetWA}?text=${waMessage}`, '_blank'), 1000);
+
+        } catch (err) {
+          this.showToast('Gagal memproses setoran iuran.', 'error');
+        } finally {
+          btnSubmit.disabled = false;
+        }
+      }
+
+      async checkRealtimeNotifications() {
+        if (!this.supabase || !this.currentUser) return;
         const isSuperAdmin = (this.currentUser.email === 'mastrisnobpb@gmail.com');
-        const adminProfileBtn = document.getElementById('btn-admin-panel-profile');
-        if (adminProfileBtn) adminProfileBtn.style.display = isSuperAdmin ? 'flex' : 'none';
+
+        try {
+          if (isSuperAdmin) {
+            const { count: pendingDuesCount } = await this.supabase.from('dues').select('*', { count: 'exact', head: true }).eq('status', 'Pending');
+            const { count: pendingMembersCount } = await this.supabase.from('members').select('*', { count: 'exact', head: true }).eq('approval_status', 'Pending');
+            const totalNotif = (pendingDuesCount || 0) + (pendingMembersCount || 0);
+
+            const adminNotifDot = document.getElementById('admin-notif-dot');
+            const headerNotifDot = document.getElementById('header-notif-dot');
+            if (adminNotifDot) adminNotifDot.style.display = totalNotif > 0 ? 'block' : 'none';
+            if (headerNotifDot) headerNotifDot.style.display = totalNotif > 0 ? 'block' : 'none';
+          }
+        } catch(e) {}
+      }
+
+      async loadIuranHistory() {
+        const historyContainer = document.getElementById('iuran-history-list');
+        if (!historyContainer || !this.supabase || !this.currentUser) return;
+
+        try {
+          const { data: dues, error } = await this.supabase.from('dues').select('*').eq('user_id', this.currentUser.id).order('created_at', { ascending: false });
+
+          if (!error && dues && dues.length > 0) {
+            historyContainer.innerHTML = dues.map(item => `
+              <div class="card glass" style="padding: 14px; margin-bottom: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <h4>${item.period_month}</h4>
+                  <span class="badge ${item.status === 'Verified' ? 'badge-success' : item.status === 'Rejected' ? 'badge-danger' : 'badge-warning'}">${item.status === 'Verified' ? 'Disetujui' : item.status === 'Rejected' ? 'Ditolak' : 'Menunggu Verifikasi'}</span>
+                </div>
+                <p style="color: var(--accent-gold); font-weight: 700; margin-top: 4px;">Rp ${parseFloat(item.amount).toLocaleString('id-ID')}</p>
+                <p class="text-muted" style="font-size: 0.75rem; margin-top: 4px;"><i class="fa-regular fa-clock"></i> ${new Date(item.payment_date).toLocaleDateString('id-ID')} • ${item.payment_method}</p>
+                ${item.receipt_url ? `<a href="${item.receipt_url}" target="_blank" class="text-muted" style="font-size:0.7rem; color:var(--primary); margin-top:4px; display:inline-block;"><i class="fa-solid fa-image"></i> Lihat Bukti Foto</a>` : ''}
+              </div>
+            `).join('');
+          } else {
+            historyContainer.innerHTML = '<p class="text-muted" style="text-align:center;">Belum ada riwayat setoran iuran.</p>';
+          }
+        } catch(e) {}
+      }
+
+      async loadAdminDuesList() {
+        const container = document.getElementById('admin-dues-list');
+        if (!container || !this.supabase) return;
+
+        try {
+          const { data: dues, error } = await this.supabase.from('dues').select('*').order('created_at', { ascending: false });
+
+          if (!error && dues && dues.length > 0) {
+            container.innerHTML = dues.map(item => `
+              <div class="card glass" style="padding: 12px; margin-bottom: 10px; border-left: 4px solid ${item.status === 'Verified' ? '#10B981' : item.status === 'Rejected' ? '#EF4444' : '#F59E0B'}">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <h4>${item.member_name}</h4>
+                  <span class="badge ${item.status === 'Verified' ? 'badge-success' : item.status === 'Rejected' ? 'badge-danger' : 'badge-warning'}">${item.status}</span>
+                </div>
+                <p style="font-weight:700; color:var(--accent-gold); margin-top:2px;">Rp ${parseFloat(item.amount).toLocaleString('id-ID')} (${item.period_month})</p>
+                <p class="text-muted" style="font-size: 0.75rem;">Metode: ${item.payment_method} | ${new Date(item.payment_date).toLocaleDateString('id-ID')}</p>
+                ${item.receipt_url ? `<p style="margin-top:4px;"><a href="${item.receipt_url}" target="_blank" style="color:var(--primary); font-size:0.75rem;"><i class="fa-solid fa-image"></i> Cek Foto Bukti Transfer</a></p>` : ''}
+                
+                <div style="display: flex; gap: 8px; margin-top: 10px;">
+                  <button type="button" class="btn btn-sm btn-primary" onclick="app.adminVerifyDue('${item.id}', 'Verified')"><i class="fa-solid fa-check"></i> Setujui</button>
+                  <button type="button" class="btn btn-sm btn-danger" onclick="app.adminVerifyDue('${item.id}', 'Rejected')"><i class="fa-solid fa-xmark"></i> Tolak</button>
+                </div>
+              </div>
+            `).join('');
+          } else {
+            container.innerHTML = '<p class="text-muted" style="text-align:center;">Belum ada antrean setoran iuran anggota.</p>';
+          }
+        } catch (e) {}
+      }
+
+      async adminVerifyDue(dueId, status) {
+        if (!this.supabase) return;
+        try {
+          const { error } = await this.supabase.from('dues').update({ status }).eq('id', dueId);
+          if (error) throw error;
+          this.showToast(`Iuran Berhasil Diubah: ${status}!`, 'success');
+          await this.calculateTotalKas();
+          this.loadAdminDuesList();
+          this.loadIuranHistory();
+          this.checkRealtimeNotifications();
+        } catch (e) {
+          this.showToast('Gagal memverifikasi iuran.', 'error');
+        }
+      }
+
+      async loadMembersFromSupabase() {
+        if (!this.supabase) return;
+        try {
+          const { data: members, error } = await this.supabase.from('members').select('*').or('approval_status.eq.Approved,email.eq.mastrisnobpb@gmail.com').order('created_at', { ascending: false });
+
+          if (!error && members && members.length > 0) {
+            this.members = members.map(m => ({
+              id: m.id,
+              name: m.full_name || m.email || 'Anggota',
+              email: m.email || '',
+              role: (m.email === 'mastrisnobpb@gmail.com') ? 'Super Admin' : (m.role || 'Anggota Resmi'),
+              bike: m.bike || 'Motor BSN',
+              plate: m.plate || '-'
+            }));
+          }
+
+          this.renderMembers(this.members);
+          const countEl = document.getElementById('stat-members');
+          if (countEl) countEl.innerText = this.members.length;
+        } catch (e) {}
+      }
+
+      renderMembers(data) {
+        const container = document.getElementById('members-list');
+        if (!container) return;
+
+        if (data.length === 0) {
+          container.innerHTML = '<p class="text-muted" style="text-align:center;">Belum ada data anggota terverifikasi.</p>';
+          return;
+        }
+
+        const isSuperAdmin = (this.currentUser && this.currentUser.email === 'mastrisnobpb@gmail.com');
+
+        container.innerHTML = data.map(m => `
+          <div class="card glass" style="display: flex; align-items: center; gap: 14px; padding: 14px; margin-bottom: 10px;">
+            <div class="avatar-placeholder" style="margin:0; width: 44px; height: 44px; font-size: 1.1rem; ${m.role === 'Super Admin' ? 'background: var(--accent-gold); color: #000;' : ''}">
+              ${m.name.charAt(0).toUpperCase()}
+            </div>
+            <div style="flex: 1;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h4 style="font-size: 0.9rem;">${m.name}</h4>
+                <span class="badge ${m.role === 'Super Admin' ? 'badge-gold' : 'badge-primary'}" style="font-size:0.65rem;">${m.role}</span>
+              </div>
+              <p class="text-muted" style="font-size: 0.75rem; margin-top: 2px;">${m.email || m.bike}</p>
+              <span class="badge badge-gold" style="margin-top: 4px; font-size: 0.65rem;">Plat: ${m.plate}</span>
+            </div>
+            ${isSuperAdmin && m.email !== 'mastrisnobpb@gmail.com' ? `
+              <button type="button" class="btn btn-sm btn-danger" style="width:auto;" onclick="app.adminDeleteMember('${m.id}')"><i class="fa-solid fa-trash"></i></button>
+            ` : ''}
+          </div>
+        `).join('');
+      }
+
+      async adminDeleteMember(memberId) {
+        if (!confirm('Apakah Anda yakin ingin menghapus anggota ini?')) return;
+        if (!this.supabase) return;
+
+        try {
+          await this.supabase.from('members').delete().eq('id', memberId);
+          this.showToast('Anggota berhasil dihapus!', 'success');
+          this.loadMembersFromSupabase();
+        } catch (e) {
+          this.showToast('Gagal menghapus anggota.', 'error');
+        }
+      }
+
+      filterMembers() {
+        const query = document.getElementById('search-member').value.toLowerCase();
+        const filtered = this.members.filter(m => 
+          m.name.toLowerCase().includes(query) || 
+          m.email.toLowerCase().includes(query) ||
+          m.plate.toLowerCase().includes(query)
+        );
+        this.renderMembers(filtered);
       }
 
       navigateTo(pageId) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
         const targetPage = document.getElementById(`page-${pageId}`);
         if (targetPage) targetPage.classList.add('active');
 
-        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
         const activeNav = document.getElementById(`nav-${pageId}`);
         if (activeNav) activeNav.classList.add('active');
 
@@ -1346,6 +2106,12 @@
 
       toggleTheme() {
         document.body.classList.toggle('light-mode');
+        const icon = document.getElementById('theme-icon');
+        if (document.body.classList.contains('light-mode')) {
+          icon.className = 'fa-solid fa-sun';
+        } else {
+          icon.className = 'fa-solid fa-moon';
+        }
       }
 
       openModal(id) {
@@ -1358,9 +2124,52 @@
         if (modal) modal.classList.remove('active');
       }
 
+      generateQRCode(text) {
+        if (typeof QRCode !== 'undefined') {
+          const container = document.getElementById("qrcode");
+          if (!container) return;
+          
+          container.innerHTML = '';
+          new QRCode(container, { text, width: 180, height: 180, correctLevel: QRCode.CorrectLevel.H });
+
+          setTimeout(() => {
+            const qrCanvas = container.querySelector('canvas');
+            if (qrCanvas) {
+              const ctx = qrCanvas.getContext('2d');
+              const size = qrCanvas.width;
+              const badgeWidth = 110, badgeHeight = 32;
+              const badgeX = (size - badgeWidth) / 2, badgeY = (size - badgeHeight) / 2;
+
+              ctx.fillStyle = "#FFFFFF";
+              ctx.beginPath();
+              ctx.roundRect(badgeX, badgeY, badgeWidth, badgeHeight, 6);
+              ctx.fill();
+
+              ctx.lineWidth = 2;
+              ctx.strokeStyle = "#00875A";
+              ctx.stroke();
+
+              ctx.fillStyle = "#00875A";
+              ctx.font = "bold 9px 'Plus Jakarta Sans', sans-serif";
+              ctx.textAlign = "center";
+              ctx.fillText("ANGGOTA ITORA", size / 2, badgeY + 13);
+
+              ctx.fillStyle = "#D4AF37"; 
+              ctx.font = "bold 8px 'Plus Jakarta Sans', sans-serif";
+              ctx.fillText("BSN SURABAYA", size / 2, badgeY + 25);
+            }
+          }, 150);
+        }
+      }
+
+      exportData(type, format) {
+        this.showToast(`Mengeksport data ${type} ke format ${format}...`, 'info');
+      }
+
       showToast(message, type = 'info') {
         const container = document.getElementById('toast-container');
         if (!container) return;
+
         const toast = document.createElement('div');
         toast.className = 'toast';
         toast.style.background = type === 'error' ? '#EF4444' : type === 'success' ? '#10B981' : 'var(--primary)';
@@ -1369,7 +2178,7 @@
         setTimeout(() => {
           toast.style.opacity = '0';
           setTimeout(() => toast.remove(), 300);
-        }, 3000);
+        }, 3500);
       }
     }
 
