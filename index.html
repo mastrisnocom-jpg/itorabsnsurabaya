@@ -431,6 +431,7 @@
       border-radius: var(--radius-md);
       display: inline-block;
       margin: 15px 0;
+      position: relative;
     }
 
     .avatar-placeholder {
@@ -789,7 +790,7 @@
 
   <!-- JAVASCRIPT LOGIC -->
   <script>
-    /* SUPABASE CONFIGURATION - KUNCI JWT RESMI PROYEK ANDA */
+    /* SUPABASE CONFIGURATION */
     const SUPABASE_URL = 'https://lfusrctizdydnsiopzfi.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxmdXNyY3RpemR5ZG5zaW9wemZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU2NjI0OTQsImV4cCI6MjEwMTIzODQ5NH0.vWd4l9zbRg3HxHVECN8I67h7gGUsZdaRJ9bD-gmEDUY';
 
@@ -1260,13 +1261,58 @@
         if (modal) modal.classList.remove('active');
       }
 
+      /* FUNGSI GENERATE QR CODE DENGAN TULISAN DI TENGAH */
       generateQRCode(text) {
         if (typeof QRCode !== 'undefined') {
           const container = document.getElementById("qrcode");
-          if (container) {
-            container.innerHTML = '';
-            new QRCode(container, { text: text, width: 140, height: 140 });
-          }
+          if (!container) return;
+          
+          container.innerHTML = '';
+          
+          // 1. Generate QR Code dasar
+          new QRCode(container, { 
+            text: text, 
+            width: 180, 
+            height: 180,
+            correctLevel: QRCode.CorrectLevel.H // Level koreksi error tinggi agar aman diberi badge di tengah
+          });
+
+          // 2. Tambahkan Teks Badge "ANGGOTA ITORA BSN SURABAYA" di tengah Canvas
+          setTimeout(() => {
+            const qrCanvas = container.querySelector('canvas');
+            if (qrCanvas) {
+              const ctx = qrCanvas.getContext('2d');
+              const size = qrCanvas.width;
+              
+              // Dimensi Badge Tengah
+              const badgeWidth = 110;
+              const badgeHeight = 32;
+              const badgeX = (size - badgeWidth) / 2;
+              const badgeY = (size - badgeHeight) / 2;
+
+              // Gambar Kotak Background Putih
+              ctx.fillStyle = "#FFFFFF";
+              ctx.beginPath();
+              ctx.roundRect(badgeX, badgeY, badgeWidth, badgeHeight, 6);
+              ctx.fill();
+
+              // Gambar Border Hijau Primary
+              ctx.lineWidth = 2;
+              ctx.strokeStyle = "#00875A";
+              ctx.stroke();
+
+              // Gambar Teks "ANGGOTA ITORA" (Baris 1)
+              ctx.fillStyle = "#00875A";
+              ctx.font = "bold 9px 'Plus Jakarta Sans', sans-serif";
+              ctx.textAlign = "center";
+              ctx.fillText("ANGGOTA ITORA", size / 2, badgeY + 13);
+
+              // Gambar Teks "BSN SURABAYA" (Baris 2)
+              ctx.fillStyle = "#D4AF37"; // Akses warna Emas
+              ctx.font = "bold 8px 'Plus Jakarta Sans', sans-serif";
+              ctx.fillText("BSN SURABAYA", size / 2, badgeY + 25);
+            }
+          }, 150);
         }
       }
 
