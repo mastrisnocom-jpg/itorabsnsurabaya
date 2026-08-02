@@ -321,7 +321,7 @@
   <!-- TOAST ALERTS CONTAINER -->
   <div id="toast-container"></div>
 
-  <!-- CONTAINER DASHBOARD UTAMA (HANYA MUNCUL SETELAH LOGIN) -->
+  <!-- DASHBOARD UTAMA (HANYA MUNCUL SETELAH LOGIN) -->
   <div id="app-dashboard" class="protected-content">
 
     <!-- HEADER -->
@@ -384,7 +384,7 @@
           <h4 style="font-size: 1.1rem;">Touring Kemerdekaan Bromo</h4>
           <p style="font-size: 0.8rem; color: var(--text-muted-dark); margin-top: 4px;"><i class="fa-regular fa-calendar"></i> 17 Agustus 2026 | 05:00 WIB</p>
           <p style="font-size: 0.8rem; color: var(--text-muted-dark);"><i class="fa-solid fa-location-dot"></i> Meeting Point: Alun-Alun Surabaya</p>
-          <button class="btn btn-gold" style="margin-top: 14px; padding: 10px;" onclick="navigateTo('touring')">Lihat Rute & Detail</button>
+          <button type="button" class="btn btn-gold" style="margin-top: 14px; padding: 10px;" onclick="navigateTo('touring')">Lihat Rute & Detail</button>
         </div>
       </section>
 
@@ -410,7 +410,7 @@
           <span class="badge badge-gold">Next Destination</span>
           <h3 style="margin-top: 8px;">Bromo Sunrise Ride 2026</h3>
           <p style="font-size: 0.85rem; margin-top: 8px;">Meeting Point: Halaman BSN KC Surabaya</p>
-          <button class="btn btn-primary" style="margin-top: 16px;" onclick="window.open('https://maps.google.com/?q=Bromo', '_blank')">
+          <button type="button" class="btn btn-primary" style="margin-top: 16px;" onclick="window.open('https://maps.google.com/?q=Bromo', '_blank')">
             <i class="fa-solid fa-map-location-dot"></i> Buka Rute Google Maps
           </button>
         </div>
@@ -444,7 +444,7 @@
         <div class="card glass">
           <h4>Kaos Official ITORA</h4>
           <p style="color: var(--primary); font-weight: 700; margin: 6px 0;">Rp 125.000</p>
-          <button class="btn btn-primary" onclick="showToast('Pemesanan dicatat!', 'success')">Pesan Sekarang</button>
+          <button type="button" class="btn btn-primary" onclick="showToast('Pemesanan dicatat!', 'success')">Pesan Sekarang</button>
         </div>
       </section>
 
@@ -491,7 +491,7 @@
       <section id="page-pengaturan" class="page">
         <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Setelan</h2>
         <div class="card glass">
-          <button class="btn btn-gold" onclick="handleLogout()">
+          <button type="button" class="btn btn-gold" onclick="handleLogout()">
             <i class="fa-solid fa-right-from-bracket"></i> Keluar (Logout)
           </button>
         </div>
@@ -509,7 +509,7 @@
     </nav>
   </div>
 
-  <!-- POP-UP MODAL LOGIN & REGISTER (MUNCUL OTOMATIS) -->
+  <!-- POP-UP MODAL LOGIN & REGISTER -->
   <div class="modal-overlay active" id="login-modal">
     <div class="modal-card glass">
       
@@ -536,7 +536,8 @@
           <i class="fa-solid fa-right-to-bracket"></i> Masuk Sekarang
         </button>
       </form>
-      <button class="btn btn-outline" id="auth-toggle-btn" onclick="toggleAuthMode()">
+      <!-- PERBAIKAN: type="button" agar tidak memicu form submit -->
+      <button type="button" class="btn btn-outline" id="auth-toggle-btn" onclick="toggleAuthMode()">
         Belum Memiliki Akun? Daftar Disini
       </button>
     </div>
@@ -545,11 +546,11 @@
   <!-- POP-UP MODAL QR CODE -->
   <div class="modal-overlay" id="qr-modal">
     <div class="modal-card glass" style="text-align: center;">
-      <button class="close-modal-btn" onclick="closeModal('qr-modal')"><i class="fa-solid fa-xmark"></i></button>
+      <button type="button" class="close-modal-btn" onclick="closeModal('qr-modal')"><i class="fa-solid fa-xmark"></i></button>
       <h3>QR Member Card</h3>
       <div class="qr-container"><div id="qrcode"></div></div>
       <p style="font-weight: 700; color: var(--primary);" id="qr-member-id">ITORA-BSN-MEMBER</p>
-      <button class="btn btn-primary" style="margin-top: 15px;" onclick="closeModal('qr-modal')">Tutup</button>
+      <button type="button" class="btn btn-primary" style="margin-top: 15px;" onclick="closeModal('qr-modal')">Tutup</button>
     </div>
   </div>
 
@@ -657,11 +658,29 @@
     /* TOGGLE FORM LOGIN / REGISTER */
     function toggleAuthMode() {
       isRegisterMode = !isRegisterMode;
-      document.getElementById('auth-title').innerText = isRegisterMode ? 'Daftar Anggota Baru' : 'Masuk Anggota';
-      document.getElementById('auth-subtitle').innerText = isRegisterMode ? 'Lengkapi data akun anggota Anda' : 'Gunakan email & kata sandi terdaftar Anda';
-      document.getElementById('group-name').style.display = isRegisterMode ? 'block' : 'none';
-      document.getElementById('auth-submit-btn').innerHTML = isRegisterMode ? '<i class="fa-solid fa-user-plus"></i> Daftar Sekarang' : '<i class="fa-solid fa-right-to-bracket"></i> Masuk Sekarang';
-      document.getElementById('auth-toggle-btn').innerText = isRegisterMode ? 'Sudah Memiliki Akun? Masuk Disini' : 'Belum Memiliki Akun? Daftar Disini';
+      
+      const authTitle = document.getElementById('auth-title');
+      const authSubtitle = document.getElementById('auth-subtitle');
+      const groupName = document.getElementById('group-name');
+      const authSubmitBtn = document.getElementById('auth-submit-btn');
+      const authToggleBtn = document.getElementById('auth-toggle-btn');
+      const fullNameInput = document.getElementById('auth-fullname');
+
+      if (isRegisterMode) {
+        authTitle.innerText = 'Daftar Anggota Baru';
+        authSubtitle.innerText = 'Lengkapi data akun anggota Anda';
+        groupName.style.display = 'block';
+        fullNameInput.setAttribute('required', 'required');
+        authSubmitBtn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Daftar Sekarang';
+        authToggleBtn.innerText = 'Sudah Memiliki Akun? Masuk Disini';
+      } else {
+        authTitle.innerText = 'Masuk Anggota';
+        authSubtitle.innerText = 'Gunakan email & kata sandi terdaftar Anda';
+        groupName.style.display = 'none';
+        fullNameInput.removeAttribute('required');
+        authSubmitBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Masuk Sekarang';
+        authToggleBtn.innerText = 'Belum Memiliki Akun? Daftar Disini';
+      }
     }
 
     /* AUTHENTICATION HANDLER */
@@ -707,7 +726,7 @@
             currentUser = data.user;
             showDashboard();
           } else {
-            showToast('Pendaftaran Berhasil! Silakan cek email untuk konfirmasi atau langsung Login.', 'success');
+            showToast('Pendaftaran Berhasil! Silakan Login dengan akun Anda.', 'success');
             toggleAuthMode();
           }
 
@@ -728,7 +747,9 @@
         if (msg.includes('Invalid login credentials')) {
           msg = 'Email atau Kata Sandi salah.';
         } else if (msg.includes('Email not confirmed')) {
-          msg = 'Email Anda belum dikonfirmasi. Silakan cek inbox/spam email.';
+          msg = 'Email belum dikonfirmasi. Pastikan Confirm Email sudah OFF di Supabase.';
+        } else if (msg.includes('User already registered')) {
+          msg = 'Email ini sudah terdaftar. Silakan login.';
         }
         showToast(msg, 'error');
       } finally {
