@@ -8,6 +8,7 @@
   <meta name="theme-color" content="#00875A">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.json">
 
   <!-- CDNs (FontAwesome, Fonts, Supabase, QRCode) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -975,30 +976,25 @@
               return;
             }
 
-            // PENDAFTARAN MURNI HARUS TEMBUS SUPABASE
             const { data, error } = await this.supabase.auth.signUp({
               email: email,
               password: password,
               options: { data: { full_name: fullname } }
             });
 
-            if (error) {
-              throw error;
-            }
+            if (error) throw error;
 
-            this.showToast('Pendaftaran Berhasil di Supabase! Silakan Login.', 'success');
+            this.showToast('Pendaftaran Berhasil! Silakan Login dengan akun Anda.', 'success');
             this.toggleAuthMode();
 
           } else {
-            // LOGIN MURNI SUPABASE
+            // LOGIN MODE
             const { data, error } = await this.supabase.auth.signInWithPassword({
               email: email,
               password: password
             });
 
-            if (error) {
-              throw error;
-            }
+            if (error) throw error;
 
             this.showToast('Login Berhasil!', 'success');
             this.currentUser = data.user;
@@ -1006,16 +1002,24 @@
           }
         } catch (err) {
           let msg = 'Terjadi kesalahan sistem.';
+
+          // PARSING MSG LEBIH AMAN AGAR TIDAK MENAMPILKAN OBJECT {}
           if (typeof err === 'string') {
             msg = err;
-          } else if (err && typeof err.message === 'string') {
+          } else if (err && typeof err.message === 'string' && err.message.trim() !== '') {
             msg = err.message;
+          } else if (err && err.error_description) {
+            msg = err.error_description;
           }
 
           if (msg.includes('Invalid login credentials')) {
             msg = 'Email atau Kata Sandi salah.';
           } else if (msg.includes('User already registered')) {
-            msg = 'Email ini sudah terdaftar. Silakan langsung Login.';
+            msg = 'Email ini sudah terdaftar! Mengalihkan ke menu Login...';
+            setTimeout(() => {
+              if (this.isRegisterMode) this.toggleAuthMode();
+              document.getElementById('auth-email').value = email;
+            }, 1200);
           }
 
           this.showToast(msg, 'error');
@@ -1080,7 +1084,6 @@
           let compressedFile = null;
           if (rawFile) {
             compressedFile = await this.compressImage(rawFile, 200);
-            console.log(`Foto dikompres: ${(compressedFile.size / 1024).toFixed(1)} KB`);
           }
 
           let receiptUrl = '';
@@ -1277,10 +1280,13 @@
         if (!container) return;
         
         let displayMsg = 'Terjadi kesalahan pada sistem.';
+
         if (typeof message === 'string' && message.trim() !== '') {
           displayMsg = message;
-        } else if (message && typeof message.message === 'string') {
+        } else if (message && typeof message.message === 'string' && message.message.trim() !== '') {
           displayMsg = message.message;
+        } else if (message && typeof message.error_description === 'string') {
+          displayMsg = message.error_description;
         }
 
         const toast = document.createElement('div');
