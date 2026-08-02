@@ -299,6 +299,43 @@
       border: 1px solid var(--border-dark);
     }
 
+    /* DETAIL PROFILE STYLES */
+    .profile-info-list {
+      margin-top: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      text-align: left;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(15, 23, 42, 0.4);
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-dark);
+    }
+
+    .info-item i {
+      font-size: 1.2rem;
+      color: var(--accent-gold);
+      width: 24px;
+      text-align: center;
+    }
+
+    .info-item div span {
+      display: block;
+      font-size: 0.7rem;
+      color: var(--text-muted-dark);
+    }
+
+    .info-item div strong {
+      font-size: 0.88rem;
+      color: var(--text-main-dark);
+    }
+
     /* FORMS & BUTTONS */
     .form-group { margin-bottom: 16px; }
     .form-group label {
@@ -718,17 +755,63 @@
         </div>
       </section>
 
-      <!-- 12. PROFIL SAYA -->
+      <!-- 12. PROFIL SAYA (TAMPILAN LENGKAP & DETAILED) -->
       <section id="page-profil" class="page">
-        <h2>Profil Anggota</h2>
+        <h2>Profil Anggota Digital</h2>
+        
+        <!-- CARD PROFIL KARTU UTAMA -->
         <div class="card glass" style="margin-top: 12px; text-align: center;">
           <div class="avatar-placeholder" id="profile-avatar">A</div>
           <h3 id="profile-name">Anggota</h3>
           <span class="badge badge-gold" id="profile-role" style="margin-top: 6px;">Anggota Resmi</span>
-          <p class="text-muted" id="profile-email" style="margin-top: 6px;">-</p>
+          <p class="text-muted" id="profile-email" style="margin-top: 4px;">-</p>
+
+          <!-- DETAIL INFORMASI ANGGOTA -->
+          <div class="profile-info-list">
+            <div class="info-item">
+              <i class="fa-solid fa-id-card"></i>
+              <div>
+                <span>Nomor Induk Anggota (NIA)</span>
+                <strong id="profile-nia">ITORA-BSN-0000</strong>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <i class="fa-brands fa-whatsapp"></i>
+              <div>
+                <span>Nomor Telepon / WhatsApp</span>
+                <strong id="profile-phone">+62 812-XXXX-XXXX</strong>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <i class="fa-solid fa-motorcycle"></i>
+              <div>
+                <span>Merek / Tipe Kendaraan</span>
+                <strong id="profile-bike">Motor BSN</strong>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <i class="fa-solid fa-rectangle-ad"></i>
+              <div>
+                <span>Nomor Plat Kendaraan</span>
+                <strong id="profile-plate">L 1234 IT</strong>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <i class="fa-solid fa-shield-check"></i>
+              <div>
+                <span>Status Keanggotaan</span>
+                <strong style="color: #10B981;">Aktif & Terverifikasi</strong>
+              </div>
+            </div>
+          </div>
           
-          <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 8px;">
-            <button type="button" class="btn btn-primary" onclick="app.openModal('qr-modal')"><i class="fa-solid fa-qrcode"></i> Tampilkan QR Card</button>
+          <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
+            <button type="button" class="btn btn-primary" onclick="app.openModal('qr-modal')"><i class="fa-solid fa-qrcode"></i> Tampilkan QR Card Member</button>
+            <button type="button" class="btn btn-gold" onclick="app.openModal('modal-edit-profile')"><i class="fa-solid fa-user-pen"></i> Edit Data Profil Saya</button>
             <button type="button" class="btn btn-gold" id="btn-admin-panel-profile" style="display: none;" onclick="app.navigateTo('admin')"><i class="fa-solid fa-user-shield"></i> Masuk Panel Super Admin</button>
           </div>
         </div>
@@ -765,6 +848,40 @@
       <div class="qr-container"><div id="qrcode"></div></div>
       <p style="font-weight: 700; color: var(--primary);" id="qr-member-id">ITORA-BSN-MEMBER</p>
       <button type="button" class="btn btn-primary" style="margin-top: 15px;" onclick="app.closeModal('qr-modal')">Tutup</button>
+    </div>
+  </div>
+
+  <!-- MODAL EDIT PROFIL -->
+  <div class="modal-overlay" id="modal-edit-profile">
+    <div class="modal-card glass">
+      <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-edit-profile')"><i class="fa-solid fa-xmark"></i></button>
+      <h3 style="text-align: center; margin-bottom: 15px;"><i class="fa-solid fa-user-pen" style="color: var(--accent-gold);"></i> Edit Profil Anggota</h3>
+      
+      <form id="form-edit-profile" onsubmit="app.handleSaveProfile(event)">
+        <div class="form-group">
+          <label>Nama Lengkap</label>
+          <input type="text" class="input-control" id="edit-fullname" required>
+        </div>
+
+        <div class="form-group">
+          <label>Nomor WhatsApp / Telepon</label>
+          <input type="text" class="input-control" id="edit-phone" placeholder="081234567890">
+        </div>
+
+        <div class="form-group">
+          <label>Merek / Tipe Motor</label>
+          <input type="text" class="input-control" id="edit-bike" placeholder="Honda Vario / Yamaha NMAX">
+        </div>
+
+        <div class="form-group">
+          <label>Nomor Plat Kendaraan</label>
+          <input type="text" class="input-control" id="edit-plate" placeholder="L 1234 ABC">
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="btn-save-profile">
+          <i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan Profil
+        </button>
+      </form>
     </div>
   </div>
 
@@ -833,10 +950,11 @@
         this.supabase = null;
         this.isRegisterMode = false;
         this.currentUser = null;
+        this.currentProfile = null;
         this.members = [];
         this.iuranHistory = [];
-        this.baseKas = 0; // Kas dasar/pokok
-        this.approvedKasTotal = 0; // Total dari iuran yang di-approve
+        this.baseKas = 0;
+        this.approvedKasTotal = 0;
         this.initSupabase();
       }
 
@@ -862,7 +980,6 @@
         const dateInput = document.getElementById('iuran-tanggal');
         if (dateInput) dateInput.value = now.toISOString().slice(0,16);
 
-        // Load Saldo Kas Pokok
         const savedKas = localStorage.getItem('itora_base_kas');
         if (savedKas) this.baseKas = parseFloat(savedKas);
 
@@ -955,13 +1072,14 @@
         }
       }
 
-      showDashboard() {
+      async showDashboard() {
         document.getElementById('auth-screen').style.display = 'none';
         document.getElementById('app-dashboard').style.display = 'block';
+        await this.loadUserProfileDetails();
         this.updateUserUI();
         this.loadMembersFromSupabase();
         this.loadIuranHistory();
-        this.calculateTotalKas(); // Otomatis kalkulasi kas
+        this.calculateTotalKas();
       }
 
       hideDashboard() {
@@ -1076,8 +1194,41 @@
           await this.supabase.auth.signOut().catch(()=>{});
         }
         this.currentUser = null;
+        this.currentProfile = null;
         this.hideDashboard();
         this.showToast('Anda telah keluar dari akun.', 'info');
+      }
+
+      /* MEMUAT DATA DETAIL PROFIL USER */
+      async loadUserProfileDetails() {
+        if (!this.currentUser || !this.supabase) return;
+        try {
+          const { data, error } = await this.supabase
+            .from('members')
+            .select('*')
+            .eq('id', this.currentUser.id)
+            .single();
+
+          if (!error && data) {
+            this.currentProfile = data;
+          } else {
+            // Default Profile jika belum ada row
+            const defaultName = (this.currentUser.user_metadata && this.currentUser.user_metadata.full_name) 
+                                ? this.currentUser.user_metadata.full_name 
+                                : this.currentUser.email.split('@')[0];
+            this.currentProfile = {
+              id: this.currentUser.id,
+              full_name: defaultName,
+              email: this.currentUser.email,
+              phone: '-',
+              bike: 'Motor BSN',
+              plate: 'L 1234 IT',
+              role: (this.currentUser.email === 'mastrisnobpb@gmail.com') ? 'Super Admin' : 'Anggota Resmi'
+            };
+          }
+        } catch (e) {
+          console.error(e);
+        }
       }
 
       updateUserUI() {
@@ -1085,17 +1236,30 @@
         const email = this.currentUser.email || '';
         const isSuperAdmin = (email === 'mastrisnobpb@gmail.com');
         
-        let name = (this.currentUser.user_metadata && this.currentUser.user_metadata.full_name) 
-                     ? this.currentUser.user_metadata.full_name 
-                     : email.split('@')[0];
-
-        const roleTitle = isSuperAdmin ? 'Super Admin' : 'Anggota Resmi';
+        const name = this.currentProfile?.full_name || email.split('@')[0];
+        const roleTitle = isSuperAdmin ? 'Super Admin' : (this.currentProfile?.role || 'Anggota Resmi');
+        const niaCode = `ITORA-BSN-${this.currentUser.id ? this.currentUser.id.substring(0, 4).toUpperCase() : '0000'}`;
+        const phone = this.currentProfile?.phone || '-';
+        const bike = this.currentProfile?.bike || 'Motor BSN';
+        const plate = this.currentProfile?.plate || 'L 1234 IT';
 
         document.getElementById('user-greeting').innerText = `Salam, ${name}!`;
         document.getElementById('profile-name').innerText = name;
         document.getElementById('profile-email').innerText = email;
         document.getElementById('profile-role').innerText = roleTitle;
         document.getElementById('profile-avatar').innerText = name.charAt(0).toUpperCase();
+
+        // UPDATE DETAIL DIRI PADA TAMPILAN PROFIL
+        document.getElementById('profile-nia').innerText = niaCode;
+        document.getElementById('profile-phone').innerText = phone;
+        document.getElementById('profile-bike').innerText = bike;
+        document.getElementById('profile-plate').innerText = plate;
+
+        // ISI FORM EDIT PROFIL
+        document.getElementById('edit-fullname').value = name;
+        document.getElementById('edit-phone').value = phone !== '-' ? phone : '';
+        document.getElementById('edit-bike').value = bike;
+        document.getElementById('edit-plate').value = plate;
 
         const adminMenuItem = document.getElementById('menu-admin-item');
         const adminProfileBtn = document.getElementById('btn-admin-panel-profile');
@@ -1114,11 +1278,55 @@
         this.generateQRCode(memberCode);
       }
 
-      /* AUTOMATISASI KALKULASI SALDO KAS */
+      /* FUNGSI SIMPAN EDIT PROFIL */
+      async handleSaveProfile(e) {
+        e.preventDefault();
+        if (!this.currentUser || !this.supabase) return;
+
+        const btnSave = document.getElementById('btn-save-profile');
+        btnSave.disabled = true;
+        btnSave.innerText = 'Menyimpan...';
+
+        const newName = document.getElementById('edit-fullname').value.trim();
+        const newPhone = document.getElementById('edit-phone').value.trim() || '-';
+        const newBike = document.getElementById('edit-bike').value.trim() || 'Motor BSN';
+        const newPlate = document.getElementById('edit-plate').value.trim() || '-';
+
+        try {
+          const { error } = await this.supabase
+            .from('members')
+            .upsert([
+              {
+                id: this.currentUser.id,
+                full_name: newName,
+                email: this.currentUser.email,
+                phone: newPhone,
+                bike: newBike,
+                plate: newPlate,
+                role: (this.currentUser.email === 'mastrisnobpb@gmail.com') ? 'Super Admin' : 'Anggota Resmi'
+              }
+            ], { onConflict: 'id' });
+
+          if (error) throw error;
+
+          this.showToast('Profil Anda Berhasil Diperbarui!', 'success');
+          this.closeModal('modal-edit-profile');
+          await this.loadUserProfileDetails();
+          this.updateUserUI();
+          this.loadMembersFromSupabase();
+
+        } catch (err) {
+          console.error(err);
+          this.showToast('Gagal memperbarui profil.', 'error');
+        } finally {
+          btnSave.disabled = false;
+          btnSave.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan Profil';
+        }
+      }
+
       async calculateTotalKas() {
         if (!this.supabase) return;
         try {
-          // Ambil semua iuran yang statusnya 'Verified'
           const { data: approvedDues, error } = await this.supabase
             .from('dues')
             .select('amount')
@@ -1178,9 +1386,7 @@
         const catatan = document.getElementById('iuran-catatan').value;
         const rawFile = document.getElementById('iuran-bukti').files[0];
 
-        const userName = (this.currentUser.user_metadata && this.currentUser.user_metadata.full_name) 
-                         ? this.currentUser.user_metadata.full_name 
-                         : this.currentUser.email.split('@')[0];
+        const userName = this.currentProfile?.full_name || this.currentUser.email.split('@')[0];
 
         try {
           let compressedFile = null;
@@ -1279,7 +1485,6 @@
         }
       }
 
-      /* LOAD DAN VERIFIKASI IURAN ANGGOTA KHUSUS SUPER ADMIN */
       async loadAdminDuesList() {
         const container = document.getElementById('admin-dues-list');
         if (!container || !this.supabase) return;
@@ -1315,7 +1520,6 @@
         }
       }
 
-      /* VERIFIKASI IURAN BISA MERUBAH SALDO KAS AUTOMATIS */
       async adminVerifyDue(dueId, status) {
         if (!this.supabase) return;
         try {
@@ -1328,7 +1532,6 @@
 
           this.showToast(`Iuran Berhasil Diubah Statusnya Menjadi: ${status}!`, 'success');
           
-          // Re-kalkulasi Kas Otomatis & Reload Tampilan
           await this.calculateTotalKas();
           this.loadAdminDuesList();
           this.loadIuranHistory();
@@ -1361,9 +1564,7 @@
 
           if (this.currentUser) {
             const myEmail = this.currentUser.email;
-            const myName = (this.currentUser.user_metadata && this.currentUser.user_metadata.full_name) 
-                           ? this.currentUser.user_metadata.full_name 
-                           : myEmail.split('@')[0];
+            const myName = this.currentProfile?.full_name || myEmail.split('@')[0];
             const myRole = (myEmail === 'mastrisnobpb@gmail.com') ? 'Super Admin' : 'Anggota Resmi';
 
             const exist = list.some(item => item.email === myEmail);
@@ -1373,8 +1574,8 @@
                 name: myName,
                 email: myEmail,
                 role: myRole,
-                bike: 'Motor BSN',
-                plate: 'L 1234 IT'
+                bike: this.currentProfile?.bike || 'Motor BSN',
+                plate: this.currentProfile?.plate || 'L 1234 IT'
               });
             }
           }
