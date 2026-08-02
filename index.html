@@ -76,7 +76,7 @@
       line-height: 1.4;
     }
 
-    /* BREAKING NEWS TICKER CONTAINER (BERITA BERJALAN) */
+    /* BREAKING NEWS TICKER CONTAINER (BERITA BERJALAN & BLINK) */
     .news-ticker-wrapper {
       background: #FFFFFF;
       border: 1px solid var(--border-dark);
@@ -90,6 +90,7 @@
       overflow: hidden;
     }
 
+    /* ANIMASI BLINK UNTUK BADGE UPDATE */
     .news-badge {
       background: #EF4444;
       color: #FFFFFF;
@@ -103,6 +104,18 @@
       gap: 5px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      animation: pulseBlink 1.2s infinite alternate ease-in-out;
+    }
+
+    @keyframes pulseBlink {
+      0% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      100% {
+        opacity: 0.4;
+        transform: scale(0.95);
+      }
     }
 
     .news-ticker-content {
@@ -112,13 +125,15 @@
       position: relative;
     }
 
+    /* ANIMASI TEKS BERJALAN */
     .news-ticker-text {
       display: inline-block;
       white-space: nowrap;
       font-size: var(--font-xs);
       font-weight: var(--fw-semibold);
       color: var(--text-main-dark);
-      animation: tickerAnimation 25s linear infinite;
+      padding-left: 100%;
+      animation: tickerAnimation 20s linear infinite;
     }
 
     .news-ticker-wrapper:hover .news-ticker-text {
@@ -126,7 +141,7 @@
     }
 
     @keyframes tickerAnimation {
-      0% { transform: translateX(100%); }
+      0% { transform: translateX(0); }
       100% { transform: translateX(-100%); }
     }
 
@@ -287,14 +302,14 @@
       display: none;
     }
 
-    /* BOTTOM NAV BAR (PERBAIKAN COMPATIBILITY BROWSER) */
+    /* BOTTOM NAV BAR */
     .bottom-nav {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
       height: 70px;
-      z-index: 9999; /* Ditingkatkan agar selalu berada di atas layer Mozilla & Chrome */
+      z-index: 9999;
       display: flex;
       justify-content: space-around;
       align-items: center;
@@ -303,7 +318,7 @@
       border-top-left-radius: var(--radius-lg);
       border-top-right-radius: var(--radius-lg);
       box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
-      padding-bottom: env(safe-area-inset-bottom, 0px); /* Memperhitungkan gesture bar mobile */
+      padding-bottom: env(safe-area-inset-bottom, 0px);
     }
 
     .nav-item {
@@ -898,7 +913,7 @@
       <!-- 1. BERANDA -->
       <section id="page-beranda" class="page active">
         
-        <!-- BREAKING NEWS TICKER (BERITA BERJALAN AKTIVITAS RECENT) -->
+        <!-- BREAKING NEWS TICKER (BERITA BERJALAN & KEDIP) -->
         <div class="news-ticker-wrapper">
           <div class="news-badge"><i class="fa-solid fa-bolt"></i> Update</div>
           <div class="news-ticker-content">
@@ -920,9 +935,10 @@
             <h3 id="stat-members">0</h3>
             <span>Anggota</span>
           </div>
+          <!-- STATISTIK TOURING REALTIME & DINAMIS -->
           <div class="card stat-card" onclick="app.navigateTo('touring')">
             <i class="fa-solid fa-route" style="color: var(--accent-gold); font-size: 1.2rem;"></i>
-            <h3>24</h3>
+            <h3 id="stat-touring-count">0</h3>
             <span>Touring</span>
           </div>
           <div class="card stat-card" onclick="app.navigateTo('kas')">
@@ -1659,19 +1675,15 @@
         if (displayWA) displayWA.innerText = `+${this.adminWANumber}`;
       }
 
-      adminUpdateWANumber() {
-        let val = document.getElementById('admin-wa-input').value.trim();
-        val = val.replace(/[^0-9]/g, '');
-        if (!val) return;
-        if (val.startsWith('0')) val = '62' + val.substring(1);
-
-        this.adminWANumber = val;
-        localStorage.setItem('itora_admin_wa', val);
-        this.updateWAUI();
-        this.showToast('Nomor WhatsApp Konfirmasi Berhasil Diperbarui!', 'success');
-      }
-
       updateTouringUI() {
+        // Hitung total touring secara otomatis
+        const isTouringActive = (this.touringData.title && this.touringData.title !== 'Belum Ada Agenda');
+        const touringCount = isTouringActive ? 1 : 0;
+
+        // Update Angka Statistik Dashboard Beranda (Real-time)
+        const statTouringEl = document.getElementById('stat-touring-count');
+        if (statTouringEl) statTouringEl.innerText = touringCount;
+
         // Update Home Dashboard Widget
         const homeTitle = document.getElementById('home-touring-title');
         const homeSchedule = document.getElementById('home-touring-schedule');
@@ -2428,7 +2440,7 @@
               this.renderAdminMenuList();
             }
           } else {
-            this.renderDynamicMenus(); // Tetap panggil render dengan fallback default jika database kosong
+            this.renderDynamicMenus();
           }
         } catch (e) {
           console.error('Error fetching menus:', e);
@@ -2440,7 +2452,6 @@
         const isSuperAdmin = (this.currentUser && this.currentUser.email === 'mastrisnobpb@gmail.com');
         const isAdmin = (this.currentProfile?.role === 'Admin' || isSuperAdmin);
 
-        // Fallback default jika data Supabase belum terisi
         let navItems = this.menus.filter(m => m.is_active && m.show_in_bottom_nav);
 
         if (navItems.length === 0) {
@@ -2452,7 +2463,6 @@
           ];
         }
 
-        // Render Quick Menu
         const quickMenuContainer = document.getElementById('dynamic-quick-menu');
         if (quickMenuContainer) {
           const quickItems = this.menus.filter(m => m.is_active && m.show_in_quick_menu);
@@ -2481,7 +2491,6 @@
           }
         }
 
-        // Render Bottom Nav (Aman untuk Chrome & Mozilla Firefox)
         const bottomNavContainer = document.getElementById('dynamic-bottom-nav');
         if (bottomNavContainer) {
           bottomNavContainer.innerHTML = navItems.map((m, index) => {
