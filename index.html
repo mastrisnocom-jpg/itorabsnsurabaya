@@ -619,11 +619,11 @@
         <div class="card glass">
           <div class="card-header-flex">
             <h3><i class="fa-solid fa-compass" style="color: var(--accent-gold);"></i> Touring Terdekat</h3>
-            <span class="badge badge-primary">Agustus 2026</span>
+            <span class="badge badge-primary" id="home-touring-date">Agustus 2026</span>
           </div>
-          <h4 style="font-size: 1.1rem; margin-top: 6px;">Touring Kemerdekaan Bromo</h4>
-          <p class="text-muted"><i class="fa-regular fa-calendar"></i> 17 Agustus 2026 | 05:00 WIB</p>
-          <p class="text-muted"><i class="fa-solid fa-location-dot"></i> Meeting Point: Alun-Alun Surabaya</p>
+          <h4 style="font-size: 1.1rem; margin-top: 6px;" id="home-touring-title">Touring Kemerdekaan Bromo</h4>
+          <p class="text-muted"><i class="fa-regular fa-calendar"></i> <span id="home-touring-schedule">17 Agustus 2026 | 05:00 WIB</span></p>
+          <p class="text-muted"><i class="fa-solid fa-location-dot"></i> Meeting Point: <span id="home-touring-meeting">Alun-Alun Surabaya</span></p>
           <button type="button" class="btn btn-gold" style="margin-top: 14px;" onclick="app.navigateTo('touring')">Detail & Rute</button>
         </div>
       </section>
@@ -631,7 +631,33 @@
       <!-- 2. PANEL SUPER ADMIN -->
       <section id="page-admin" class="page">
         <h2 style="color: var(--accent-gold);"><i class="fa-solid fa-user-shield"></i> Panel Super Admin</h2>
-        <p class="text-muted" style="margin-bottom: 15px;">Kontrol penuh verifikasi iuran, anggota, dan saldo kas</p>
+        <p class="text-muted" style="margin-bottom: 15px;">Kontrol penuh verifikasi iuran, anggota, saldo kas, dan touring</p>
+
+        <!-- UPDATE JADWAL TOURING -->
+        <div class="card glass">
+          <h3 style="margin-bottom: 6px;"><i class="fa-solid fa-route" style="color: var(--accent-gold);"></i> Update Jadwal Touring Utama</h3>
+          <p class="text-muted" style="font-size: 0.75rem; margin-bottom: 10px;">Perbarui agenda touring yang tampil di Beranda dan Halaman Touring</p>
+          
+          <form onsubmit="app.adminUpdateTouring(event)">
+            <div class="form-group">
+              <label>Nama Destinasi / Judul Touring</label>
+              <input type="text" class="input-control" id="admin-touring-title" required>
+            </div>
+            <div class="form-group">
+              <label>Tanggal & Waktu</label>
+              <input type="text" class="input-control" id="admin-touring-date" required>
+            </div>
+            <div class="form-group">
+              <label>Titik Kumpul (Meeting Point)</label>
+              <input type="text" class="input-control" id="admin-touring-meeting" required>
+            </div>
+            <div class="form-group">
+              <label>Link Google Maps Rute</label>
+              <input type="text" class="input-control" id="admin-touring-maps" placeholder="https://maps.google.com/?q=..." required>
+            </div>
+            <button type="submit" class="btn btn-gold"><i class="fa-solid fa-floppy-disk"></i> Simpan Jadwal Touring</button>
+          </form>
+        </div>
 
         <!-- PENGATURAN KAS POKOK/BASE -->
         <div class="card glass">
@@ -676,12 +702,14 @@
 
       <!-- 5. TOURING -->
       <section id="page-touring" class="page">
-        <h2>Jadwal Touring</h2>
+        <h2>Jadwal & Rute Touring</h2>
         <div class="card glass" style="margin-top: 12px;">
-          <span class="badge badge-gold">Destination</span>
-          <h3 style="margin-top: 6px;">Bromo Sunrise Ride</h3>
-          <p class="text-muted">Jarak: ~95 km | Estimasi: 2.5 Jam</p>
-          <button type="button" class="btn btn-primary" style="margin-top: 12px;" onclick="window.open('https://maps.google.com/?q=Bromo', '_blank')">
+          <span class="badge badge-gold" id="touring-badge-tag">Destinasi Utama</span>
+          <h3 style="margin-top: 6px;" id="touring-page-title">Bromo Sunrise Ride</h3>
+          <p class="text-muted" style="margin-top: 4px;"><i class="fa-regular fa-calendar"></i> <span id="touring-page-schedule">17 Agustus 2026 | 05:00 WIB</span></p>
+          <p class="text-muted"><i class="fa-solid fa-location-dot"></i> Meeting Point: <span id="touring-page-meeting">Alun-Alun Surabaya</span></p>
+          
+          <button type="button" class="btn btn-primary" style="margin-top: 16px;" id="touring-maps-btn" onclick="window.open('https://maps.google.com/?q=Bromo', '_blank')">
             <i class="fa-solid fa-map-location-dot"></i> Buka Rute Google Maps
           </button>
         </div>
@@ -755,18 +783,16 @@
         </div>
       </section>
 
-      <!-- 12. PROFIL SAYA (TAMPILAN LENGKAP & DETAILED) -->
+      <!-- 12. PROFIL SAYA -->
       <section id="page-profil" class="page">
         <h2>Profil Anggota Digital</h2>
         
-        <!-- CARD PROFIL KARTU UTAMA -->
         <div class="card glass" style="margin-top: 12px; text-align: center;">
           <div class="avatar-placeholder" id="profile-avatar">A</div>
           <h3 id="profile-name">Anggota</h3>
           <span class="badge badge-gold" id="profile-role" style="margin-top: 6px;">Anggota Resmi</span>
           <p class="text-muted" id="profile-email" style="margin-top: 4px;">-</p>
 
-          <!-- DETAIL INFORMASI ANGGOTA -->
           <div class="profile-info-list">
             <div class="info-item">
               <i class="fa-solid fa-id-card"></i>
@@ -955,6 +981,12 @@
         this.iuranHistory = [];
         this.baseKas = 0;
         this.approvedKasTotal = 0;
+        this.touringData = {
+          title: "Touring Kemerdekaan Bromo",
+          schedule: "17 Agustus 2026 | 05:00 WIB",
+          meeting: "Alun-Alun Surabaya",
+          maps: "https://maps.google.com/?q=Bromo"
+        };
         this.initSupabase();
       }
 
@@ -983,11 +1015,62 @@
         const savedKas = localStorage.getItem('itora_base_kas');
         if (savedKas) this.baseKas = parseFloat(savedKas);
 
+        // Load Saved Touring Data
+        const savedTouring = localStorage.getItem('itora_touring_data');
+        if (savedTouring) {
+          try { this.touringData = JSON.parse(savedTouring); } catch(e){}
+        }
+        this.updateTouringUI();
+
         setTimeout(() => {
           const splash = document.getElementById('splash-screen');
           if (splash) splash.style.display = 'none';
           this.checkSession();
         }, 1000);
+      }
+
+      updateTouringUI() {
+        // Home
+        const homeTitle = document.getElementById('home-touring-title');
+        const homeSchedule = document.getElementById('home-touring-schedule');
+        const homeMeeting = document.getElementById('home-touring-meeting');
+        if (homeTitle) homeTitle.innerText = this.touringData.title;
+        if (homeSchedule) homeSchedule.innerText = this.touringData.schedule;
+        if (homeMeeting) homeMeeting.innerText = this.touringData.meeting;
+
+        // Touring Page
+        const pageTitle = document.getElementById('touring-page-title');
+        const pageSchedule = document.getElementById('touring-page-schedule');
+        const pageMeeting = document.getElementById('touring-page-meeting');
+        const pageMapsBtn = document.getElementById('touring-maps-btn');
+        if (pageTitle) pageTitle.innerText = this.touringData.title;
+        if (pageSchedule) pageSchedule.innerText = this.touringData.schedule;
+        if (pageMeeting) pageMeeting.innerText = this.touringData.meeting;
+        if (pageMapsBtn) pageMapsBtn.setAttribute('onclick', `window.open('${this.touringData.maps}', '_blank')`);
+
+        // Admin Input
+        const adminTitle = document.getElementById('admin-touring-title');
+        const adminDate = document.getElementById('admin-touring-date');
+        const adminMeeting = document.getElementById('admin-touring-meeting');
+        const adminMaps = document.getElementById('admin-touring-maps');
+        if (adminTitle) adminTitle.value = this.touringData.title;
+        if (adminDate) adminDate.value = this.touringData.schedule;
+        if (adminMeeting) adminMeeting.value = this.touringData.meeting;
+        if (adminMaps) adminMaps.value = this.touringData.maps;
+      }
+
+      adminUpdateTouring(e) {
+        e.preventDefault();
+        this.touringData = {
+          title: document.getElementById('admin-touring-title').value.trim(),
+          schedule: document.getElementById('admin-touring-date').value.trim(),
+          meeting: document.getElementById('admin-touring-meeting').value.trim(),
+          maps: document.getElementById('admin-touring-maps').value.trim()
+        };
+
+        localStorage.setItem('itora_touring_data', JSON.stringify(this.touringData));
+        this.updateTouringUI();
+        this.showToast('Jadwal Touring Berhasil Diperbarui!', 'success');
       }
 
       compressImage(file, maxKB = 200) {
@@ -1199,7 +1282,6 @@
         this.showToast('Anda telah keluar dari akun.', 'info');
       }
 
-      /* MEMUAT DATA DETAIL PROFIL USER */
       async loadUserProfileDetails() {
         if (!this.currentUser || !this.supabase) return;
         try {
@@ -1212,7 +1294,6 @@
           if (!error && data) {
             this.currentProfile = data;
           } else {
-            // Default Profile jika belum ada row
             const defaultName = (this.currentUser.user_metadata && this.currentUser.user_metadata.full_name) 
                                 ? this.currentUser.user_metadata.full_name 
                                 : this.currentUser.email.split('@')[0];
@@ -1249,13 +1330,11 @@
         document.getElementById('profile-role').innerText = roleTitle;
         document.getElementById('profile-avatar').innerText = name.charAt(0).toUpperCase();
 
-        // UPDATE DETAIL DIRI PADA TAMPILAN PROFIL
         document.getElementById('profile-nia').innerText = niaCode;
         document.getElementById('profile-phone').innerText = phone;
         document.getElementById('profile-bike').innerText = bike;
         document.getElementById('profile-plate').innerText = plate;
 
-        // ISI FORM EDIT PROFIL
         document.getElementById('edit-fullname').value = name;
         document.getElementById('edit-phone').value = phone !== '-' ? phone : '';
         document.getElementById('edit-bike').value = bike;
@@ -1278,7 +1357,6 @@
         this.generateQRCode(memberCode);
       }
 
-      /* FUNGSI SIMPAN EDIT PROFIL */
       async handleSaveProfile(e) {
         e.preventDefault();
         if (!this.currentUser || !this.supabase) return;
@@ -1432,7 +1510,6 @@
           document.getElementById('form-iuran').reset();
           this.loadIuranHistory();
 
-          // Kirim Otomatis Notifikasi WA
           const waMessage = `Halo Bendahara ITORA BSN,%0ASaya *${userName}* telah melakukan konfirmasi setor iuran:%0A- *Periode:* ${periode}%0A- *Nominal:* Rp ${parseInt(jumlah).toLocaleString('id-ID')}%0A- *Metode:* ${metode}%0A%0AMohon dicek dan diverifikasi. Terima kasih!`;
           setTimeout(() => {
             window.open(`https://wa.me/6281234567890?text=${waMessage}`, '_blank');
