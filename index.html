@@ -1043,14 +1043,38 @@
         </div>
       </section>
 
-      <!-- 5. TOURING -->
+      <!-- 5. TOURING (DENGAN FITUR EDIT, HAPUS & JARAK TEMPUH OTOMATIS) -->
       <section id="page-touring" class="page">
-        <h2 style="font-size: var(--font-lg); font-weight: var(--fw-bold);">Jadwal & Rute Touring</h2>
-        <div class="card" style="margin-top: 12px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h2 style="font-size: var(--font-lg); font-weight: var(--fw-bold);">Jadwal & Rute Touring</h2>
+          <button type="button" class="btn btn-sm btn-gold" id="admin-add-touring-btn" style="display:none; width:auto;" onclick="app.openModal('modal-admin-touring')">
+            <i class="fa-solid fa-plus"></i> Tambah
+          </button>
+        </div>
+
+        <div class="card" style="margin-top: 12px; position: relative;">
+          
+          <!-- Tombol Action Super Admin & Admin -->
+          <div id="touring-admin-actions" style="position: absolute; top: 16px; right: 16px; display: none; gap: 6px;">
+            <button type="button" class="btn btn-sm btn-gold" style="padding: 5px 8px;" onclick="app.openModal('modal-admin-touring')" title="Edit Touring">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button type="button" class="btn btn-sm btn-danger" style="padding: 5px 8px;" onclick="app.adminDeleteTouring()" title="Hapus Touring">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+
           <span class="badge badge-gold" id="touring-badge-tag">Destinasi Utama</span>
-          <h3 style="margin-top: 6px; font-size: var(--font-base); font-weight: var(--fw-bold);" id="touring-page-title">Bromo Sunrise Ride</h3>
-          <p class="text-muted" style="margin-top: 4px;"><i class="fa-regular fa-calendar"></i> <span id="touring-page-schedule">17 Agustus 2026 | 05:00 WIB</span></p>
+          <h3 style="margin-top: 6px; font-size: var(--font-base); font-weight: var(--fw-bold); padding-right: 70px;" id="touring-page-title">Bromo Sunrise Ride</h3>
+          
+          <p class="text-muted" style="margin-top: 6px;"><i class="fa-regular fa-calendar"></i> <span id="touring-page-schedule">17 Agustus 2026 | 05:00 WIB</span></p>
           <p class="text-muted"><i class="fa-solid fa-location-dot"></i> Meeting Point: <span id="touring-page-meeting">Alun-Alun Surabaya</span></p>
+          
+          <!-- ESTIMASI JARAK TEMPUH -->
+          <p class="text-muted" style="color: var(--primary); font-weight: var(--fw-bold); margin-top: 4px;">
+            <i class="fa-solid fa-gauge-high"></i> Estimasi Jarak Tempuh: <span id="touring-page-distance">± 110 KM</span>
+          </p>
+
           <button type="button" class="btn btn-primary" style="margin-top: 16px;" id="touring-maps-btn" onclick="window.open('https://maps.google.com/?q=Bromo', '_blank')">
             <i class="fa-solid fa-map-location-dot"></i> Buka Rute Google Maps
           </button>
@@ -1388,11 +1412,11 @@
     </div>
   </div>
 
-  <!-- MODAL POP-UP ADMIN 6: UPDATE JADWAL TOURING -->
+  <!-- MODAL POP-UP ADMIN 6: UPDATE JADWAL TOURING (TERMASUK INPUT JARAK TEMPUH) -->
   <div class="modal-overlay" id="modal-admin-touring">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-touring')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="margin-bottom: 12px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-route" style="color: var(--primary);"></i> Update Jadwal Touring</h3>
+      <h3 style="margin-bottom: 12px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-route" style="color: var(--primary);"></i> Kelola Jadwal Touring</h3>
       
       <form onsubmit="app.adminUpdateTouring(event)">
         <div class="form-group">
@@ -1405,7 +1429,11 @@
         </div>
         <div class="form-group">
           <label>Titik Kumpul (Meeting Point)</label>
-          <input type="text" class="input-control" id="admin-touring-meeting" required>
+          <input type="text" class="input-control" id="admin-touring-meeting" placeholder="e.g. Parkir BSN KC Surabaya" required>
+        </div>
+        <div class="form-group">
+          <label>Jarak Tempuh (Satu Arah/PP)</label>
+          <input type="text" class="input-control" id="admin-touring-distance" placeholder="e.g. ± 110 KM (Sekali Jalan)" required>
         </div>
         <div class="form-group">
           <label>Link Google Maps Rute</label>
@@ -1575,9 +1603,10 @@
         this.approvedKasTotal = 0;
         this.adminWANumber = "6281234567890";
         this.touringData = {
-          title: "Touring Kemerdekaan Bromo",
-          schedule: "17 Agustus 2026 | 05:00 WIB",
-          meeting: "Alun-Alun Surabaya",
+          title: "Touring Kemerdekaan",
+          schedule: "17 Agustus 2026 | 09:00 WIB",
+          meeting: "Parkir BSN KC Surabaya",
+          distance: "± 110 KM",
           maps: "https://maps.google.com/?q=Bromo"
         };
         this.initSupabase();
@@ -1642,6 +1671,7 @@
       }
 
       updateTouringUI() {
+        // Update Home Dashboard Widget
         const homeTitle = document.getElementById('home-touring-title');
         const homeSchedule = document.getElementById('home-touring-schedule');
         const homeMeeting = document.getElementById('home-touring-meeting');
@@ -1649,22 +1679,30 @@
         if (homeSchedule) homeSchedule.innerText = this.touringData.schedule;
         if (homeMeeting) homeMeeting.innerText = this.touringData.meeting;
 
+        // Update Halaman Utama Touring
         const pageTitle = document.getElementById('touring-page-title');
         const pageSchedule = document.getElementById('touring-page-schedule');
         const pageMeeting = document.getElementById('touring-page-meeting');
+        const pageDistance = document.getElementById('touring-page-distance');
         const pageMapsBtn = document.getElementById('touring-maps-btn');
+        
         if (pageTitle) pageTitle.innerText = this.touringData.title;
         if (pageSchedule) pageSchedule.innerText = this.touringData.schedule;
         if (pageMeeting) pageMeeting.innerText = this.touringData.meeting;
+        if (pageDistance) pageDistance.innerText = this.touringData.distance || '± 0 KM';
         if (pageMapsBtn) pageMapsBtn.setAttribute('onclick', `window.open('${this.touringData.maps}', '_blank')`);
 
+        // Update Form Modal Admin
         const adminTitle = document.getElementById('admin-touring-title');
         const adminDate = document.getElementById('admin-touring-date');
         const adminMeeting = document.getElementById('admin-touring-meeting');
+        const adminDistance = document.getElementById('admin-touring-distance');
         const adminMaps = document.getElementById('admin-touring-maps');
+        
         if (adminTitle) adminTitle.value = this.touringData.title;
         if (adminDate) adminDate.value = this.touringData.schedule;
         if (adminMeeting) adminMeeting.value = this.touringData.meeting;
+        if (adminDistance) adminDistance.value = this.touringData.distance || '';
         if (adminMaps) adminMaps.value = this.touringData.maps;
       }
 
@@ -1674,12 +1712,30 @@
           title: document.getElementById('admin-touring-title').value.trim(),
           schedule: document.getElementById('admin-touring-date').value.trim(),
           meeting: document.getElementById('admin-touring-meeting').value.trim(),
+          distance: document.getElementById('admin-touring-distance').value.trim(),
           maps: document.getElementById('admin-touring-maps').value.trim()
         };
 
         localStorage.setItem('itora_touring_data', JSON.stringify(this.touringData));
         this.updateTouringUI();
-        this.showToast('Jadwal Touring Berhasil Diperbarui!', 'success');
+        this.closeModal('modal-admin-touring');
+        this.showToast('Jadwal & Rute Touring Berhasil Diperbarui!', 'success');
+      }
+
+      adminDeleteTouring() {
+        if (!confirm('Apakah Anda yakin ingin menghapus jadwal touring ini?')) return;
+
+        this.touringData = {
+          title: "Belum Ada Agenda",
+          schedule: "-",
+          meeting: "-",
+          distance: "0 KM",
+          maps: "#"
+        };
+
+        localStorage.setItem('itora_touring_data', JSON.stringify(this.touringData));
+        this.updateTouringUI();
+        this.showToast('Jadwal touring berhasil dihapus!', 'info');
       }
 
       compressImage(file, maxKB = 200) {
@@ -1763,12 +1819,10 @@
         }
       }
 
-      /* VALIDASI HANYA STATUS 'APPROVED' DAN SUPER ADMIN YANG BISA MASUK DASHBOARD */
       async validateUserFlow() {
         if (!this.currentUser) return;
         const email = this.currentUser.email;
 
-        // Super Admin selalu bisa akses dashboard
         if (email === 'mastrisnobpb@gmail.com') {
           this.showDashboard();
           return;
@@ -1776,17 +1830,14 @@
 
         await this.loadUserProfileDetails();
 
-        // 1. Jika belum mengisi data diri
         if (!this.currentProfile || !this.currentProfile.full_name || this.currentProfile.full_name === email.split('@')[0]) {
           this.showCompleteDataScreen();
           return;
         }
 
-        // 2. Jika status 'Approved', izinkan masuk Dashboard
         if (this.currentProfile.approval_status === 'Approved') {
           this.showDashboard();
         } else {
-          // 3. Jika 'Pending' atau 'Rejected' (Ditolak), BLOKIR dari Dashboard
           this.showPendingApprovalScreen();
         }
       }
@@ -2062,6 +2113,12 @@
 
         const adminProfileBtn = document.getElementById('btn-admin-panel-profile');
         if (adminProfileBtn) adminProfileBtn.style.display = canManageAdmin ? 'flex' : 'none';
+
+        // Tampilkan/Sembunyikan aksi Edit/Hapus khusus Super Admin/Admin pada Touring
+        const touringAdminActions = document.getElementById('touring-admin-actions');
+        const adminAddBtn = document.getElementById('admin-add-touring-btn');
+        if (touringAdminActions) touringAdminActions.style.display = canManageAdmin ? 'flex' : 'none';
+        if (adminAddBtn) adminAddBtn.style.display = canManageAdmin ? 'inline-block' : 'none';
 
         if (canManageAdmin) {
           this.loadAdminPendingMembersList();
@@ -3054,7 +3111,13 @@
 
               ctx.fillStyle = "#FFFFFF";
               ctx.beginPath();
-              ctx.roundRect(badgeX, badgeY, badgeWidth, badgeHeight, 6);
+              
+              // Fallback aman untuk peramban (browser) lama
+              if (ctx.roundRect) {
+                ctx.roundRect(badgeX, badgeY, badgeWidth, badgeHeight, 6);
+              } else {
+                ctx.rect(badgeX, badgeY, badgeWidth, badgeHeight);
+              }
               ctx.fill();
 
               ctx.lineWidth = 2;
