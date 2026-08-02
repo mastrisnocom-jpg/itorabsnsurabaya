@@ -322,11 +322,11 @@
 
     .btn {
       width: 100%;
-      padding: 14px;
+      padding: 12px 14px;
       border-radius: var(--radius-md);
       border: none;
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.88rem;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -334,8 +334,15 @@
       gap: 8px;
     }
 
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 0.75rem;
+      border-radius: var(--radius-sm);
+    }
+
     .btn-primary { background: var(--primary); color: white; }
     .btn-gold { background: var(--accent-gold); color: #000; }
+    .btn-danger { background: #EF4444; color: white; }
     .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); margin-top: 10px; }
 
     .badge {
@@ -350,6 +357,7 @@
     .badge-primary { background: var(--primary); color: #fff; }
     .badge-warning { background: #F59E0B; color: #000; }
     .badge-success { background: #10B981; color: #fff; }
+    .badge-danger { background: #EF4444; color: #fff; }
 
     .text-muted {
       font-size: 0.8rem;
@@ -555,7 +563,7 @@
           </div>
           <div class="card glass stat-card" onclick="app.navigateTo('kas')">
             <i class="fa-solid fa-wallet" style="color: #10B981;"></i>
-            <h3>12.5M</h3>
+            <h3 id="stat-kas-amount">12.5M</h3>
             <span>Kas (IDR)</span>
           </div>
         </div>
@@ -563,11 +571,11 @@
         <div class="quick-menu">
           <div class="quick-item" onclick="app.openModal('modal-iuran')"><div class="quick-icon"><i class="fa-solid fa-receipt"></i></div><span>Setor Iuran</span></div>
           <div class="quick-item" onclick="app.navigateTo('kas')"><div class="quick-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div><span>Kas</span></div>
+          <div class="quick-item" onclick="app.navigateTo('admin')" id="menu-admin-item" style="display: none;"><div class="quick-icon" style="background: rgba(212,175,55,0.2); color: var(--accent-gold);"><i class="fa-solid fa-user-shield"></i></div><span>Super Admin</span></div>
           <div class="quick-item" onclick="app.navigateTo('merchandise')"><div class="quick-icon"><i class="fa-solid fa-shirt"></i></div><span>Merch</span></div>
           <div class="quick-item" onclick="app.navigateTo('sponsor')"><div class="quick-icon"><i class="fa-solid fa-handshake"></i></div><span>Sponsor</span></div>
           <div class="quick-item" onclick="app.navigateTo('kontak')"><div class="quick-icon"><i class="fa-solid fa-address-book"></i></div><span>Kontak</span></div>
           <div class="quick-item" onclick="app.navigateTo('profil')"><div class="quick-icon"><i class="fa-solid fa-id-card"></i></div><span>Profil</span></div>
-          <div class="quick-item" onclick="app.navigateTo('pengaturan')"><div class="quick-icon"><i class="fa-solid fa-gear"></i></div><span>Setelan</span></div>
           <div class="quick-item" onclick="app.handleLogout()"><div class="quick-icon"><i class="fa-solid fa-right-from-bracket"></i></div><span>Keluar</span></div>
         </div>
 
@@ -583,7 +591,31 @@
         </div>
       </section>
 
-      <!-- 2. ANGGOTA -->
+      <!-- 2. PANELS SUPER ADMIN (PENGATURAN PENUH) -->
+      <section id="page-admin" class="page">
+        <h2 style="color: var(--accent-gold);"><i class="fa-solid fa-user-shield"></i> Panel Super Admin</h2>
+        <p class="text-muted" style="margin-bottom: 15px;">Kontrol penuh verifikasi iuran, anggota, dan saldo kas</p>
+
+        <!-- PENGATURAN KAS -->
+        <div class="card glass">
+          <h3 style="margin-bottom: 10px;"><i class="fa-solid fa-wallet" style="color: #10B981;"></i> Update Kas Komunitas</h3>
+          <div class="form-group">
+            <label>Jumlah Saldo Kas Baru (Rp)</label>
+            <input type="number" class="input-control" id="admin-kas-input" placeholder="12500000" value="12500000">
+          </div>
+          <button type="button" class="btn btn-gold" onclick="app.adminUpdateKas()"><i class="fa-solid fa-floppy-disk"></i> Simpan Saldo Kas</button>
+        </div>
+
+        <!-- VERIFIKASI IURAN ANGGOTA -->
+        <div class="card glass">
+          <h3 style="margin-bottom: 12px;"><i class="fa-solid fa-check-to-slot" style="color: var(--primary);"></i> Verifikasi Iuran Anggota</h3>
+          <div id="admin-dues-list">
+            <p class="text-muted" style="text-align:center;">Memuat data iuran...</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. ANGGOTA -->
       <section id="page-anggota" class="page">
         <h2>Daftar Anggota</h2>
         <div class="form-group" style="margin-top: 12px;">
@@ -592,7 +624,7 @@
         <div id="members-list" class="list-container"></div>
       </section>
 
-      <!-- 3. EVENT -->
+      <!-- 4. EVENT -->
       <section id="page-event" class="page">
         <h2>Agenda & Event</h2>
         <div class="card glass" style="margin-top: 12px;">
@@ -604,7 +636,7 @@
         </div>
       </section>
 
-      <!-- 4. TOURING -->
+      <!-- 5. TOURING -->
       <section id="page-touring" class="page">
         <h2>Jadwal Touring</h2>
         <div class="card glass" style="margin-top: 12px;">
@@ -617,7 +649,7 @@
         </div>
       </section>
 
-      <!-- 5. GALERI -->
+      <!-- 6. GALERI -->
       <section id="page-galeri" class="page">
         <h2>Dokumentasi Kegiatan</h2>
         <div class="gallery-grid" style="margin-top: 12px;">
@@ -626,12 +658,12 @@
         </div>
       </section>
 
-      <!-- 6. KAS & IURAN -->
+      <!-- 7. KAS & IURAN -->
       <section id="page-kas" class="page">
         <h2>Kas & Iuran Komunitas</h2>
         <div class="card glass" style="margin-top: 12px; text-align: center;">
           <span class="text-muted">Total Saldo Kas</span>
-          <h1 style="color: var(--primary); font-size: 2.2rem; margin: 8px 0;">Rp 12.500.000</h1>
+          <h1 style="color: var(--primary); font-size: 2.2rem; margin: 8px 0;" id="kas-page-amount">Rp 12.500.000</h1>
           
           <button type="button" class="btn btn-gold" style="margin-top: 10px;" onclick="app.openModal('modal-iuran')">
             <i class="fa-solid fa-receipt"></i> Setor Bukti Iuran Baru
@@ -647,7 +679,7 @@
         <div id="iuran-history-list"></div>
       </section>
 
-      <!-- 7. MERCHANDISE -->
+      <!-- 8. MERCHANDISE -->
       <section id="page-merchandise" class="page">
         <h2>Merchandise Resmi</h2>
         <div class="card glass" style="margin-top: 12px;">
@@ -657,7 +689,7 @@
         </div>
       </section>
 
-      <!-- 8. PENGUMUMAN -->
+      <!-- 9. PENGUMUMAN -->
       <section id="page-pengumuman" class="page">
         <h2>Pengumuman Resmi</h2>
         <div class="card glass" style="margin-top: 12px;">
@@ -666,17 +698,16 @@
         </div>
       </section>
 
-      <!-- 9. SPONSOR -->
+      <!-- 10. SPONSOR -->
       <section id="page-sponsor" class="page">
         <h2>Sponsor Utama</h2>
         <div class="card glass" style="margin-top: 12px; text-align: center;">
           <i class="fa-solid fa-building-columns" style="font-size: 3rem; color: var(--primary);"></i>
-          <h3 style="margin-top: 10px;">Bank Syariah Nasional</h3>
-          <p class="text-muted">Cabang Surabaya</p>
+          <h3 style="margin-top: 10px;">Bank Syariah Nasional Cabang Surabaya</h3>
         </div>
       </section>
 
-      <!-- 10. KONTAK -->
+      <!-- 11. KONTAK -->
       <section id="page-kontak" class="page">
         <h2>Kontak Pengurus</h2>
         <div class="card glass" style="margin-top: 12px;">
@@ -686,7 +717,7 @@
         </div>
       </section>
 
-      <!-- 11. PROFIL SAYA -->
+      <!-- 12. PROFIL SAYA -->
       <section id="page-profil" class="page">
         <h2>Profil Anggota</h2>
         <div class="card glass" style="margin-top: 12px; text-align: center;">
@@ -694,13 +725,15 @@
           <h3 id="profile-name">Anggota</h3>
           <span class="badge badge-gold" id="profile-role" style="margin-top: 6px;">Anggota Resmi</span>
           <p class="text-muted" id="profile-email" style="margin-top: 6px;">-</p>
-          <div style="margin-top: 16px;">
+          
+          <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 8px;">
             <button type="button" class="btn btn-primary" onclick="app.openModal('qr-modal')"><i class="fa-solid fa-qrcode"></i> Tampilkan QR Card</button>
+            <button type="button" class="btn btn-gold" id="btn-admin-panel-profile" style="display: none;" onclick="app.navigateTo('admin')"><i class="fa-solid fa-user-shield"></i> Masuk Panel Super Admin</button>
           </div>
         </div>
       </section>
 
-      <!-- 12. SETELAN -->
+      <!-- 13. SETELAN -->
       <section id="page-pengaturan" class="page">
         <h2>Setelan App</h2>
         <div class="card glass" style="margin-top: 12px;">
@@ -801,6 +834,7 @@
         this.currentUser = null;
         this.members = [];
         this.iuranHistory = [];
+        this.kasAmount = 12500000;
         this.initSupabase();
       }
 
@@ -825,6 +859,11 @@
         now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
         const dateInput = document.getElementById('iuran-tanggal');
         if (dateInput) dateInput.value = now.toISOString().slice(0,16);
+
+        // Load Saldo Kas
+        const savedKas = localStorage.getItem('itora_kas_amount');
+        if (savedKas) this.kasAmount = parseFloat(savedKas);
+        this.updateKasUI();
 
         setTimeout(() => {
           const splash = document.getElementById('splash-screen');
@@ -989,7 +1028,6 @@
             this.toggleAuthMode();
 
           } else {
-            // LOGIN MODE
             const { data, error } = await this.supabase.auth.signInWithPassword({
               email: email,
               password: password
@@ -1057,9 +1095,42 @@
         document.getElementById('profile-role').innerText = roleTitle;
         document.getElementById('profile-avatar').innerText = name.charAt(0).toUpperCase();
 
+        // TAMPILKAN FITUR ADMIN KHUSUS SUPER ADMIN
+        const adminMenuItem = document.getElementById('menu-admin-item');
+        const adminProfileBtn = document.getElementById('btn-admin-panel-profile');
+
+        if (isSuperAdmin) {
+          if (adminMenuItem) adminMenuItem.style.display = 'flex';
+          if (adminProfileBtn) adminProfileBtn.style.display = 'flex';
+          this.loadAdminDuesList();
+        } else {
+          if (adminMenuItem) adminMenuItem.style.display = 'none';
+          if (adminProfileBtn) adminProfileBtn.style.display = 'none';
+        }
+
         const memberCode = `ITORA-BSN-${email.substring(0, 4).toUpperCase()}`;
         document.getElementById('qr-member-id').innerText = memberCode;
         this.generateQRCode(memberCode);
+      }
+
+      updateKasUI() {
+        const textFormatted = `Rp ${this.kasAmount.toLocaleString('id-ID')}`;
+        const statEl = document.getElementById('stat-kas-amount');
+        const kasPageEl = document.getElementById('kas-page-amount');
+        if (statEl) statEl.innerText = (this.kasAmount / 1000000).toFixed(1) + 'M';
+        if (kasPageEl) kasPageEl.innerText = textFormatted;
+        
+        const adminInput = document.getElementById('admin-kas-input');
+        if (adminInput) adminInput.value = this.kasAmount;
+      }
+
+      adminUpdateKas() {
+        const val = parseFloat(document.getElementById('admin-kas-input').value);
+        if (isNaN(val)) return;
+        this.kasAmount = val;
+        localStorage.setItem('itora_kas_amount', val);
+        this.updateKasUI();
+        this.showToast('Saldo Kas Komunitas Berhasil Diperbarui!', 'success');
       }
 
       async handleSubmitIuran(e) {
@@ -1165,7 +1236,7 @@
               <div class="card glass" style="padding: 14px; margin-bottom: 10px;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                   <h4>${item.period_month}</h4>
-                  <span class="badge ${item.status === 'Verified' ? 'badge-success' : 'badge-warning'}">${item.status}</span>
+                  <span class="badge ${item.status === 'Verified' ? 'badge-success' : item.status === 'Rejected' ? 'badge-danger' : 'badge-warning'}">${item.status}</span>
                 </div>
                 <p style="color: var(--accent-gold); font-weight: 700; margin-top: 4px;">Rp ${parseFloat(item.amount).toLocaleString('id-ID')}</p>
                 <p class="text-muted" style="font-size: 0.75rem; margin-top: 4px;">
@@ -1182,11 +1253,63 @@
         }
       }
 
-      /* FUNGSI LOAD ANGGOTA SECARA REAL-TIME DARI SUPABASE */
+      /* LOAD DAN VERIFIKASI IURAN ANGGOTA KHUSUS SUPER ADMIN */
+      async loadAdminDuesList() {
+        const container = document.getElementById('admin-dues-list');
+        if (!container || !this.supabase) return;
+
+        try {
+          const { data: dues, error } = await this.supabase
+            .from('dues')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+          if (!error && dues && dues.length > 0) {
+            container.innerHTML = dues.map(item => `
+              <div class="card glass" style="padding: 12px; margin-bottom: 10px; border-left: 4px solid ${item.status === 'Verified' ? '#10B981' : item.status === 'Rejected' ? '#EF4444' : '#F59E0B'}">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <h4>${item.member_name}</h4>
+                  <span class="badge ${item.status === 'Verified' ? 'badge-success' : item.status === 'Rejected' ? 'badge-danger' : 'badge-warning'}">${item.status}</span>
+                </div>
+                <p style="font-weight:700; color:var(--accent-gold); margin-top:2px;">Rp ${parseFloat(item.amount).toLocaleString('id-ID')} (${item.period_month})</p>
+                <p class="text-muted" style="font-size: 0.75rem;">Metode: ${item.payment_method} | ${new Date(item.payment_date).toLocaleDateString('id-ID')}</p>
+                ${item.receipt_url ? `<p style="margin-top:4px;"><a href="${item.receipt_url}" target="_blank" style="color:var(--primary); font-size:0.75rem;"><i class="fa-solid fa-image"></i> Cek Foto Bukti Transfer</a></p>` : ''}
+                
+                <div style="display: flex; gap: 8px; margin-top: 10px;">
+                  <button type="button" class="btn btn-sm btn-primary" onclick="app.adminVerifyDue('${item.id}', 'Verified')"><i class="fa-solid fa-check"></i> Setujui</button>
+                  <button type="button" class="btn btn-sm btn-danger" onclick="app.adminVerifyDue('${item.id}', 'Rejected')"><i class="fa-solid fa-xmark"></i> Tolak</button>
+                </div>
+              </div>
+            `).join('');
+          } else {
+            container.innerHTML = '<p class="text-muted" style="text-align:center;">Belum ada antrean setoran iuran anggota.</p>';
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      async adminVerifyDue(dueId, status) {
+        if (!this.supabase) return;
+        try {
+          const { error } = await this.supabase
+            .from('dues')
+            .update({ status: status })
+            .eq('id', dueId);
+
+          if (error) throw error;
+
+          this.showToast(`Status Iuran Berhasil Diubah Menjadi ${status}!`, 'success');
+          this.loadAdminDuesList();
+          this.loadIuranHistory();
+        } catch (e) {
+          this.showToast('Gagal memverifikasi iuran.', 'error');
+        }
+      }
+
       async loadMembersFromSupabase() {
         if (!this.supabase) return;
         try {
-          // 1. Ambil data dari tabel members
           const { data: members, error } = await this.supabase
             .from('members')
             .select('*')
@@ -1196,6 +1319,7 @@
 
           if (!error && members && members.length > 0) {
             list = members.map(m => ({
+              id: m.id,
               name: m.full_name || m.email || 'Anggota',
               email: m.email || '',
               role: (m.email === 'mastrisnobpb@gmail.com') ? 'Super Admin' : (m.role || 'Anggota Resmi'),
@@ -1204,7 +1328,6 @@
             }));
           }
 
-          // 2. Jika user saat ini belum ada di list, sisipkan langsung
           if (this.currentUser) {
             const myEmail = this.currentUser.email;
             const myName = (this.currentUser.user_metadata && this.currentUser.user_metadata.full_name) 
@@ -1215,6 +1338,7 @@
             const exist = list.some(item => item.email === myEmail);
             if (!exist) {
               list.unshift({
+                id: this.currentUser.id,
                 name: myName,
                 email: myEmail,
                 role: myRole,
@@ -1244,6 +1368,8 @@
           return;
         }
 
+        const isSuperAdmin = (this.currentUser && this.currentUser.email === 'mastrisnobpb@gmail.com');
+
         container.innerHTML = data.map(m => `
           <div class="card glass" style="display: flex; align-items: center; gap: 14px; padding: 14px; margin-bottom: 10px;">
             <div class="avatar-placeholder" style="margin:0; width: 44px; height: 44px; font-size: 1.1rem; ${m.role === 'Super Admin' ? 'background: var(--accent-gold); color: #000;' : ''}">
@@ -1257,8 +1383,24 @@
               <p class="text-muted" style="font-size: 0.75rem; margin-top: 2px;">${m.email || m.bike}</p>
               <span class="badge badge-gold" style="margin-top: 4px; font-size: 0.65rem;">Plat: ${m.plate}</span>
             </div>
+            ${isSuperAdmin && m.email !== 'mastrisnobpb@gmail.com' ? `
+              <button type="button" class="btn btn-sm btn-danger" style="width:auto;" onclick="app.adminDeleteMember('${m.id}')"><i class="fa-solid fa-trash"></i></button>
+            ` : ''}
           </div>
         `).join('');
+      }
+
+      async adminDeleteMember(memberId) {
+        if (!confirm('Apakah Anda yakin ingin menghapus anggota ini?')) return;
+        if (!this.supabase) return;
+
+        try {
+          await this.supabase.from('members').delete().eq('id', memberId);
+          this.showToast('Anggota berhasil dihapus!', 'success');
+          this.loadMembersFromSupabase();
+        } catch (e) {
+          this.showToast('Gagal menghapus anggota.', 'error');
+        }
       }
 
       filterMembers() {
