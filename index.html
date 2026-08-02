@@ -7,45 +7,59 @@
   
   <meta name="theme-color" content="#00875A">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="manifest" href="manifest.json">
 
-  <!-- CDNs (FontAwesome, Fonts, Supabase, QRCode) -->
+  <!-- CDNs (FontAwesome, Fonts Plus Jakarta Sans / Google Sans style, Supabase, QRCode) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
     :root {
+      /* FONT FAMILY UTAMA BERGAYA GOOGLE SANS MODERN */
+      --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      
+      /* SKALA UKURAN TIPOGRAFI PRESISI UI MOBILE BANK */
+      --font-xs: 0.68rem;    /* 11px: Sub-label, keterangan akun, tanggal */
+      --font-sm: 0.75rem;    /* 12px: Menu grid label, button kecil, badge status */
+      --font-base: 0.85rem;  /* 13.6px: Teks isi, daftar transaksi, input */
+      --font-md: 0.95rem;    /* 15.2px: Subtitle, nama akun/kartu, header seksi */
+      --font-lg: 1.15rem;    /* 18.4px: Judul utama kartu, total saldo */
+      --font-xl: 1.40rem;    /* 22.4px: Banner greeting, angka utama */
+
+      /* KETEBALAN FONT */
+      --fw-regular: 400;
+      --fw-medium: 500;
+      --fw-semibold: 600;
+      --fw-bold: 700;
+      --fw-extrabold: 800;
+
+      /* PALET WARNA TEMA TERANG (LIGHT MODE MODERN) */
       --primary: #00875A;
       --primary-dark: #005E3E;
       --accent-gold: #D4AF37;
-      --bg-dark: #0F172A;
-      --card-bg-dark: rgba(30, 41, 59, 0.85);
-      --text-main-dark: #F8FAFC;
-      --text-muted-dark: #94A3B8;
-      --border-dark: rgba(51, 65, 85, 0.8);
-      --radius-sm: 8px;
+      --bg-dark: #F8FAFC;                     /* Latar Belakang Terang Clean */
+      --card-bg-dark: #FFFFFF;                /* Kartu Putih Bersih */
+      --text-main-dark: #0F172A;              /* Teks Utama Hitam Pekat */
+      --text-muted-dark: #64748B;             /* Teks Abu-abu Keterangan */
+      --border-dark: rgba(226, 232, 240, 0.9); /* Border Halus */
+      --radius-sm: 10px;
       --radius-md: 16px;
       --radius-lg: 24px;
-      --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-    }
-
-    body.light-mode {
-      --bg-dark: #F1F5F9;
-      --card-bg-dark: rgba(255, 255, 255, 0.9);
-      --text-main-dark: #0F172A;
-      --text-muted-dark: #64748B;
-      --border-dark: rgba(226, 232, 240, 0.8);
+      --shadow-glass: 0 4px 20px rgba(0, 0, 0, 0.05);
     }
 
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: var(--font-main) !important;
       -webkit-tap-highlight-color: transparent;
+      letter-spacing: -0.015em;
     }
 
     body {
@@ -54,12 +68,12 @@
       overflow-x: hidden;
       padding-bottom: 90px;
       transition: background-color 0.3s ease;
+      font-size: var(--font-base);
+      line-height: 1.4;
     }
 
     .glass {
       background: var(--card-bg-dark);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--border-dark);
       box-shadow: var(--shadow-glass);
     }
@@ -68,7 +82,7 @@
     #splash-screen {
       position: fixed;
       inset: 0;
-      background: var(--bg-dark);
+      background: #FFFFFF;
       z-index: 99999;
       display: flex;
       flex-direction: column;
@@ -87,21 +101,23 @@
     }
 
     .splash-logo h1 {
-      font-size: 1.8rem;
-      font-weight: 800;
+      font-size: var(--font-xl);
+      font-weight: var(--fw-extrabold);
       margin-top: 10px;
+      color: var(--text-main-dark);
     }
 
     .splash-logo span {
       color: var(--accent-gold);
-      font-size: 0.9rem;
+      font-size: var(--font-xs);
       letter-spacing: 2px;
+      font-weight: var(--fw-bold);
     }
 
     .spinner {
       width: 40px;
       height: 40px;
-      border: 4px solid rgba(255, 255, 255, 0.1);
+      border: 4px solid rgba(0, 135, 90, 0.1);
       border-top-color: var(--primary);
       border-radius: 50%;
       animation: spin 1s infinite linear;
@@ -116,7 +132,7 @@
     .auth-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.95);
+      background: rgba(248, 250, 252, 0.96);
       backdrop-filter: blur(12px);
       z-index: 10000;
       display: flex;
@@ -131,7 +147,9 @@
       max-width: 420px;
       border-radius: var(--radius-lg);
       padding: 28px;
+      background: #FFFFFF;
       border: 1px solid var(--border-dark);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     }
 
     .auth-header {
@@ -141,8 +159,20 @@
 
     .auth-icon {
       font-size: 2.5rem;
-      color: var(--accent-gold);
+      color: var(--primary);
       margin-bottom: 8px;
+    }
+
+    .auth-header h2 {
+      font-size: var(--font-lg);
+      font-weight: var(--fw-bold);
+      color: var(--text-main-dark);
+    }
+
+    .auth-header p {
+      font-size: var(--font-xs);
+      color: var(--text-muted-dark);
+      margin-top: 4px;
     }
 
     /* HEADER & NAVBAR */
@@ -154,20 +184,23 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--border-dark);
       border-bottom-left-radius: var(--radius-md);
       border-bottom-right-radius: var(--radius-md);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
     }
 
     .brand-title h1 {
-      font-size: 1.1rem;
-      font-weight: 800;
+      font-size: var(--font-md);
+      font-weight: var(--fw-extrabold);
       color: var(--primary);
     }
 
     .brand-title span {
       color: var(--accent-gold);
-      font-size: 0.75rem;
-      font-weight: 600;
+      font-size: var(--font-xs);
+      font-weight: var(--fw-bold);
       display: block;
     }
 
@@ -180,8 +213,8 @@
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      border: none;
-      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-dark);
+      background: #F1F5F9;
       color: var(--text-main-dark);
       display: flex;
       align-items: center;
@@ -194,13 +227,14 @@
       position: absolute;
       top: 6px;
       right: 6px;
-      width: 10px;
-      height: 10px;
+      width: 9px;
+      height: 9px;
       background: #EF4444;
       border-radius: 50%;
       display: none;
     }
 
+    /* BOTTOM NAV BAR (BTNMOBILE STYLE) */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -211,8 +245,11 @@
       display: flex;
       justify-content: space-around;
       align-items: center;
+      background: #FFFFFF;
+      border-top: 1px solid var(--border-dark);
       border-top-left-radius: var(--radius-lg);
       border-top-right-radius: var(--radius-lg);
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
     }
 
     .nav-item {
@@ -221,12 +258,16 @@
       align-items: center;
       color: var(--text-muted-dark);
       text-decoration: none;
-      font-size: 0.7rem;
-      font-weight: 600;
-      gap: 4px;
+      font-size: 0.65rem !important; /* 10.4px agar tidak sesak di HP */
+      font-weight: var(--fw-semibold) !important;
+      gap: 3px;
       cursor: pointer;
       flex: 1;
       text-align: center;
+    }
+
+    .nav-item i {
+      font-size: 1.25rem;
     }
 
     .nav-item.active {
@@ -252,6 +293,9 @@
       border-radius: var(--radius-md);
       padding: 20px;
       margin-bottom: 16px;
+      background: #FFFFFF;
+      border: 1px solid var(--border-dark);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
     }
 
     .banner-card {
@@ -268,50 +312,61 @@
     }
 
     .stat-card {
-      padding: 12px;
+      padding: 14px 10px;
       text-align: center;
       cursor: pointer;
     }
 
     .stat-card h3 {
-      font-size: 1.1rem;
+      font-size: var(--font-md);
+      font-weight: var(--fw-bold);
       margin-top: 4px;
+      color: var(--text-main-dark);
     }
 
     .stat-card span {
-      font-size: 0.68rem;
+      font-size: var(--font-xs);
       color: var(--text-muted-dark);
+      font-weight: var(--fw-medium);
     }
 
+    /* QUICK MENU GRID PRESISI BTN MOBILE */
     .quick-menu {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin: 16px 0;
+      gap: 14px 10px;
+      margin: 18px 0;
     }
 
     .quick-item {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
-      font-size: 0.72rem;
-      font-weight: 600;
       cursor: pointer;
       position: relative;
     }
 
     .quick-icon {
-      width: 50px;
-      height: 50px;
-      border-radius: var(--radius-md);
+      width: 52px;
+      height: 52px;
+      border-radius: 50%; /* Lingkaran persis seperti UI BTN Mobile */
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.2rem;
-      background: var(--card-bg-dark);
+      font-size: 1.25rem;
+      background: #F1F5F9;
       color: var(--primary);
       border: 1px solid var(--border-dark);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .quick-item span {
+      font-size: var(--font-sm) !important;
+      font-weight: var(--fw-medium) !important;
+      color: var(--text-main-dark) !important;
+      margin-top: 6px;
+      text-align: center;
+      line-height: 1.2;
     }
 
     /* DETAIL PROFILE STYLES */
@@ -319,7 +374,7 @@
       margin-top: 15px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       text-align: left;
     }
 
@@ -327,36 +382,38 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      background: rgba(15, 23, 42, 0.4);
-      padding: 10px 14px;
+      background: #F8FAFC;
+      padding: 12px 14px;
       border-radius: var(--radius-sm);
       border: 1px solid var(--border-dark);
     }
 
     .info-item i {
       font-size: 1.2rem;
-      color: var(--accent-gold);
+      color: var(--primary);
       width: 24px;
       text-align: center;
     }
 
     .info-item div span {
       display: block;
-      font-size: 0.7rem;
+      font-size: var(--font-xs);
       color: var(--text-muted-dark);
+      font-weight: var(--fw-medium);
     }
 
     .info-item div strong {
-      font-size: 0.88rem;
+      font-size: var(--font-base);
       color: var(--text-main-dark);
+      font-weight: var(--fw-bold);
     }
 
     /* FORMS & BUTTONS */
     .form-group { margin-bottom: 16px; }
     .form-group label {
       display: block;
-      font-size: 0.8rem;
-      font-weight: 600;
+      font-size: var(--font-xs);
+      font-weight: var(--fw-bold);
       margin-bottom: 6px;
       color: var(--text-muted-dark);
     }
@@ -366,10 +423,15 @@
       padding: 12px 16px;
       border-radius: var(--radius-sm);
       border: 1px solid var(--border-dark);
-      background: rgba(15, 23, 42, 0.5);
+      background: #F8FAFC;
       color: var(--text-main-dark);
       outline: none;
-      font-size: 0.9rem;
+      font-size: var(--font-base);
+    }
+
+    .input-control:focus {
+      border-color: var(--primary);
+      background: #FFFFFF;
     }
 
     .btn {
@@ -377,8 +439,8 @@
       padding: 12px 14px;
       border-radius: var(--radius-md);
       border: none;
-      font-weight: 700;
-      font-size: 0.88rem;
+      font-weight: var(--fw-bold);
+      font-size: var(--font-base);
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -388,7 +450,7 @@
 
     .btn-sm {
       padding: 6px 12px;
-      font-size: 0.75rem;
+      font-size: var(--font-xs);
       border-radius: var(--radius-sm);
     }
 
@@ -401,18 +463,18 @@
       display: inline-block;
       padding: 4px 10px;
       border-radius: 20px;
-      font-size: 0.7rem;
-      font-weight: 700;
+      font-size: var(--font-xs);
+      font-weight: var(--fw-bold);
     }
 
     .badge-gold { background: var(--accent-gold); color: #000; }
     .badge-primary { background: var(--primary); color: #fff; }
-    .badge-warning { background: #F59E0B; color: #000; }
-    .badge-success { background: #10B981; color: #fff; }
-    .badge-danger { background: #EF4444; color: #fff; }
+    .badge-warning { background: #FEF3C7; color: #D97706; }
+    .badge-success { background: #D1FAE5; color: #059669; }
+    .badge-danger { background: #FEE2E2; color: #DC2626; }
 
     .text-muted {
-      font-size: 0.8rem;
+      font-size: var(--font-xs);
       color: var(--text-muted-dark);
     }
 
@@ -431,13 +493,13 @@
       padding: 14px 18px;
       border-radius: var(--radius-md);
       color: white;
-      font-size: 0.85rem;
-      font-weight: 600;
+      font-size: var(--font-base);
+      font-weight: var(--fw-semibold);
       margin-bottom: 10px;
       display: flex;
       align-items: center;
       gap: 12px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
       animation: slideDown 0.3s ease;
     }
 
@@ -450,8 +512,8 @@
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.95);
-      backdrop-filter: blur(12px);
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(8px);
       z-index: 9000;
       display: none;
       align-items: center;
@@ -467,16 +529,19 @@
       max-width: 420px;
       border-radius: var(--radius-lg);
       padding: 24px;
+      background: #FFFFFF;
       position: relative;
       max-height: 90vh;
       overflow-y: auto;
+      border: 1px solid var(--border-dark);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
     }
 
     .close-modal-btn {
       position: absolute;
       top: 16px;
       right: 16px;
-      background: rgba(255,255,255,0.1);
+      background: #F1F5F9;
       border: none;
       color: var(--text-main-dark);
       width: 32px;
@@ -492,6 +557,7 @@
       display: inline-block;
       margin: 15px 0;
       position: relative;
+      border: 1px solid var(--border-dark);
     }
 
     .avatar-placeholder {
@@ -504,7 +570,7 @@
       justify-content: center;
       font-size: 1.8rem;
       color: white;
-      font-weight: 800;
+      font-weight: var(--fw-bold);
       margin: 0 auto 10px;
     }
 
@@ -518,6 +584,7 @@
       height: 130px;
       border-radius: var(--radius-md);
       overflow: hidden;
+      border: 1px solid var(--border-dark);
     }
 
     .gallery-item img {
@@ -532,7 +599,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 12px;
-      background: rgba(15, 23, 42, 0.4);
+      background: #F8FAFC;
       border: 1px solid var(--border-dark);
       border-radius: var(--radius-sm);
       margin-bottom: 8px;
@@ -552,7 +619,7 @@
     }
   </style>
 </head>
-<body class="dark-mode">
+<body>
 
   <!-- TOAST ALERTS CONTAINER -->
   <div id="toast-container"></div>
@@ -569,7 +636,7 @@
 
   <!-- 1. AUTH SCREEN (LOGIN / REGISTER) -->
   <div id="auth-screen" class="auth-overlay">
-    <div class="auth-card glass">
+    <div class="auth-card">
       <div class="auth-header">
         <i class="fa-solid fa-shield-halved auth-icon"></i>
         <h2 id="auth-title">Masuk Anggota</h2>
@@ -602,11 +669,11 @@
 
   <!-- 2. SCREEN FORM LENGKAPI DATA DIRI -->
   <div id="complete-data-screen" class="auth-overlay" style="display: none;">
-    <div class="auth-card glass">
+    <div class="auth-card">
       <div class="auth-header">
         <i class="fa-solid fa-id-card-clip auth-icon" style="color: var(--accent-gold);"></i>
         <h2>Lengkapi Data Anggota</h2>
-        <p style="font-size:0.8rem; color:var(--text-muted-dark); margin-top:4px;">
+        <p style="font-size: var(--font-xs); color:var(--text-muted-dark); margin-top:4px;">
           Lengkapi data diri & kendaraan Anda untuk mengajukan persetujuan akun ke Super Admin.
         </p>
       </div>
@@ -644,14 +711,14 @@
 
   <!-- 3. SCREEN PENDING APPROVAL -->
   <div id="pending-approval-screen" class="auth-overlay" style="display: none;">
-    <div class="auth-card glass" style="text-align: center;">
+    <div class="auth-card" style="text-align: center;">
       <div class="auth-header">
         <i class="fa-solid fa-clock-rotate-left auth-icon" style="color: #F59E0B; font-size:3.5rem;"></i>
         <h2 style="margin-top:10px;">Menunggu Persetujuan</h2>
         <span class="badge badge-warning" style="margin-top:6px;">Status: Pending Approval</span>
       </div>
 
-      <p style="font-size: 0.88rem; color: var(--text-muted-dark); line-height: 1.5; margin-bottom: 20px;">
+      <p style="font-size: var(--font-base); color: var(--text-muted-dark); line-height: 1.5; margin-bottom: 20px;">
         Data diri Anda telah dikirim. Akun Anda sedang ditinjau oleh <strong>Super Admin ITORA BSN SURABAYA</strong>.
         <br><br>
         Silakan hubungi Super Admin untuk mempercepat proses persetujuan.
@@ -675,16 +742,15 @@
   <div id="app-dashboard" class="app-container" style="display: none;">
 
     <!-- APP HEADER -->
-    <header class="app-header glass">
+    <header class="app-header">
       <div class="brand-title">
         <h1>ITORA BSN</h1>
         <span>SURABAYA CLUB</span>
       </div>
       <div class="header-actions">
         <button type="button" class="icon-btn" onclick="app.openModal('qr-modal')"><i class="fa-solid fa-qrcode"></i></button>
-        <button type="button" class="icon-btn" onclick="app.toggleTheme()"><i class="fa-solid fa-moon" id="theme-icon"></i></button>
         <button type="button" class="icon-btn" onclick="app.navigateTo('profil')">
-          <i class="fa-solid fa-user-circle" style="color: var(--accent-gold);"></i>
+          <i class="fa-solid fa-user-circle" style="color: var(--primary);"></i>
           <span class="notification-badge" id="header-notif-dot"></span>
         </button>
       </div>
@@ -695,40 +761,40 @@
 
       <!-- 1. BERANDA / DASHBOARD -->
       <section id="page-beranda" class="page active">
-        <div class="card banner-card glass">
+        <div class="card banner-card">
           <span class="badge badge-gold">Komunitas Resmi</span>
-          <h2 style="margin-top: 8px; font-size: 1.4rem;" id="user-greeting">Salam Satu Jalur!</h2>
-          <p style="font-size: 0.85rem; opacity: 0.9; margin-top: 4px;">Bank Syariah Nasional Cabang Surabaya</p>
+          <h2 style="margin-top: 8px; font-size: var(--font-xl); font-weight: var(--fw-extrabold);" id="user-greeting">Salam Satu Jalur!</h2>
+          <p style="font-size: var(--font-xs); opacity: 0.95; margin-top: 4px;">Bank Syariah Nasional Cabang Surabaya</p>
         </div>
 
         <div class="stats-grid">
-          <div class="card glass stat-card" onclick="app.navigateTo('anggota')">
-            <i class="fa-solid fa-users" style="color: var(--primary);"></i>
+          <div class="card stat-card" onclick="app.navigateTo('anggota')">
+            <i class="fa-solid fa-users" style="color: var(--primary); font-size: 1.2rem;"></i>
             <h3 id="stat-members">0</h3>
             <span>Anggota</span>
           </div>
-          <div class="card glass stat-card" onclick="app.navigateTo('touring')">
-            <i class="fa-solid fa-route" style="color: var(--accent-gold);"></i>
+          <div class="card stat-card" onclick="app.navigateTo('touring')">
+            <i class="fa-solid fa-route" style="color: var(--accent-gold); font-size: 1.2rem;"></i>
             <h3>24</h3>
             <span>Touring</span>
           </div>
-          <div class="card glass stat-card" onclick="app.navigateTo('kas')">
-            <i class="fa-solid fa-wallet" style="color: #10B981;"></i>
+          <div class="card stat-card" onclick="app.navigateTo('kas')">
+            <i class="fa-solid fa-wallet" style="color: #10B981; font-size: 1.2rem;"></i>
             <h3 id="stat-kas-amount">Rp 0</h3>
             <span>Kas (IDR)</span>
           </div>
         </div>
 
-        <!-- QUICK MENU DINAMIS DARI SUPABASE -->
+        <!-- QUICK MENU DINAMIS DARI SUPABASE (STYLE BTN MOBILE) -->
         <div class="quick-menu" id="dynamic-quick-menu"></div>
 
-        <div class="card glass">
-          <div class="card-header-flex">
-            <h3><i class="fa-solid fa-compass" style="color: var(--accent-gold);"></i> Touring Terdekat</h3>
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h3 style="font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-compass" style="color: var(--accent-gold);"></i> Touring Terdekat</h3>
             <span class="badge badge-primary" id="home-touring-date">Agustus 2026</span>
           </div>
-          <h4 style="font-size: 1.1rem; margin-top: 6px;" id="home-touring-title">Touring Kemerdekaan Bromo</h4>
-          <p class="text-muted"><i class="fa-regular fa-calendar"></i> <span id="home-touring-schedule">17 Agustus 2026 | 05:00 WIB</span></p>
+          <h4 style="font-size: var(--font-base); font-weight: var(--fw-bold); margin-top: 8px;" id="home-touring-title">Touring Kemerdekaan Bromo</h4>
+          <p class="text-muted" style="margin-top:4px;"><i class="fa-regular fa-calendar"></i> <span id="home-touring-schedule">17 Agustus 2026 | 05:00 WIB</span></p>
           <p class="text-muted"><i class="fa-solid fa-location-dot"></i> Meeting Point: <span id="home-touring-meeting">Alun-Alun Surabaya</span></p>
           <button type="button" class="btn btn-gold" style="margin-top: 14px;" onclick="app.navigateTo('touring')">Detail & Rute</button>
         </div>
@@ -736,34 +802,34 @@
 
       <!-- 2. PANEL SUPER ADMIN -->
       <section id="page-admin" class="page">
-        <h2 style="color: var(--accent-gold);"><i class="fa-solid fa-user-shield"></i> Panel Super Admin</h2>
+        <h2 style="color: var(--primary); font-size: var(--font-lg); font-weight: var(--fw-bold);"><i class="fa-solid fa-user-shield"></i> Panel Super Admin</h2>
         <p class="text-muted" style="margin-bottom: 15px;">Kontrol penuh sistem, menu dinamis, persetujuan anggota, dan kas</p>
 
         <!-- MANAJEMEN MENU DINAMIS SUPABASE -->
-        <div class="card glass">
+        <div class="card">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <h3><i class="fa-solid fa-bars-staggered" style="color: var(--accent-gold);"></i> Pengaturan Menu App</h3>
+            <h3 style="font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-bars-staggered" style="color: var(--primary);"></i> Pengaturan Menu App</h3>
             <button class="btn btn-sm btn-gold" onclick="app.openModal('modal-add-menu')"><i class="fa-solid fa-plus"></i> Tambah Menu</button>
           </div>
-          <p class="text-muted" style="font-size: 0.75rem; margin-bottom: 12px;">Aktifkan, nonaktifkan, atau atur tampilan menu di Dashboard & Bottom Bar</p>
+          <p class="text-muted" style="margin-bottom: 12px;">Aktifkan, nonaktifkan, atau atur tampilan menu di Dashboard & Bottom Bar</p>
           <div id="admin-menu-list">
             <p class="text-muted" style="text-align:center;">Memuat data menu dari Supabase...</p>
           </div>
         </div>
 
         <!-- APPROVAL PERSETUJUAN ANGGOTA BARU -->
-        <div class="card glass">
-          <h3 style="margin-bottom: 8px;"><i class="fa-solid fa-user-check" style="color: var(--accent-gold);"></i> Persetujuan Anggota Baru</h3>
-          <p class="text-muted" style="font-size: 0.75rem; margin-bottom: 12px;">Daftar calon anggota yang telah melengkapi data diri & menunggu persetujuan</p>
+        <div class="card">
+          <h3 style="margin-bottom: 8px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-user-check" style="color: var(--accent-gold);"></i> Persetujuan Anggota Baru</h3>
+          <p class="text-muted" style="margin-bottom: 12px;">Daftar calon anggota yang telah melengkapi data diri & menunggu persetujuan</p>
           <div id="admin-pending-members-list">
             <p class="text-muted" style="text-align:center;">Memuat pendaftaran anggota...</p>
           </div>
         </div>
 
         <!-- PENGATURAN NOMOR WHATSAPP KONFIRMASI -->
-        <div class="card glass">
-          <h3 style="margin-bottom: 6px;"><i class="fa-brands fa-whatsapp" style="color: #25D366;"></i> Pengaturan WhatsApp Konfirmasi</h3>
-          <p class="text-muted" style="font-size: 0.75rem; margin-bottom: 10px;">Nomor WA ini akan menerima konfirmasi otomatis dari anggota</p>
+        <div class="card">
+          <h3 style="margin-bottom: 6px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-brands fa-whatsapp" style="color: #25D366;"></i> Pengaturan WhatsApp Konfirmasi</h3>
+          <p class="text-muted" style="margin-bottom: 10px;">Nomor WA ini akan menerima konfirmasi otomatis dari anggota</p>
           <div class="form-group">
             <label>Nomor WA Penerima (Format: 628xxxxxxxxxx)</label>
             <input type="text" class="input-control" id="admin-wa-input" placeholder="6281234567890" value="6281234567890">
@@ -772,9 +838,9 @@
         </div>
 
         <!-- UPDATE JADWAL TOURING -->
-        <div class="card glass">
-          <h3 style="margin-bottom: 6px;"><i class="fa-solid fa-route" style="color: var(--accent-gold);"></i> Update Jadwal Touring Utama</h3>
-          <p class="text-muted" style="font-size: 0.75rem; margin-bottom: 10px;">Perbarui agenda touring yang tampil di Beranda dan Halaman Touring</p>
+        <div class="card">
+          <h3 style="margin-bottom: 6px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-route" style="color: var(--primary);"></i> Update Jadwal Touring Utama</h3>
+          <p class="text-muted" style="margin-bottom: 10px;">Perbarui agenda touring yang tampil di Beranda dan Halaman Touring</p>
           
           <form onsubmit="app.adminUpdateTouring(event)">
             <div class="form-group">
@@ -798,9 +864,9 @@
         </div>
 
         <!-- PENGATURAN KAS POKOK/BASE -->
-        <div class="card glass">
-          <h3 style="margin-bottom: 6px;"><i class="fa-solid fa-wallet" style="color: #10B981;"></i> Pengaturan Kas Utama</h3>
-          <p class="text-muted" style="font-size: 0.75rem; margin-bottom: 10px;">Saldo Kas Awal/Sisa + Otomatis Penambahan Iuran yang Disetujui</p>
+        <div class="card">
+          <h3 style="margin-bottom: 6px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-wallet" style="color: #10B981;"></i> Pengaturan Kas Utama</h3>
+          <p class="text-muted" style="margin-bottom: 10px;">Saldo Kas Awal/Sisa + Otomatis Penambahan Iuran yang Disetujui</p>
           <div class="form-group">
             <label>Saldo Kas Pokok Awal (Rp)</label>
             <input type="number" class="input-control" id="admin-kas-input" placeholder="0" value="0">
@@ -809,8 +875,8 @@
         </div>
 
         <!-- VERIFIKASI IURAN ANGGOTA -->
-        <div class="card glass">
-          <h3 style="margin-bottom: 12px;"><i class="fa-solid fa-check-to-slot" style="color: var(--primary);"></i> Verifikasi Iuran Anggota</h3>
+        <div class="card">
+          <h3 style="margin-bottom: 12px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-check-to-slot" style="color: var(--primary);"></i> Verifikasi Iuran Anggota</h3>
           <div id="admin-dues-list">
             <p class="text-muted" style="text-align:center;">Memuat data iuran...</p>
           </div>
@@ -819,7 +885,7 @@
 
       <!-- 3. ANGGOTA -->
       <section id="page-anggota" class="page">
-        <h2>Daftar Anggota</h2>
+        <h2 style="font-size: var(--font-lg); font-weight: var(--fw-bold);">Daftar Anggota</h2>
         <div class="form-group" style="margin-top: 12px;">
           <input type="text" class="input-control" placeholder="Cari nama atau email..." id="search-member" onkeyup="app.filterMembers()">
         </div>
@@ -828,11 +894,11 @@
 
       <!-- 4. EVENT -->
       <section id="page-event" class="page">
-        <h2>Agenda & Event</h2>
-        <div class="card glass" style="margin-top: 12px;">
+        <h2 style="font-size: var(--font-lg); font-weight: var(--fw-bold);">Agenda & Event</h2>
+        <div class="card" style="margin-top: 12px;">
           <span class="badge badge-gold">Mendatang</span>
-          <h3 style="margin-top: 6px;">Kopdar Wajib & Doa Bersama</h3>
-          <p class="text-muted"><i class="fa-regular fa-clock"></i> Jumat, 14 Agustus 2026 • 19:00 WIB</p>
+          <h3 style="margin-top: 6px; font-size: var(--font-base); font-weight: var(--fw-bold);">Kopdar Wajib & Doa Bersama</h3>
+          <p class="text-muted" style="margin-top:4px;"><i class="fa-regular fa-clock"></i> Jumat, 14 Agustus 2026 • 19:00 WIB</p>
           <p class="text-muted"><i class="fa-solid fa-map-marker-alt"></i> BSN KC Surabaya Lt. 3</p>
           <button type="button" class="btn btn-primary" style="margin-top: 12px;" onclick="app.showToast('RSVP Anda berhasil dikonfirmasi!', 'success')">Konfirmasi Hadir (RSVP)</button>
         </div>
@@ -840,10 +906,10 @@
 
       <!-- 5. TOURING -->
       <section id="page-touring" class="page">
-        <h2>Jadwal & Rute Touring</h2>
-        <div class="card glass" style="margin-top: 12px;">
+        <h2 style="font-size: var(--font-lg); font-weight: var(--fw-bold);">Jadwal & Rute Touring</h2>
+        <div class="card" style="margin-top: 12px;">
           <span class="badge badge-gold" id="touring-badge-tag">Destinasi Utama</span>
-          <h3 style="margin-top: 6px;" id="touring-page-title">Bromo Sunrise Ride</h3>
+          <h3 style="margin-top: 6px; font-size: var(--font-base); font-weight: var(--fw-bold);" id="touring-page-title">Bromo Sunrise Ride</h3>
           <p class="text-muted" style="margin-top: 4px;"><i class="fa-regular fa-calendar"></i> <span id="touring-page-schedule">17 Agustus 2026 | 05:00 WIB</span></p>
           <p class="text-muted"><i class="fa-solid fa-location-dot"></i> Meeting Point: <span id="touring-page-meeting">Alun-Alun Surabaya</span></p>
           
@@ -855,19 +921,19 @@
 
       <!-- 6. GALERI -->
       <section id="page-galeri" class="page">
-        <h2>Dokumentasi Kegiatan</h2>
+        <h2 style="font-size: var(--font-lg); font-weight: var(--fw-bold);">Dokumentasi Kegiatan</h2>
         <div class="gallery-grid" style="margin-top: 12px;">
-          <div class="gallery-item glass"><img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=500" alt="Galeri 1"></div>
-          <div class="gallery-item glass"><img src="https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=500" alt="Galeri 2"></div>
+          <div class="gallery-item"><img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=500" alt="Galeri 1"></div>
+          <div class="gallery-item"><img src="https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=500" alt="Galeri 2"></div>
         </div>
       </section>
 
       <!-- 7. KAS & IURAN -->
       <section id="page-kas" class="page">
-        <h2>Kas & Iuran Komunitas</h2>
-        <div class="card glass" style="margin-top: 12px; text-align: center;">
+        <h2 style="font-size: var(--font-lg); font-weight: var(--fw-bold);">Kas & Iuran Komunitas</h2>
+        <div class="card" style="margin-top: 12px; text-align: center;">
           <span class="text-muted">Total Saldo Kas Terkumpul</span>
-          <h1 style="color: var(--primary); font-size: 2.2rem; margin: 8px 0;" id="kas-page-amount">Rp 0</h1>
+          <h1 style="color: var(--primary); font-size: 2.2rem; font-weight: var(--fw-extrabold); margin: 8px 0;" id="kas-page-amount">Rp 0</h1>
           
           <button type="button" class="btn btn-gold" style="margin-top: 10px;" onclick="app.openModal('modal-iuran')">
             <i class="fa-solid fa-receipt"></i> Setor Bukti Iuran Baru
@@ -879,55 +945,55 @@
           </div>
         </div>
 
-        <h3 style="font-size: 1.1rem; margin: 20px 0 10px;">Riwayat Setoran Iuran Saya</h3>
+        <h3 style="font-size: var(--font-md); font-weight: var(--fw-bold); margin: 20px 0 10px;">Riwayat Setoran Iuran Saya</h3>
         <div id="iuran-history-list"></div>
       </section>
 
       <!-- 8. MERCHANDISE -->
       <section id="page-merchandise" class="page">
-        <h2>Merchandise Resmi</h2>
-        <div class="card glass" style="margin-top: 12px;">
-          <h4>Kaos Official ITORA BSN</h4>
-          <p style="color: var(--accent-gold); font-weight: 700; margin: 6px 0;">Rp 125.000</p>
+        <h2 style="font-size: var(--font-lg); font-weight: var(--fw-bold);">Merchandise Resmi</h2>
+        <div class="card" style="margin-top: 12px;">
+          <h4 style="font-size: var(--font-base); font-weight: var(--fw-bold);">Kaos Official ITORA BSN</h4>
+          <p style="color: var(--primary); font-weight: var(--fw-bold); margin: 6px 0;">Rp 125.000</p>
           <button type="button" class="btn btn-primary" onclick="app.showToast('Pesanan dicatat! Admin akan menghubungi Anda.', 'success')">Pesan Sekarang</button>
         </div>
       </section>
 
       <!-- 9. PENGUMUMAN -->
       <section id="page-pengumuman" class="page">
-        <h2>Pengumuman Resmi</h2>
-        <div class="card glass" style="margin-top: 12px;">
-          <h4>Penting: Pelunasan Iuran Kas</h4>
+        <h2 style="font-size: var(--font-lg); font-weight: var(--fw-bold);">Pengumuman Resmi</h2>
+        <div class="card" style="margin-top: 12px;">
+          <h4 style="font-size: var(--font-base); font-weight: var(--fw-bold);">Penting: Pelunasan Iuran Kas</h4>
           <p class="text-muted" style="margin-top: 4px;">Diharapkan seluruh anggota melunasi iuran kas paling lambat tanggal 10 tiap bulannya.</p>
         </div>
       </section>
 
       <!-- 10. SPONSOR -->
       <section id="page-sponsor" class="page">
-        <h2>Sponsor Utama</h2>
-        <div class="card glass" style="margin-top: 12px; text-align: center;">
+        <h2 style="font-size: var(--font-lg); font-weight: var(--fw-bold);">Sponsor Utama</h2>
+        <div class="card" style="margin-top: 12px; text-align: center;">
           <i class="fa-solid fa-building-columns" style="font-size: 3rem; color: var(--primary);"></i>
-          <h3 style="margin-top: 10px;">Bank Syariah Nasional Cabang Surabaya</h3>
+          <h3 style="margin-top: 10px; font-size: var(--font-md); font-weight: var(--fw-bold);">Bank Syariah Nasional Cabang Surabaya</h3>
         </div>
       </section>
 
       <!-- 11. KONTAK -->
       <section id="page-kontak" class="page">
-        <h2>Kontak Pengurus</h2>
-        <div class="card glass" style="margin-top: 12px;">
-          <h4 style="color: var(--accent-gold);">Ketua Umum</h4>
-          <p>Ahmad Fauzi</p>
-          <p class="text-muted"><i class="fa-brands fa-whatsapp"></i> <span id="contact-wa-display">+62 812-3456-7890</span></p>
+        <h2 style="font-size: var(--font-lg); font-weight: var(--fw-bold);">Kontak Pengurus</h2>
+        <div class="card" style="margin-top: 12px;">
+          <h4 style="color: var(--primary); font-weight: var(--fw-bold);">Ketua Umum</h4>
+          <p style="font-size: var(--font-base); font-weight: var(--fw-medium);">Ahmad Fauzi</p>
+          <p class="text-muted" style="margin-top:2px;"><i class="fa-brands fa-whatsapp"></i> <span id="contact-wa-display">+62 812-3456-7890</span></p>
         </div>
       </section>
 
       <!-- 12. PROFIL SAYA -->
       <section id="page-profil" class="page">
-        <h2>Profil Anggota Digital</h2>
+        <h2 style="font-size: var(--font-lg); font-weight: var(--fw-bold);">Profil Anggota Digital</h2>
         
-        <div class="card glass" style="margin-top: 12px; text-align: center;">
+        <div class="card" style="margin-top: 12px; text-align: center;">
           <div class="avatar-placeholder" id="profile-avatar">A</div>
-          <h3 id="profile-name">Anggota</h3>
+          <h3 id="profile-name" style="font-size: var(--font-md); font-weight: var(--fw-bold);">Anggota</h3>
           <span class="badge badge-gold" id="profile-role" style="margin-top: 6px;">Anggota Resmi</span>
           <p class="text-muted" id="profile-email" style="margin-top: 4px;">-</p>
 
@@ -983,8 +1049,8 @@
 
       <!-- 13. SETELAN -->
       <section id="page-pengaturan" class="page">
-        <h2>Setelan App</h2>
-        <div class="card glass" style="margin-top: 12px;">
+        <h2 style="font-size: var(--font-lg); font-weight: var(--fw-bold);">Setelan App</h2>
+        <div class="card" style="margin-top: 12px;">
           <button type="button" class="btn btn-gold" onclick="app.handleLogout()">
             <i class="fa-solid fa-right-from-bracket"></i> Keluar (Logout)
           </button>
@@ -994,15 +1060,15 @@
     </main>
 
     <!-- BOTTOM NAVIGATION BAR DINAMIS DARI SUPABASE -->
-    <nav class="bottom-nav glass" id="dynamic-bottom-nav"></nav>
+    <nav class="bottom-nav" id="dynamic-bottom-nav"></nav>
 
   </div>
 
   <!-- MODAL EDIT PROFIL -->
   <div class="modal-overlay" id="modal-edit-profile">
-    <div class="modal-card glass">
+    <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-edit-profile')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="text-align: center; margin-bottom: 15px;"><i class="fa-solid fa-user-pen" style="color: var(--accent-gold);"></i> Edit Profil Anggota</h3>
+      <h3 style="text-align: center; margin-bottom: 15px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-user-pen" style="color: var(--primary);"></i> Edit Profil Anggota</h3>
       
       <form id="form-edit-profile" onsubmit="app.handleSaveProfile(event)">
         <div class="form-group">
@@ -1034,9 +1100,9 @@
 
   <!-- MODAL ADD/EDIT MENU (KHUSUS SUPER ADMIN) -->
   <div class="modal-overlay" id="modal-add-menu">
-    <div class="modal-card glass">
+    <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-add-menu')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="text-align: center; margin-bottom: 15px;"><i class="fa-solid fa-plus" style="color: var(--accent-gold);"></i> Tambah / Edit Menu</h3>
+      <h3 style="text-align: center; margin-bottom: 15px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-plus" style="color: var(--primary);"></i> Tambah / Edit Menu</h3>
       
       <form id="form-menu" onsubmit="app.handleSaveMenu(event)">
         <input type="hidden" id="menu-id">
@@ -1076,20 +1142,20 @@
 
   <!-- QR CARD MODAL -->
   <div class="modal-overlay" id="qr-modal">
-    <div class="modal-card glass" style="text-align: center;">
+    <div class="modal-card" style="text-align: center;">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('qr-modal')"><i class="fa-solid fa-xmark"></i></button>
-      <h3>Kartu Anggota Digital</h3>
+      <h3 style="font-size: var(--font-md); font-weight: var(--fw-bold);">Kartu Anggota Digital</h3>
       <div class="qr-container"><div id="qrcode"></div></div>
-      <p style="font-weight: 700; color: var(--primary);" id="qr-member-id">ITORA-BSN-MEMBER</p>
+      <p style="font-weight: var(--fw-bold); color: var(--primary);" id="qr-member-id">ITORA-BSN-MEMBER</p>
       <button type="button" class="btn btn-primary" style="margin-top: 15px;" onclick="app.closeModal('qr-modal')">Tutup</button>
     </div>
   </div>
 
   <!-- MODAL POP-UP FORM SETOR IURAN -->
   <div class="modal-overlay" id="modal-iuran">
-    <div class="modal-card glass">
+    <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-iuran')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="text-align: center; margin-bottom: 15px;"><i class="fa-solid fa-receipt" style="color: var(--accent-gold);"></i> Setor Iuran Anggota</h3>
+      <h3 style="text-align: center; margin-bottom: 15px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-receipt" style="color: var(--primary);"></i> Setor Iuran Anggota</h3>
       
       <form id="form-iuran" onsubmit="app.handleSubmitIuran(event)">
         <div class="form-group">
@@ -1623,7 +1689,7 @@
         const isSuperAdmin = (this.currentUser && this.currentUser.email === 'mastrisnobpb@gmail.com');
         const activeMenus = this.menus.filter(m => m.is_active);
 
-        // Quick Menu Grid Beranda
+        // Quick Menu Grid Beranda (Tampilan Lingkaran UI BTN Mobile)
         const quickMenuContainer = document.getElementById('dynamic-quick-menu');
         if (quickMenuContainer) {
           const quickItems = activeMenus.filter(m => m.show_in_quick_menu);
@@ -1683,8 +1749,8 @@
               <div class="menu-admin-info">
                 ${iconContent}
                 <div>
-                  <strong style="font-size:0.85rem; color:var(--text-main-dark);">${m.title}</strong>
-                  <span class="text-muted" style="display:block; font-size:0.7rem;">Key: ${m.menu_key} | Order: ${m.sort_order}</span>
+                  <strong style="font-size:var(--font-base); color:var(--text-main-dark); font-weight:var(--fw-bold);">${m.title}</strong>
+                  <span class="text-muted" style="display:block;">Key: ${m.menu_key} | Order: ${m.sort_order}</span>
                 </div>
               </div>
               <div style="display:flex; gap:6px; align-items:center;">
@@ -1797,13 +1863,13 @@
 
           if (!error && pendingMembers && pendingMembers.length > 0) {
             container.innerHTML = pendingMembers.map(m => `
-              <div class="card glass" style="padding: 12px; margin-bottom: 10px; border-left: 4px solid #F59E0B;">
+              <div class="card" style="padding: 12px; margin-bottom: 10px; border-left: 4px solid #F59E0B;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <h4>${m.full_name || 'Calon Anggota'}</h4>
+                  <h4 style="font-size:var(--font-base); font-weight:var(--fw-bold);">${m.full_name || 'Calon Anggota'}</h4>
                   <span class="badge badge-warning">Pending Approval</span>
                 </div>
-                <p class="text-muted" style="font-size:0.75rem; margin-top:2px;"><i class="fa-solid fa-envelope"></i> ${m.email} | <i class="fa-brands fa-whatsapp"></i> ${m.phone || '-'}</p>
-                <p class="text-muted" style="font-size:0.75rem;"><i class="fa-solid fa-motorcycle"></i> ${m.bike || '-'} (${m.plate || '-'})</p>
+                <p class="text-muted" style="margin-top:2px;"><i class="fa-solid fa-envelope"></i> ${m.email} | <i class="fa-brands fa-whatsapp"></i> ${m.phone || '-'}</p>
+                <p class="text-muted"><i class="fa-solid fa-motorcycle"></i> ${m.bike || '-'} (${m.plate || '-'})</p>
 
                 <div style="display: flex; gap: 8px; margin-top: 10px;">
                   <button type="button" class="btn btn-sm btn-primary" onclick="app.adminApproveMember('${m.id}', 'Approved')"><i class="fa-solid fa-check"></i> Setujui Anggota</button>
@@ -1955,14 +2021,14 @@
 
           if (!error && dues && dues.length > 0) {
             historyContainer.innerHTML = dues.map(item => `
-              <div class="card glass" style="padding: 14px; margin-bottom: 10px;">
+              <div class="card" style="padding: 14px; margin-bottom: 10px;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <h4>${item.period_month}</h4>
+                  <h4 style="font-size:var(--font-base); font-weight:var(--fw-bold);">${item.period_month}</h4>
                   <span class="badge ${item.status === 'Verified' ? 'badge-success' : item.status === 'Rejected' ? 'badge-danger' : 'badge-warning'}">${item.status === 'Verified' ? 'Disetujui' : item.status === 'Rejected' ? 'Ditolak' : 'Menunggu Verifikasi'}</span>
                 </div>
-                <p style="color: var(--accent-gold); font-weight: 700; margin-top: 4px;">Rp ${parseFloat(item.amount).toLocaleString('id-ID')}</p>
-                <p class="text-muted" style="font-size: 0.75rem; margin-top: 4px;"><i class="fa-regular fa-clock"></i> ${new Date(item.payment_date).toLocaleDateString('id-ID')} • ${item.payment_method}</p>
-                ${item.receipt_url ? `<a href="${item.receipt_url}" target="_blank" class="text-muted" style="font-size:0.7rem; color:var(--primary); margin-top:4px; display:inline-block;"><i class="fa-solid fa-image"></i> Lihat Bukti Foto</a>` : ''}
+                <p style="color: var(--primary); font-weight: var(--fw-bold); margin-top: 4px; font-size: var(--font-base);">Rp ${parseFloat(item.amount).toLocaleString('id-ID')}</p>
+                <p class="text-muted" style="margin-top: 4px;"><i class="fa-regular fa-clock"></i> ${new Date(item.payment_date).toLocaleDateString('id-ID')} • ${item.payment_method}</p>
+                ${item.receipt_url ? `<a href="${item.receipt_url}" target="_blank" class="text-muted" style="color:var(--primary); font-weight:var(--fw-semibold); margin-top:4px; display:inline-block;"><i class="fa-solid fa-image"></i> Lihat Bukti Foto</a>` : ''}
               </div>
             `).join('');
           } else {
@@ -1980,14 +2046,14 @@
 
           if (!error && dues && dues.length > 0) {
             container.innerHTML = dues.map(item => `
-              <div class="card glass" style="padding: 12px; margin-bottom: 10px; border-left: 4px solid ${item.status === 'Verified' ? '#10B981' : item.status === 'Rejected' ? '#EF4444' : '#F59E0B'}">
+              <div class="card" style="padding: 12px; margin-bottom: 10px; border-left: 4px solid ${item.status === 'Verified' ? '#10B981' : item.status === 'Rejected' ? '#EF4444' : '#F59E0B'}">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <h4>${item.member_name}</h4>
+                  <h4 style="font-size:var(--font-base); font-weight:var(--fw-bold);">${item.member_name}</h4>
                   <span class="badge ${item.status === 'Verified' ? 'badge-success' : item.status === 'Rejected' ? 'badge-danger' : 'badge-warning'}">${item.status}</span>
                 </div>
-                <p style="font-weight:700; color:var(--accent-gold); margin-top:2px;">Rp ${parseFloat(item.amount).toLocaleString('id-ID')} (${item.period_month})</p>
-                <p class="text-muted" style="font-size: 0.75rem;">Metode: ${item.payment_method} | ${new Date(item.payment_date).toLocaleDateString('id-ID')}</p>
-                ${item.receipt_url ? `<p style="margin-top:4px;"><a href="${item.receipt_url}" target="_blank" style="color:var(--primary); font-size:0.75rem;"><i class="fa-solid fa-image"></i> Cek Foto Bukti Transfer</a></p>` : ''}
+                <p style="font-weight:var(--fw-bold); color:var(--primary); margin-top:2px;">Rp ${parseFloat(item.amount).toLocaleString('id-ID')} (${item.period_month})</p>
+                <p class="text-muted">Metode: ${item.payment_method} | ${new Date(item.payment_date).toLocaleDateString('id-ID')}</p>
+                ${item.receipt_url ? `<p style="margin-top:4px;"><a href="${item.receipt_url}" target="_blank" style="color:var(--primary); font-weight:var(--fw-semibold);"><i class="fa-solid fa-image"></i> Cek Foto Bukti Transfer</a></p>` : ''}
                 
                 <div style="display: flex; gap: 8px; margin-top: 10px;">
                   <button type="button" class="btn btn-sm btn-primary" onclick="app.adminVerifyDue('${item.id}', 'Verified')"><i class="fa-solid fa-check"></i> Setujui</button>
@@ -2050,17 +2116,17 @@
         const isSuperAdmin = (this.currentUser && this.currentUser.email === 'mastrisnobpb@gmail.com');
 
         container.innerHTML = data.map(m => `
-          <div class="card glass" style="display: flex; align-items: center; gap: 14px; padding: 14px; margin-bottom: 10px;">
+          <div class="card" style="display: flex; align-items: center; gap: 14px; padding: 14px; margin-bottom: 10px;">
             <div class="avatar-placeholder" style="margin:0; width: 44px; height: 44px; font-size: 1.1rem; ${m.role === 'Super Admin' ? 'background: var(--accent-gold); color: #000;' : ''}">
               ${m.name.charAt(0).toUpperCase()}
             </div>
             <div style="flex: 1;">
               <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h4 style="font-size: 0.9rem;">${m.name}</h4>
-                <span class="badge ${m.role === 'Super Admin' ? 'badge-gold' : 'badge-primary'}" style="font-size:0.65rem;">${m.role}</span>
+                <h4 style="font-size: var(--font-base); font-weight: var(--fw-bold);">${m.name}</h4>
+                <span class="badge ${m.role === 'Super Admin' ? 'badge-gold' : 'badge-primary'}">${m.role}</span>
               </div>
-              <p class="text-muted" style="font-size: 0.75rem; margin-top: 2px;">${m.email || m.bike}</p>
-              <span class="badge badge-gold" style="margin-top: 4px; font-size: 0.65rem;">Plat: ${m.plate}</span>
+              <p class="text-muted" style="margin-top: 2px;">${m.email || m.bike}</p>
+              <span class="badge badge-gold" style="margin-top: 4px;">Plat: ${m.plate}</span>
             </div>
             ${isSuperAdmin && m.email !== 'mastrisnobpb@gmail.com' ? `
               <button type="button" class="btn btn-sm btn-danger" style="width:auto;" onclick="app.adminDeleteMember('${m.id}')"><i class="fa-solid fa-trash"></i></button>
@@ -2102,16 +2168,6 @@
         if (activeNav) activeNav.classList.add('active');
 
         window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-
-      toggleTheme() {
-        document.body.classList.toggle('light-mode');
-        const icon = document.getElementById('theme-icon');
-        if (document.body.classList.contains('light-mode')) {
-          icon.className = 'fa-solid fa-sun';
-        } else {
-          icon.className = 'fa-solid fa-moon';
-        }
       }
 
       openModal(id) {
