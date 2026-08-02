@@ -76,6 +76,60 @@
       line-height: 1.4;
     }
 
+    /* BREAKING NEWS TICKER CONTAINER (BERITA BERJALAN) */
+    .news-ticker-wrapper {
+      background: #FFFFFF;
+      border: 1px solid var(--border-dark);
+      border-radius: var(--radius-sm);
+      margin-bottom: 14px;
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+      overflow: hidden;
+    }
+
+    .news-badge {
+      background: #EF4444;
+      color: #FFFFFF;
+      font-size: 0.62rem;
+      font-weight: var(--fw-extrabold);
+      padding: 3px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .news-ticker-content {
+      flex: 1;
+      overflow: hidden;
+      white-space: nowrap;
+      position: relative;
+    }
+
+    .news-ticker-text {
+      display: inline-block;
+      white-space: nowrap;
+      font-size: var(--font-xs);
+      font-weight: var(--fw-semibold);
+      color: var(--text-main-dark);
+      animation: tickerAnimation 25s linear infinite;
+    }
+
+    .news-ticker-wrapper:hover .news-ticker-text {
+      animation-play-state: paused;
+    }
+
+    @keyframes tickerAnimation {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
     /* SPLASH SCREEN */
     #splash-screen {
       position: fixed;
@@ -844,6 +898,17 @@
 
       <!-- 1. BERANDA -->
       <section id="page-beranda" class="page active">
+        
+        <!-- BREAKING NEWS TICKER (BERITA BERJALAN AKTIVITAS RECENT) -->
+        <div class="news-ticker-wrapper">
+          <div class="news-badge"><i class="fa-solid fa-bolt"></i> Update</div>
+          <div class="news-ticker-content">
+            <div class="news-ticker-text" id="breaking-news-text">
+              Memuat pembaruan aktivitas komunitas ITORA BSN Surabaya...
+            </div>
+          </div>
+        </div>
+
         <div class="card banner-card">
           <span class="badge badge-gold">Komunitas Resmi</span>
           <h2 style="margin-top: 8px; font-size: var(--font-xl); font-weight: var(--fw-extrabold);" id="user-greeting">Salam, Sutrisno!</h2>
@@ -897,7 +962,6 @@
             <span class="text-muted" style="display:block; font-size:var(--font-xs);">Atur Menu & Bottom Bar</span>
           </div>
 
-          <!-- MENU MANAJEMEN ROLE BARU -->
           <div class="card" style="margin:0; padding:16px; text-align:center; cursor:pointer;" onclick="app.openModal('modal-admin-roles')">
             <div class="quick-icon" style="margin: 0 auto 8px; width:48px; height:48px; background:#FDE68A; color:#B45309;">
               <i class="fa-solid fa-user-gear"></i>
@@ -1705,7 +1769,6 @@
         if (!this.currentUser) return;
         const email = this.currentUser.email;
 
-        // Super Admin langsung akses dashboard tanpa harus mengisi data diri sebagai anggota
         if (email === 'mastrisnobpb@gmail.com') {
           this.showDashboard();
           return;
@@ -1752,6 +1815,7 @@
         this.loadMembersFromSupabase();
         this.loadIuranHistory();
         this.calculateTotalKas();
+        this.loadBreakingNewsText();
 
         this.checkRealtimeNotifications();
         this.subscribeToRealtimeChanges();
@@ -1894,6 +1958,67 @@
         }
       }
 
+      /* BREAKING NEWS TICKER: MEMUAT TERTULIS MEMBER RECENT, IURAN & MERCH */
+      async loadBreakingNewsText() {
+        const tickerEl = document.getElementById('breaking-news-text');
+        if (!tickerEl || !this.supabase) return;
+
+        try {
+          let newsItems = [];
+
+          // 1. Ambil 2 Anggota Baru Terverifikasi
+          const { data: recentMembers } = await this.supabase
+            .from('members')
+            .select('full_name')
+            .neq('email', 'mastrisnobpb@gmail.com')
+            .eq('approval_status', 'Approved')
+            .order('created_at', { ascending: false })
+            .limit(2);
+
+          if (recentMembers && recentMembers.length > 0) {
+            recentMembers.forEach(m => {
+              newsItems.push(`🎉 Welcome Anggota Baru: <b>${m.full_name}</b>`);
+            });
+          }
+
+          // 2. Ambil 2 Setoran Iuran Terbaru
+          const { data: recentDues } = await this.supabase
+            .from('dues')
+            .select('member_name, period_month')
+            .eq('status', 'Verified')
+            .order('created_at', { ascending: false })
+            .limit(2);
+
+          if (recentDues && recentDues.length > 0) {
+            recentDues.forEach(d => {
+              newsItems.push(`💸 Setor Iuran Lunas: <b>${d.member_name}</b> (${d.period_month})`);
+            });
+          }
+
+          // 3. Ambil 2 Pesanan Merchandise Terbaru
+          const { data: recentOrders } = await this.supabase
+            .from('orders')
+            .select('member_name, item_name')
+            .order('created_at', { ascending: false })
+            .limit(2);
+
+          if (recentOrders && recentOrders.length > 0) {
+            recentOrders.forEach(o => {
+              newsItems.push(`🛍️ Pemesanan Merch: <b>${o.member_name}</b> memproses ${o.item_name}`);
+            });
+          }
+
+          if (newsItems.length > 0) {
+            tickerEl.innerHTML = newsItems.join(' &nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp; ');
+          } else {
+            tickerEl.innerHTML = "Selamat Datang di PWA Aplikasi Komunitas ITORA BSN Surabaya! • Tetap Utamakan Safety Riding!";
+          }
+
+        } catch (e) {
+          tickerEl.innerHTML = "Selamat Datang di PWA Aplikasi Komunitas ITORA BSN Surabaya!";
+        }
+      }
+
       updateUserUI() {
         if (!this.currentUser) return;
         const isSuperAdmin = (this.currentUser.email === 'mastrisnobpb@gmail.com');
@@ -1966,7 +2091,6 @@
         }
       }
 
-      /* FITUR SUPER ADMIN MANAJEMEN ROLE PENGURUS */
       async loadAdminRolesList() {
         const container = document.getElementById('admin-roles-list');
         if (!container || !this.supabase) return;
@@ -2036,7 +2160,6 @@
         }
       }
 
-      /* FITUR KELOLA KATALOG TOKO ONLINE */
       async loadProductsFromSupabase() {
         if (!this.supabase) return;
         try {
@@ -2473,6 +2596,7 @@
           this.showToast(`Pendaftaran Anggota Berhasil di-${status}!`, 'success');
           this.loadAdminPendingMembersList();
           this.loadMembersFromSupabase();
+          this.loadBreakingNewsText();
           this.checkRealtimeNotifications();
         } catch (e) {
           this.showToast('Gagal memproses persetujuan anggota.', 'error');
@@ -2676,6 +2800,7 @@
             this.checkRealtimeNotifications();
             this.loadAdminPendingMembersList();
             this.loadMembersFromSupabase();
+            this.loadBreakingNewsText();
             if (payload.eventType === 'INSERT') {
               this.showToast('Pendaftaran anggota baru masuk!', 'info');
             }
@@ -2687,6 +2812,7 @@
           .on('postgres_changes', { event: '*', schema: 'public', table: 'dues' }, (payload) => {
             this.checkRealtimeNotifications();
             this.loadAdminDuesList();
+            this.loadBreakingNewsText();
             if (payload.eventType === 'INSERT') {
               this.showToast('Setoran iuran baru masuk!', 'info');
             }
@@ -2698,6 +2824,7 @@
           .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (payload) => {
             this.checkRealtimeNotifications();
             this.loadAdminOrdersList();
+            this.loadBreakingNewsText();
             if (payload.eventType === 'INSERT') {
               this.showToast('Pesanan Merchandise baru masuk!', 'info');
             }
@@ -2769,20 +2896,20 @@
           await this.calculateTotalKas();
           this.loadAdminDuesList();
           this.loadIuranHistory();
+          this.loadBreakingNewsText();
           this.checkRealtimeNotifications();
         } catch (e) {
           this.showToast('Gagal memverifikasi iuran.', 'error');
         }
       }
 
-      /* ANGGOTA: EXCLUDE EMAIL SUPER ADMIN (mastrisnobpb@gmail.com) DARIPADA DAFTAR MEMBER */
       async loadMembersFromSupabase() {
         if (!this.supabase) return;
         try {
           const { data: members, error } = await this.supabase
             .from('members')
             .select('*')
-            .neq('email', 'mastrisnobpb@gmail.com') // Filter: Email Super Admin tidak dimasukkan
+            .neq('email', 'mastrisnobpb@gmail.com')
             .eq('approval_status', 'Approved')
             .order('created_at', { ascending: false });
 
