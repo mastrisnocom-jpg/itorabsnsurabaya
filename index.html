@@ -46,6 +46,11 @@
       padding-bottom: 90px;
     }
 
+    /* KONTEN UTAMA DISEMBUNYIKAN SEBELUM LOGIN */
+    .protected-content {
+      display: none;
+    }
+
     .glass {
       background: var(--card-bg-dark);
       backdrop-filter: blur(16px);
@@ -261,9 +266,9 @@
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       z-index: 9000;
       display: none;
       align-items: center;
@@ -316,194 +321,197 @@
   <!-- TOAST ALERTS CONTAINER -->
   <div id="toast-container"></div>
 
-  <!-- HEADER -->
-  <header class="app-header glass">
-    <div class="brand-title">
-      <h1>ITORA BSN</h1>
-      <span>SURABAYA CLUB</span>
-    </div>
-    <div class="header-actions">
-      <button class="icon-btn" onclick="openModal('qr-modal')"><i class="fa-solid fa-qrcode"></i></button>
-      <button class="icon-btn" id="auth-header-btn" onclick="openLoginModal()"><i class="fa-solid fa-user-lock"></i></button>
-    </div>
-  </header>
+  <!-- CONTAINER DASHBOARD UTAMA (HANYA MUNCUL SETELAH LOGIN) -->
+  <div id="app-dashboard" class="protected-content">
 
-  <!-- MAIN CONTAINER -->
-  <main class="container">
-
-    <!-- 1. BERANDA -->
-    <section id="page-beranda" class="page active">
-      <div class="card banner-card glass">
-        <span class="badge badge-gold">Komunitas Resmi</span>
-        <h2 style="margin-top: 8px; font-size: 1.4rem;" id="user-greeting">Salam Satu Jalur!</h2>
-        <p style="font-size: 0.85rem; opacity: 0.9; margin-top: 4px;">Bank Syariah Nasional Cabang Surabaya</p>
+    <!-- HEADER -->
+    <header class="app-header glass">
+      <div class="brand-title">
+        <h1>ITORA BSN</h1>
+        <span>SURABAYA CLUB</span>
       </div>
+      <div class="header-actions">
+        <button class="icon-btn" onclick="openModal('qr-modal')"><i class="fa-solid fa-qrcode"></i></button>
+        <button class="icon-btn" onclick="navigateTo('profil')"><i class="fa-solid fa-user-check" style="color: var(--accent-gold);"></i></button>
+      </div>
+    </header>
 
-      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px;">
-        <div class="card glass" style="padding: 12px; text-align: center; cursor: pointer;" onclick="navigateTo('anggota')">
-          <i class="fa-solid fa-users" style="color: var(--primary);"></i>
-          <h3 style="font-size: 1.1rem; margin-top: 4px;" id="stat-members">0</h3>
-          <span style="font-size: 0.68rem; color: var(--text-muted-dark);">Anggota</span>
+    <!-- MAIN CONTAINER -->
+    <main class="container">
+
+      <!-- 1. BERANDA -->
+      <section id="page-beranda" class="page active">
+        <div class="card banner-card glass">
+          <span class="badge badge-gold">Komunitas Resmi</span>
+          <h2 style="margin-top: 8px; font-size: 1.4rem;" id="user-greeting">Salam Satu Jalur!</h2>
+          <p style="font-size: 0.85rem; opacity: 0.9; margin-top: 4px;">Bank Syariah Nasional Cabang Surabaya</p>
         </div>
-        <div class="card glass" style="padding: 12px; text-align: center; cursor: pointer;" onclick="navigateTo('touring')">
-          <i class="fa-solid fa-route" style="color: var(--accent-gold);"></i>
-          <h3 style="font-size: 1.1rem; margin-top: 4px;">24</h3>
-          <span style="font-size: 0.68rem; color: var(--text-muted-dark);">Touring</span>
+
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px;">
+          <div class="card glass" style="padding: 12px; text-align: center; cursor: pointer;" onclick="navigateTo('anggota')">
+            <i class="fa-solid fa-users" style="color: var(--primary);"></i>
+            <h3 style="font-size: 1.1rem; margin-top: 4px;" id="stat-members">0</h3>
+            <span style="font-size: 0.68rem; color: var(--text-muted-dark);">Anggota</span>
+          </div>
+          <div class="card glass" style="padding: 12px; text-align: center; cursor: pointer;" onclick="navigateTo('touring')">
+            <i class="fa-solid fa-route" style="color: var(--accent-gold);"></i>
+            <h3 style="font-size: 1.1rem; margin-top: 4px;">24</h3>
+            <span style="font-size: 0.68rem; color: var(--text-muted-dark);">Touring</span>
+          </div>
+          <div class="card glass" style="padding: 12px; text-align: center; cursor: pointer;" onclick="navigateTo('kas')">
+            <i class="fa-solid fa-wallet" style="color: #10B981;"></i>
+            <h3 style="font-size: 0.95rem; margin-top: 4px;">12.5M</h3>
+            <span style="font-size: 0.68rem; color: var(--text-muted-dark);">Kas (IDR)</span>
+          </div>
         </div>
-        <div class="card glass" style="padding: 12px; text-align: center; cursor: pointer;" onclick="navigateTo('kas')">
-          <i class="fa-solid fa-wallet" style="color: #10B981;"></i>
-          <h3 style="font-size: 0.95rem; margin-top: 4px;">12.5M</h3>
-          <span style="font-size: 0.68rem; color: var(--text-muted-dark);">Kas (IDR)</span>
+
+        <div class="quick-menu">
+          <div class="quick-item" onclick="navigateTo('pengumuman')"><div class="quick-icon"><i class="fa-solid fa-bullhorn"></i></div><span>Info</span></div>
+          <div class="quick-item" onclick="navigateTo('kas')"><div class="quick-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div><span>Kas</span></div>
+          <div class="quick-item" onclick="navigateTo('merchandise')"><div class="quick-icon"><i class="fa-solid fa-shirt"></i></div><span>Merch</span></div>
+          <div class="quick-item" onclick="navigateTo('sponsor')"><div class="quick-icon"><i class="fa-solid fa-handshake"></i></div><span>Sponsor</span></div>
+          <div class="quick-item" onclick="navigateTo('kontak')"><div class="quick-icon"><i class="fa-solid fa-address-book"></i></div><span>Kontak</span></div>
+          <div class="quick-item" onclick="navigateTo('profil')"><div class="quick-icon"><i class="fa-solid fa-id-card"></i></div><span>Profil</span></div>
+          <div class="quick-item" onclick="navigateTo('pengaturan')"><div class="quick-icon"><i class="fa-solid fa-gear"></i></div><span>Setelan</span></div>
+          <div class="quick-item" onclick="handleLogout()"><div class="quick-icon"><i class="fa-solid fa-right-from-bracket"></i></div><span>Keluar</span></div>
         </div>
-      </div>
 
-      <div class="quick-menu">
-        <div class="quick-item" onclick="navigateTo('pengumuman')"><div class="quick-icon"><i class="fa-solid fa-bullhorn"></i></div><span>Info</span></div>
-        <div class="quick-item" onclick="navigateTo('kas')"><div class="quick-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div><span>Kas</span></div>
-        <div class="quick-item" onclick="navigateTo('merchandise')"><div class="quick-icon"><i class="fa-solid fa-shirt"></i></div><span>Merch</span></div>
-        <div class="quick-item" onclick="navigateTo('sponsor')"><div class="quick-icon"><i class="fa-solid fa-handshake"></i></div><span>Sponsor</span></div>
-        <div class="quick-item" onclick="navigateTo('kontak')"><div class="quick-icon"><i class="fa-solid fa-address-book"></i></div><span>Kontak</span></div>
-        <div class="quick-item" onclick="navigateTo('profil')"><div class="quick-icon"><i class="fa-solid fa-id-card"></i></div><span>Profil</span></div>
-        <div class="quick-item" onclick="navigateTo('pengaturan')"><div class="quick-icon"><i class="fa-solid fa-gear"></i></div><span>Setelan</span></div>
-        <div class="quick-item" onclick="openLoginModal()"><div class="quick-icon"><i class="fa-solid fa-right-to-bracket"></i></div><span>Login</span></div>
-      </div>
-
-      <div class="card glass">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-          <h3 style="font-size: 0.95rem; font-weight: 700;"><i class="fa-solid fa-compass" style="color: var(--accent-gold);"></i> Touring Terdekat</h3>
-          <span class="badge badge-primary">Siap Meluncur</span>
+        <div class="card glass">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h3 style="font-size: 0.95rem; font-weight: 700;"><i class="fa-solid fa-compass" style="color: var(--accent-gold);"></i> Touring Terdekat</h3>
+            <span class="badge badge-primary">Siap Meluncur</span>
+          </div>
+          <h4 style="font-size: 1.1rem;">Touring Kemerdekaan Bromo</h4>
+          <p style="font-size: 0.8rem; color: var(--text-muted-dark); margin-top: 4px;"><i class="fa-regular fa-calendar"></i> 17 Agustus 2026 | 05:00 WIB</p>
+          <p style="font-size: 0.8rem; color: var(--text-muted-dark);"><i class="fa-solid fa-location-dot"></i> Meeting Point: Alun-Alun Surabaya</p>
+          <button class="btn btn-gold" style="margin-top: 14px; padding: 10px;" onclick="navigateTo('touring')">Lihat Rute & Detail</button>
         </div>
-        <h4 style="font-size: 1.1rem;">Touring Kemerdekaan Bromo</h4>
-        <p style="font-size: 0.8rem; color: var(--text-muted-dark); margin-top: 4px;"><i class="fa-regular fa-calendar"></i> 17 Agustus 2026 | 05:00 WIB</p>
-        <p style="font-size: 0.8rem; color: var(--text-muted-dark);"><i class="fa-solid fa-location-dot"></i> Meeting Point: Alun-Alun Surabaya</p>
-        <button class="btn btn-gold" style="margin-top: 14px; padding: 10px;" onclick="navigateTo('touring')">Lihat Rute & Detail</button>
-      </div>
-    </section>
+      </section>
 
-    <!-- 2. ANGGOTA -->
-    <section id="page-anggota" class="page">
-      <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Daftar Anggota</h2>
-      <div class="form-group">
-        <input type="text" class="input-control" placeholder="Cari nama atau plat nomor..." id="search-member" onkeyup="filterMembers()">
-      </div>
-      <div id="members-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
-    </section>
-
-    <!-- 3. EVENT -->
-    <section id="page-event" class="page">
-      <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Agenda & Kegiatan</h2>
-      <div id="event-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
-    </section>
-
-    <!-- 4. TOURING -->
-    <section id="page-touring" class="page">
-      <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Jadwal Touring</h2>
-      <div class="card glass">
-        <span class="badge badge-gold">Next Destination</span>
-        <h3 style="margin-top: 8px;">Bromo Sunrise Ride 2026</h3>
-        <p style="font-size: 0.85rem; margin-top: 8px;">Meeting Point: Halaman BSN KC Surabaya</p>
-        <button class="btn btn-primary" style="margin-top: 16px;" onclick="window.open('https://maps.google.com/?q=Bromo', '_blank')">
-          <i class="fa-solid fa-map-location-dot"></i> Buka Rute Google Maps
-        </button>
-      </div>
-    </section>
-
-    <!-- 5. GALERI -->
-    <section id="page-galeri" class="page">
-      <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Dokumentasi Kegiatan</h2>
-      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-        <div class="card glass" style="padding: 0; overflow: hidden; height: 130px;">
-          <img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=500" style="width: 100%; height: 100%; object-fit: cover;">
+      <!-- 2. ANGGOTA -->
+      <section id="page-anggota" class="page">
+        <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Daftar Anggota</h2>
+        <div class="form-group">
+          <input type="text" class="input-control" placeholder="Cari nama atau plat nomor..." id="search-member" onkeyup="filterMembers()">
         </div>
-        <div class="card glass" style="padding: 0; overflow: hidden; height: 130px;">
-          <img src="https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=500" style="width: 100%; height: 100%; object-fit: cover;">
+        <div id="members-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
+      </section>
+
+      <!-- 3. EVENT -->
+      <section id="page-event" class="page">
+        <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Agenda & Kegiatan</h2>
+        <div id="event-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
+      </section>
+
+      <!-- 4. TOURING -->
+      <section id="page-touring" class="page">
+        <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Jadwal Touring</h2>
+        <div class="card glass">
+          <span class="badge badge-gold">Next Destination</span>
+          <h3 style="margin-top: 8px;">Bromo Sunrise Ride 2026</h3>
+          <p style="font-size: 0.85rem; margin-top: 8px;">Meeting Point: Halaman BSN KC Surabaya</p>
+          <button class="btn btn-primary" style="margin-top: 16px;" onclick="window.open('https://maps.google.com/?q=Bromo', '_blank')">
+            <i class="fa-solid fa-map-location-dot"></i> Buka Rute Google Maps
+          </button>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- 6. KAS -->
-    <section id="page-kas" class="page">
-      <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Laporan Kas Komunitas</h2>
-      <div class="card glass">
-        <span style="font-size: 0.8rem; color: var(--text-muted-dark);">Total Saldo Kas</span>
-        <h1 style="color: var(--primary); font-size: 2rem; margin: 4px 0;">Rp 12.500.000</h1>
-      </div>
-    </section>
+      <!-- 5. GALERI -->
+      <section id="page-galeri" class="page">
+        <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Dokumentasi Kegiatan</h2>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+          <div class="card glass" style="padding: 0; overflow: hidden; height: 130px;">
+            <img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=500" style="width: 100%; height: 100%; object-fit: cover;">
+          </div>
+          <div class="card glass" style="padding: 0; overflow: hidden; height: 130px;">
+            <img src="https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=500" style="width: 100%; height: 100%; object-fit: cover;">
+          </div>
+        </div>
+      </section>
 
-    <!-- 7. MERCHANDISE -->
-    <section id="page-merchandise" class="page">
-      <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Merchandise Resmi</h2>
-      <div class="card glass">
-        <h4>Kaos Official ITORA</h4>
-        <p style="color: var(--primary); font-weight: 700; margin: 6px 0;">Rp 125.000</p>
-        <button class="btn btn-primary" onclick="showToast('Pemesanan dicatat!', 'success')">Pesan Sekarang</button>
-      </div>
-    </section>
+      <!-- 6. KAS -->
+      <section id="page-kas" class="page">
+        <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Laporan Kas Komunitas</h2>
+        <div class="card glass">
+          <span style="font-size: 0.8rem; color: var(--text-muted-dark);">Total Saldo Kas</span>
+          <h1 style="color: var(--primary); font-size: 2rem; margin: 4px 0;">Rp 12.500.000</h1>
+        </div>
+      </section>
 
-    <!-- 8. PENGUMUMAN -->
-    <section id="page-pengumuman" class="page">
-      <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Pengumuman</h2>
-      <div class="card glass">
-        <h4>Iuran Kas Bulanan</h4>
-        <p style="font-size: 0.8rem; color: var(--text-muted-dark); margin-top: 4px;">Diharapkan melunasi kas sebelum tanggal 10 tiap bulannya.</p>
-      </div>
-    </section>
+      <!-- 7. MERCHANDISE -->
+      <section id="page-merchandise" class="page">
+        <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Merchandise Resmi</h2>
+        <div class="card glass">
+          <h4>Kaos Official ITORA</h4>
+          <p style="color: var(--primary); font-weight: 700; margin: 6px 0;">Rp 125.000</p>
+          <button class="btn btn-primary" onclick="showToast('Pemesanan dicatat!', 'success')">Pesan Sekarang</button>
+        </div>
+      </section>
 
-    <!-- 9. SPONSOR -->
-    <section id="page-sponsor" class="page">
-      <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Sponsor Utama</h2>
-      <div class="card glass" style="text-align: center;">
-        <i class="fa-solid fa-building-columns" style="font-size: 2.5rem; color: var(--primary);"></i>
-        <h3 style="margin-top: 8px;">Bank Syariah Nasional</h3>
-      </div>
-    </section>
+      <!-- 8. PENGUMUMAN -->
+      <section id="page-pengumuman" class="page">
+        <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Pengumuman</h2>
+        <div class="card glass">
+          <h4>Iuran Kas Bulanan</h4>
+          <p style="font-size: 0.8rem; color: var(--text-muted-dark); margin-top: 4px;">Diharapkan melunasi kas sebelum tanggal 10 tiap bulannya.</p>
+        </div>
+      </section>
 
-    <!-- 10. KONTAK -->
-    <section id="page-kontak" class="page">
-      <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Pengurus Komunitas</h2>
-      <div class="card glass">
-        <h4 style="color: var(--accent-gold);">Ketua Umum</h4>
-        <p style="font-size: 0.9rem; margin-top: 2px;">Ahmad Fauzi</p>
-        <p style="font-size: 0.8rem; color: var(--text-muted-dark); margin-top: 4px;"><i class="fa-brands fa-whatsapp"></i> +62 812-3456-7890</p>
-      </div>
-    </section>
+      <!-- 9. SPONSOR -->
+      <section id="page-sponsor" class="page">
+        <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Sponsor Utama</h2>
+        <div class="card glass" style="text-align: center;">
+          <i class="fa-solid fa-building-columns" style="font-size: 2.5rem; color: var(--primary);"></i>
+          <h3 style="margin-top: 8px;">Bank Syariah Nasional</h3>
+        </div>
+      </section>
 
-    <!-- 11. PROFIL SAYA -->
-    <section id="page-profil" class="page">
-      <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Profil Saya</h2>
-      <div class="card glass" style="text-align: center;">
-        <div style="width: 70px; height: 70px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: white; font-weight: 800; margin: 0 auto 10px;" id="profile-avatar-placeholder">T</div>
-        <h3 id="profile-name">Tamu</h3>
-        <span class="badge badge-gold" style="margin-top: 4px;" id="profile-role">Pengunjung</span>
-        <p style="font-size: 0.8rem; color: var(--text-muted-dark); margin-top: 6px;" id="profile-email">Belum Login</p>
-      </div>
-    </section>
+      <!-- 10. KONTAK -->
+      <section id="page-kontak" class="page">
+        <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Pengurus Komunitas</h2>
+        <div class="card glass">
+          <h4 style="color: var(--accent-gold);">Ketua Umum</h4>
+          <p style="font-size: 0.9rem; margin-top: 2px;">Ahmad Fauzi</p>
+          <p style="font-size: 0.8rem; color: var(--text-muted-dark); margin-top: 4px;"><i class="fa-brands fa-whatsapp"></i> +62 812-3456-7890</p>
+        </div>
+      </section>
 
-    <!-- 12. SETELAN -->
-    <section id="page-pengaturan" class="page">
-      <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Setelan</h2>
-      <div class="card glass">
-        <button class="btn btn-gold" onclick="handleLogout()">
-          <i class="fa-solid fa-right-from-bracket"></i> Keluar (Logout)
-        </button>
-      </div>
-    </section>
+      <!-- 11. PROFIL SAYA -->
+      <section id="page-profil" class="page">
+        <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Profil Saya</h2>
+        <div class="card glass" style="text-align: center;">
+          <div style="width: 70px; height: 70px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: white; font-weight: 800; margin: 0 auto 10px;" id="profile-avatar-placeholder">A</div>
+          <h3 id="profile-name">Anggota</h3>
+          <span class="badge badge-gold" style="margin-top: 4px;" id="profile-role">Anggota Terverifikasi</span>
+          <p style="font-size: 0.8rem; color: var(--text-muted-dark); margin-top: 6px;" id="profile-email">-</p>
+        </div>
+      </section>
 
-  </main>
+      <!-- 12. SETELAN -->
+      <section id="page-pengaturan" class="page">
+        <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Setelan</h2>
+        <div class="card glass">
+          <button class="btn btn-gold" onclick="handleLogout()">
+            <i class="fa-solid fa-right-from-bracket"></i> Keluar (Logout)
+          </button>
+        </div>
+      </section>
 
-  <!-- NAVIGATION BAR -->
-  <nav class="bottom-nav glass">
-    <a class="nav-item active" onclick="navigateTo('beranda')" id="nav-beranda"><i class="fa-solid fa-house"></i><span>Beranda</span></a>
-    <a class="nav-item" onclick="navigateTo('event')" id="nav-event"><i class="fa-solid fa-calendar-days"></i><span>Event</span></a>
-    <a class="nav-item" onclick="navigateTo('touring')" id="nav-touring"><i class="fa-solid fa-motorcycle"></i><span>Touring</span></a>
-    <a class="nav-item" onclick="navigateTo('galeri')" id="nav-galeri"><i class="fa-solid fa-images"></i><span>Galeri</span></a>
-    <a class="nav-item" onclick="navigateTo('anggota')" id="nav-anggota"><i class="fa-solid fa-users"></i><span>Anggota</span></a>
-  </nav>
+    </main>
 
-  <!-- POP-UP MODAL LOGIN & REGISTER -->
-  <div class="modal-overlay" id="login-modal">
+    <!-- NAVIGATION BAR -->
+    <nav class="bottom-nav glass">
+      <a class="nav-item active" onclick="navigateTo('beranda')" id="nav-beranda"><i class="fa-solid fa-house"></i><span>Beranda</span></a>
+      <a class="nav-item" onclick="navigateTo('event')" id="nav-event"><i class="fa-solid fa-calendar-days"></i><span>Event</span></a>
+      <a class="nav-item" onclick="navigateTo('touring')" id="nav-touring"><i class="fa-solid fa-motorcycle"></i><span>Touring</span></a>
+      <a class="nav-item" onclick="navigateTo('galeri')" id="nav-galeri"><i class="fa-solid fa-images"></i><span>Galeri</span></a>
+      <a class="nav-item" onclick="navigateTo('anggota')" id="nav-anggota"><i class="fa-solid fa-users"></i><span>Anggota</span></a>
+    </nav>
+  </div>
+
+  <!-- POP-UP MODAL LOGIN & REGISTER (MUNCUL OTOMATIS) -->
+  <div class="modal-overlay active" id="login-modal">
     <div class="modal-card glass">
-      <button class="close-modal-btn" onclick="closeModal('login-modal')"><i class="fa-solid fa-xmark"></i></button>
       
       <div style="text-align: center; margin-bottom: 20px;">
         <i class="fa-solid fa-motorcycle" style="font-size: 2.2rem; color: var(--accent-gold);"></i>
@@ -540,7 +548,7 @@
       <button class="close-modal-btn" onclick="closeModal('qr-modal')"><i class="fa-solid fa-xmark"></i></button>
       <h3>QR Member Card</h3>
       <div class="qr-container"><div id="qrcode"></div></div>
-      <p style="font-weight: 700; color: var(--primary);" id="qr-member-id">ITORA-BSN-GUEST</p>
+      <p style="font-weight: 700; color: var(--primary);" id="qr-member-id">ITORA-BSN-MEMBER</p>
       <button class="btn btn-primary" style="margin-top: 15px;" onclick="closeModal('qr-modal')">Tutup</button>
     </div>
   </div>
@@ -607,40 +615,44 @@
       if (el) el.classList.remove('active');
     }
 
-    function openLoginModal() {
-      if (currentUser) {
-        navigateTo('profil');
-      } else {
-        openModal('login-modal');
-      }
-    }
-
     document.addEventListener('DOMContentLoaded', async () => {
       if (supabase) {
         try {
           const { data: { session } } = await supabase.auth.getSession();
           if (session && session.user) {
             currentUser = session.user;
-            updateUIForLoggedInUser();
+            showDashboard();
+          } else {
+            hideDashboard();
           }
 
           supabase.auth.onAuthStateChange((event, session) => {
             if (session && session.user) {
               currentUser = session.user;
-              updateUIForLoggedInUser();
+              showDashboard();
             } else {
               currentUser = null;
-              updateUIForLoggedOutUser();
+              hideDashboard();
             }
           });
         } catch(err) {
           console.warn('Session error:', err);
+          hideDashboard();
         }
-
-        loadDataFromSupabase();
       }
-      generateQRCode("ITORA-BSN-GUEST");
     });
+
+    function showDashboard() {
+      closeModal('login-modal');
+      document.getElementById('app-dashboard').style.display = 'block';
+      updateUIForLoggedInUser();
+      loadDataFromSupabase();
+    }
+
+    function hideDashboard() {
+      document.getElementById('app-dashboard').style.display = 'none';
+      openModal('login-modal');
+    }
 
     /* TOGGLE FORM LOGIN / REGISTER */
     function toggleAuthMode() {
@@ -679,35 +691,23 @@
           const { data, error } = await supabase.auth.signUp({
             email: email,
             password: password,
-            options: {
-              data: {
-                full_name: fullname
-              }
-            }
+            options: { data: { full_name: fullname } }
           });
 
           if (error) throw error;
 
-          // Tambahkan data profil ke tabel members jika memungkinkan
           if (data?.user) {
             await supabase.from('members').insert([
-              { 
-                id: data.user.id, 
-                full_name: fullname, 
-                email: email,
-                role: 'Anggota Baru' 
-              }
+              { id: data.user.id, full_name: fullname, email: email, role: 'Anggota Baru' }
             ]).catch(err => console.log('Insert member table info:', err));
           }
 
           if (data?.session) {
-            showToast('Pendaftaran Berhasil! Anda otomatis masuk.', 'success');
+            showToast('Pendaftaran Berhasil! Selamat datang.', 'success');
             currentUser = data.user;
-            updateUIForLoggedInUser();
-            closeModal('login-modal');
-            navigateTo('beranda');
+            showDashboard();
           } else {
-            showToast('Pendaftaran Berhasil! Silakan cek email Anda untuk konfirmasi akun.', 'success');
+            showToast('Pendaftaran Berhasil! Silakan cek email untuk konfirmasi atau langsung Login.', 'success');
             toggleAuthMode();
           }
 
@@ -721,16 +721,14 @@
 
           showToast('Login Berhasil! Selamat datang.', 'success');
           currentUser = data.user;
-          updateUIForLoggedInUser();
-          closeModal('login-modal');
-          navigateTo('beranda');
+          showDashboard();
         }
       } catch (err) {
         let msg = err.message || 'Proses gagal. Periksa email & kata sandi Anda.';
         if (msg.includes('Invalid login credentials')) {
           msg = 'Email atau Kata Sandi salah.';
         } else if (msg.includes('Email not confirmed')) {
-          msg = 'Email Anda belum dikonfirmasi. Cek inbox email Anda.';
+          msg = 'Email Anda belum dikonfirmasi. Silakan cek inbox/spam email.';
         }
         showToast(msg, 'error');
       } finally {
@@ -742,9 +740,8 @@
     async function handleLogout() {
       if (supabase) await supabase.auth.signOut();
       currentUser = null;
-      updateUIForLoggedOutUser();
+      hideDashboard();
       showToast('Anda telah keluar dari akun.', 'info');
-      navigateTo('beranda');
     }
 
     function updateUIForLoggedInUser() {
@@ -762,29 +759,6 @@
       const memberCode = `ITORA-BSN-${email.substring(0, 4).toUpperCase()}`;
       document.getElementById('qr-member-id').innerText = memberCode;
       generateQRCode(memberCode);
-
-      const headerBtn = document.getElementById('auth-header-btn');
-      if (headerBtn) {
-        headerBtn.innerHTML = '<i class="fa-solid fa-user-check" style="color: var(--accent-gold);"></i>';
-        headerBtn.onclick = () => navigateTo('profil');
-      }
-    }
-
-    function updateUIForLoggedOutUser() {
-      document.getElementById('user-greeting').innerText = 'Salam Satu Jalur!';
-      document.getElementById('profile-name').innerText = 'Tamu';
-      document.getElementById('profile-email').innerText = 'Belum Login';
-      document.getElementById('profile-role').innerText = 'Pengunjung';
-      document.getElementById('profile-avatar-placeholder').innerText = 'T';
-      document.getElementById('qr-member-id').innerText = 'ITORA-BSN-GUEST';
-
-      generateQRCode("ITORA-BSN-GUEST");
-
-      const headerBtn = document.getElementById('auth-header-btn');
-      if (headerBtn) {
-        headerBtn.innerHTML = '<i class="fa-solid fa-user-lock"></i>';
-        headerBtn.onclick = () => openLoginModal();
-      }
     }
 
     async function loadDataFromSupabase() {
