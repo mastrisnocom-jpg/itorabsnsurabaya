@@ -10,8 +10,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="manifest" href="manifest.json">
 
-  <!-- CDNs (FontAwesome, Fonts Plus Jakarta Sans / Google Sans style, Supabase, QRCode) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- FONTAWESOME STABLE CDN & GOOGLE FONTS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -20,33 +20,31 @@
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
     :root {
-      /* FONT FAMILY UTAMA BERGAYA GOOGLE SANS MODERN */
       --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       
-      /* SKALA UKURAN TIPOGRAFI PRESISI UI MOBILE BANK */
-      --font-xs: 0.68rem;    /* 11px: Sub-label, keterangan akun, tanggal */
-      --font-sm: 0.75rem;    /* 12px: Menu grid label, button kecil, badge status */
-      --font-base: 0.85rem;  /* 13.6px: Teks isi, daftar transaksi, input */
-      --font-md: 0.95rem;    /* 15.2px: Subtitle, nama akun/kartu, header seksi */
-      --font-lg: 1.15rem;    /* 18.4px: Judul utama kartu, total saldo */
-      --font-xl: 1.40rem;    /* 22.4px: Banner greeting, angka utama */
+      /* SKALA UKURAN FONT PRESISI */
+      --font-xs: 0.68rem;    /* 11px */
+      --font-sm: 0.75rem;    /* 12px */
+      --font-base: 0.85rem;  /* 13.6px */
+      --font-md: 0.95rem;    /* 15.2px */
+      --font-lg: 1.15rem;    /* 18.4px */
+      --font-xl: 1.40rem;    /* 22.4px */
 
-      /* KETEBALAN FONT */
       --fw-regular: 400;
       --fw-medium: 500;
       --fw-semibold: 600;
       --fw-bold: 700;
       --fw-extrabold: 800;
 
-      /* PALET WARNA TEMA TERANG (LIGHT MODE MODERN) */
+      /* TEMA TERANG UI MODERN */
       --primary: #00875A;
       --primary-dark: #005E3E;
       --accent-gold: #D4AF37;
-      --bg-dark: #F8FAFC;                     /* Latar Belakang Terang Clean */
-      --card-bg-dark: #FFFFFF;                /* Kartu Putih Bersih */
-      --text-main-dark: #0F172A;              /* Teks Utama Hitam Pekat */
-      --text-muted-dark: #64748B;             /* Teks Abu-abu Keterangan */
-      --border-dark: rgba(226, 232, 240, 0.9); /* Border Halus */
+      --bg-dark: #F8FAFC;
+      --card-bg-dark: #FFFFFF;
+      --text-main-dark: #0F172A;
+      --text-muted-dark: #64748B;
+      --border-dark: rgba(226, 232, 240, 0.9);
       --radius-sm: 10px;
       --radius-md: 16px;
       --radius-lg: 24px;
@@ -57,9 +55,19 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: var(--font-main) !important;
+      font-family: var(--font-main);
       -webkit-tap-highlight-color: transparent;
       letter-spacing: -0.015em;
+    }
+
+    /* FIX IKON FONTAWESOME AGAR TIDAK PECAH/KOTAK */
+    i.fa-solid, i.fa-regular, i.fa-brands, i.fas, i.far, i.fab {
+      font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
+      font-style: normal;
+      font-variant: normal;
+      text-rendering: auto;
+      line-height: 1;
+      display: inline-block;
     }
 
     body {
@@ -70,12 +78,6 @@
       transition: background-color 0.3s ease;
       font-size: var(--font-base);
       line-height: 1.4;
-    }
-
-    .glass {
-      background: var(--card-bg-dark);
-      border: 1px solid var(--border-dark);
-      box-shadow: var(--shadow-glass);
     }
 
     /* SPLASH SCREEN */
@@ -234,7 +236,7 @@
       display: none;
     }
 
-    /* BOTTOM NAV BAR (BTNMOBILE STYLE) */
+    /* BOTTOM NAV BAR */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -258,8 +260,8 @@
       align-items: center;
       color: var(--text-muted-dark);
       text-decoration: none;
-      font-size: 0.65rem !important; /* 10.4px agar tidak sesak di HP */
-      font-weight: var(--fw-semibold) !important;
+      font-size: 0.68rem;
+      font-weight: var(--fw-semibold);
       gap: 3px;
       cursor: pointer;
       flex: 1;
@@ -330,7 +332,7 @@
       font-weight: var(--fw-medium);
     }
 
-    /* QUICK MENU GRID PRESISI BTN MOBILE */
+    /* QUICK MENU GRID LINGKARAN PRESISI UI MOBILE */
     .quick-menu {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -349,7 +351,7 @@
     .quick-icon {
       width: 52px;
       height: 52px;
-      border-radius: 50%; /* Lingkaran persis seperti UI BTN Mobile */
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -361,9 +363,9 @@
     }
 
     .quick-item span {
-      font-size: var(--font-sm) !important;
-      font-weight: var(--fw-medium) !important;
-      color: var(--text-main-dark) !important;
+      font-size: var(--font-sm);
+      font-weight: var(--fw-medium);
+      color: var(--text-main-dark);
       margin-top: 6px;
       text-align: center;
       line-height: 1.2;
@@ -621,7 +623,6 @@
 </head>
 <body>
 
-  <!-- TOAST ALERTS CONTAINER -->
   <div id="toast-container"></div>
 
   <!-- SPLASH SCREEN -->
@@ -634,7 +635,7 @@
     <div class="spinner"></div>
   </div>
 
-  <!-- 1. AUTH SCREEN (LOGIN / REGISTER) -->
+  <!-- 1. AUTH SCREEN -->
   <div id="auth-screen" class="auth-overlay">
     <div class="auth-card">
       <div class="auth-header">
@@ -646,7 +647,7 @@
       <form id="auth-form" onsubmit="app.handleAuthSubmit(event)">
         <div class="form-group" id="group-fullname" style="display: none;">
           <label><i class="fa-solid fa-user"></i> Nama Lengkap</label>
-          <input type="text" class="input-control" id="auth-fullname" placeholder="Ahmad Fauzi">
+          <input type="text" class="input-control" id="auth-fullname" placeholder="Sutrisno">
         </div>
         <div class="form-group">
           <label><i class="fa-solid fa-envelope"></i> Email Resmi</label>
@@ -741,7 +742,6 @@
   <!-- 4. MAIN APP DASHBOARD -->
   <div id="app-dashboard" class="app-container" style="display: none;">
 
-    <!-- APP HEADER -->
     <header class="app-header">
       <div class="brand-title">
         <h1>ITORA BSN</h1>
@@ -756,14 +756,13 @@
       </div>
     </header>
 
-    <!-- MAIN VIEW / PAGES -->
     <main class="container">
 
-      <!-- 1. BERANDA / DASHBOARD -->
+      <!-- 1. BERANDA -->
       <section id="page-beranda" class="page active">
         <div class="card banner-card">
           <span class="badge badge-gold">Komunitas Resmi</span>
-          <h2 style="margin-top: 8px; font-size: var(--font-xl); font-weight: var(--fw-extrabold);" id="user-greeting">Salam Satu Jalur!</h2>
+          <h2 style="margin-top: 8px; font-size: var(--font-xl); font-weight: var(--fw-extrabold);" id="user-greeting">Salam, Sutrisno!</h2>
           <p style="font-size: var(--font-xs); opacity: 0.95; margin-top: 4px;">Bank Syariah Nasional Cabang Surabaya</p>
         </div>
 
@@ -785,7 +784,6 @@
           </div>
         </div>
 
-        <!-- QUICK MENU DINAMIS DARI SUPABASE (STYLE BTN MOBILE) -->
         <div class="quick-menu" id="dynamic-quick-menu"></div>
 
         <div class="card">
@@ -805,7 +803,6 @@
         <h2 style="color: var(--primary); font-size: var(--font-lg); font-weight: var(--fw-bold);"><i class="fa-solid fa-user-shield"></i> Panel Super Admin</h2>
         <p class="text-muted" style="margin-bottom: 15px;">Kontrol penuh sistem, menu dinamis, persetujuan anggota, dan kas</p>
 
-        <!-- MANAJEMEN MENU DINAMIS SUPABASE -->
         <div class="card">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
             <h3 style="font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-bars-staggered" style="color: var(--primary);"></i> Pengaturan Menu App</h3>
@@ -817,7 +814,6 @@
           </div>
         </div>
 
-        <!-- APPROVAL PERSETUJUAN ANGGOTA BARU -->
         <div class="card">
           <h3 style="margin-bottom: 8px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-user-check" style="color: var(--accent-gold);"></i> Persetujuan Anggota Baru</h3>
           <p class="text-muted" style="margin-bottom: 12px;">Daftar calon anggota yang telah melengkapi data diri & menunggu persetujuan</p>
@@ -826,10 +822,8 @@
           </div>
         </div>
 
-        <!-- PENGATURAN NOMOR WHATSAPP KONFIRMASI -->
         <div class="card">
           <h3 style="margin-bottom: 6px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-brands fa-whatsapp" style="color: #25D366;"></i> Pengaturan WhatsApp Konfirmasi</h3>
-          <p class="text-muted" style="margin-bottom: 10px;">Nomor WA ini akan menerima konfirmasi otomatis dari anggota</p>
           <div class="form-group">
             <label>Nomor WA Penerima (Format: 628xxxxxxxxxx)</label>
             <input type="text" class="input-control" id="admin-wa-input" placeholder="6281234567890" value="6281234567890">
@@ -837,11 +831,8 @@
           <button type="button" class="btn btn-gold" onclick="app.adminUpdateWANumber()"><i class="fa-solid fa-floppy-disk"></i> Simpan Nomor WhatsApp</button>
         </div>
 
-        <!-- UPDATE JADWAL TOURING -->
         <div class="card">
           <h3 style="margin-bottom: 6px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-route" style="color: var(--primary);"></i> Update Jadwal Touring Utama</h3>
-          <p class="text-muted" style="margin-bottom: 10px;">Perbarui agenda touring yang tampil di Beranda dan Halaman Touring</p>
-          
           <form onsubmit="app.adminUpdateTouring(event)">
             <div class="form-group">
               <label>Nama Destinasi / Judul Touring</label>
@@ -863,10 +854,8 @@
           </form>
         </div>
 
-        <!-- PENGATURAN KAS POKOK/BASE -->
         <div class="card">
           <h3 style="margin-bottom: 6px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-wallet" style="color: #10B981;"></i> Pengaturan Kas Utama</h3>
-          <p class="text-muted" style="margin-bottom: 10px;">Saldo Kas Awal/Sisa + Otomatis Penambahan Iuran yang Disetujui</p>
           <div class="form-group">
             <label>Saldo Kas Pokok Awal (Rp)</label>
             <input type="number" class="input-control" id="admin-kas-input" placeholder="0" value="0">
@@ -874,7 +863,6 @@
           <button type="button" class="btn btn-gold" onclick="app.adminUpdateBaseKas()"><i class="fa-solid fa-floppy-disk"></i> Simpan Kas Pokok</button>
         </div>
 
-        <!-- VERIFIKASI IURAN ANGGOTA -->
         <div class="card">
           <h3 style="margin-bottom: 12px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-check-to-slot" style="color: var(--primary);"></i> Verifikasi Iuran Anggota</h3>
           <div id="admin-dues-list">
@@ -992,8 +980,8 @@
         <h2 style="font-size: var(--font-lg); font-weight: var(--fw-bold);">Profil Anggota Digital</h2>
         
         <div class="card" style="margin-top: 12px; text-align: center;">
-          <div class="avatar-placeholder" id="profile-avatar">A</div>
-          <h3 id="profile-name" style="font-size: var(--font-md); font-weight: var(--fw-bold);">Anggota</h3>
+          <div class="avatar-placeholder" id="profile-avatar">S</div>
+          <h3 id="profile-name" style="font-size: var(--font-md); font-weight: var(--fw-bold);">Sutrisno</h3>
           <span class="badge badge-gold" id="profile-role" style="margin-top: 6px;">Anggota Resmi</span>
           <p class="text-muted" id="profile-email" style="margin-top: 4px;">-</p>
 
@@ -1059,7 +1047,6 @@
 
     </main>
 
-    <!-- BOTTOM NAVIGATION BAR DINAMIS DARI SUPABASE -->
     <nav class="bottom-nav" id="dynamic-bottom-nav"></nav>
 
   </div>
@@ -1098,7 +1085,7 @@
     </div>
   </div>
 
-  <!-- MODAL ADD/EDIT MENU (KHUSUS SUPER ADMIN) -->
+  <!-- MODAL ADD/EDIT MENU -->
   <div class="modal-overlay" id="modal-add-menu">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-add-menu')"><i class="fa-solid fa-xmark"></i></button>
@@ -1107,7 +1094,7 @@
       <form id="form-menu" onsubmit="app.handleSaveMenu(event)">
         <input type="hidden" id="menu-id">
         <div class="form-group">
-          <label>Key Identifier (Unik, huruf kecil tanpa spasi)</label>
+          <label>Key Identifier (Unik, huruf kecil)</label>
           <input type="text" class="input-control" id="menu-key" placeholder="e.g. pengumuman" required>
         </div>
         <div class="form-group">
@@ -1121,7 +1108,6 @@
         <div class="form-group">
           <label>Gambar / Ikon Kustom (Upload ke Storage)</label>
           <input type="file" class="input-control" id="menu-image-file" accept="image/*">
-          <small class="text-muted" style="display:block; margin-top:4px;">*Jika diunggah, gambar akan mengesampingkan FontAwesome.</small>
         </div>
         <div class="form-group">
           <label>Urutan Tampil (Sort Order)</label>
@@ -1205,7 +1191,7 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT LOGIC LENGKAP UTUH -->
+  <!-- JAVASCRIPT LOGIC LENGKAP TANPA SINGKATAN -->
   <script>
     const SUPABASE_URL = 'https://lfusrctizdydnsiopzfi.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxmdXNyY3RpemR5ZG5zaW9wemZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU2NjI0OTQsImV4cCI6MjEwMTIzODQ5NH0.vWd4l9zbRg3HxHVECN8I67h7gGUsZdaRJ9bD-gmEDUY';
@@ -1415,14 +1401,14 @@
         if (!this.currentUser) return;
         const email = this.currentUser.email;
 
+        await this.loadUserProfileDetails();
+
         if (email === 'mastrisnobpb@gmail.com') {
           this.showDashboard();
           return;
         }
 
-        await this.loadUserProfileDetails();
-
-        if (!this.currentProfile || !this.currentProfile.full_name || this.currentProfile.full_name === email.split('@')[0]) {
+        if (!this.currentProfile || !this.currentProfile.full_name) {
           this.showCompleteDataScreen();
           return;
         }
@@ -1577,7 +1563,7 @@
           } else {
             this.currentProfile = {
               id: this.currentUser.id,
-              full_name: this.currentUser.email.split('@')[0],
+              full_name: 'Sutrisno',
               email: this.currentUser.email,
               phone: '-',
               bike: 'Motor BSN',
@@ -1591,45 +1577,34 @@
 
       updateUserUI() {
         if (!this.currentUser) return;
-        const email = this.currentUser.email || '';
-        const isSuperAdmin = (email === 'mastrisnobpb@gmail.com');
-        
-        const name = this.currentProfile?.full_name || email.split('@')[0];
-        const roleTitle = isSuperAdmin ? 'Super Admin' : (this.currentProfile?.role || 'Anggota Resmi');
-        const niaCode = `ITORA-BSN-${this.currentUser.id ? this.currentUser.id.substring(0, 4).toUpperCase() : '0000'}`;
-        const phone = this.currentProfile?.phone || '-';
-        const bike = this.currentProfile?.bike || 'Motor BSN';
-        const plate = this.currentProfile?.plate || 'L 1234 IT';
+        const displayName = this.currentProfile?.full_name || 'Sutrisno';
 
-        document.getElementById('user-greeting').innerText = `Salam, ${name}!`;
-        document.getElementById('profile-name').innerText = name;
-        document.getElementById('profile-email').innerText = email;
-        document.getElementById('profile-role').innerText = roleTitle;
-        document.getElementById('profile-avatar').innerText = name.charAt(0).toUpperCase();
+        document.getElementById('user-greeting').innerText = `Salam, ${displayName}!`;
+        document.getElementById('profile-name').innerText = displayName;
+        document.getElementById('profile-email').innerText = this.currentUser.email;
+        document.getElementById('profile-avatar').innerText = displayName.charAt(0).toUpperCase();
 
-        document.getElementById('profile-nia').innerText = niaCode;
-        document.getElementById('profile-phone').innerText = phone;
-        document.getElementById('profile-bike').innerText = bike;
-        document.getElementById('profile-plate').innerText = plate;
-
-        document.getElementById('edit-fullname').value = name;
-        document.getElementById('edit-phone').value = phone !== '-' ? phone : '';
-        document.getElementById('edit-bike').value = bike;
-        document.getElementById('edit-plate').value = plate;
-
+        const isSuperAdmin = (this.currentUser.email === 'mastrisnobpb@gmail.com');
         const adminProfileBtn = document.getElementById('btn-admin-panel-profile');
+        if (adminProfileBtn) adminProfileBtn.style.display = isSuperAdmin ? 'flex' : 'none';
 
         if (isSuperAdmin) {
-          if (adminProfileBtn) adminProfileBtn.style.display = 'flex';
           this.loadAdminPendingMembersList();
           this.loadAdminDuesList();
-        } else {
-          if (adminProfileBtn) adminProfileBtn.style.display = 'none';
         }
 
-        const memberCode = `ITORA-BSN-${email.substring(0, 4).toUpperCase()}`;
-        document.getElementById('qr-member-id').innerText = memberCode;
-        this.generateQRCode(memberCode);
+        const niaCode = `ITORA-BSN-${this.currentUser.id ? this.currentUser.id.substring(0, 4).toUpperCase() : '0000'}`;
+        document.getElementById('profile-nia').innerText = niaCode;
+        document.getElementById('profile-phone').innerText = this.currentProfile?.phone || '-';
+        document.getElementById('profile-bike').innerText = this.currentProfile?.bike || 'Motor BSN';
+        document.getElementById('profile-plate').innerText = this.currentProfile?.plate || 'L 1234 IT';
+
+        document.getElementById('edit-fullname').value = displayName;
+        document.getElementById('edit-phone').value = this.currentProfile?.phone || '';
+        document.getElementById('edit-bike').value = this.currentProfile?.bike || '';
+        document.getElementById('edit-plate').value = this.currentProfile?.plate || '';
+
+        this.generateQRCode(`ITORA-BSN-${this.currentUser.id ? this.currentUser.id.substring(0, 4).toUpperCase() : 'MEMBER'}`);
       }
 
       async handleSaveProfile(e) {
@@ -1664,7 +1639,6 @@
         }
       }
 
-      /* FETCH & RENDER MENU DINAMIS DARI SUPABASE */
       async loadMenusFromSupabase() {
         if (!this.supabase) return;
         try {
@@ -1689,7 +1663,6 @@
         const isSuperAdmin = (this.currentUser && this.currentUser.email === 'mastrisnobpb@gmail.com');
         const activeMenus = this.menus.filter(m => m.is_active);
 
-        // Quick Menu Grid Beranda (Tampilan Lingkaran UI BTN Mobile)
         const quickMenuContainer = document.getElementById('dynamic-quick-menu');
         if (quickMenuContainer) {
           const quickItems = activeMenus.filter(m => m.show_in_quick_menu);
@@ -1701,12 +1674,12 @@
             if (m.menu_key === 'keluar') actionCall = `app.handleLogout()`;
 
             const iconContent = m.image_url 
-              ? `<img src="${m.image_url}" alt="${m.title}" style="width: 26px; height: 26px; object-fit: contain;">`
+              ? `<img src="${m.image_url}" alt="${m.title}" style="width: 24px; height: 24px; object-fit: contain;">`
               : `<i class="${m.icon_class}"></i>`;
 
             return `
               <div class="quick-item" onclick="${actionCall}">
-                <div class="quick-icon" style="color: ${m.icon_color || 'var(--primary)'};">
+                <div class="quick-icon">
                   ${iconContent}
                   ${m.menu_key === 'admin' ? '<span class="notification-badge" id="admin-notif-dot"></span>' : ''}
                 </div>
@@ -1716,7 +1689,6 @@
           }).join('');
         }
 
-        // Bottom Nav Bar
         const bottomNavContainer = document.getElementById('dynamic-bottom-nav');
         if (bottomNavContainer) {
           const navItems = activeMenus.filter(m => m.show_in_bottom_nav);
@@ -1739,29 +1711,23 @@
         const container = document.getElementById('admin-menu-list');
         if (!container) return;
 
-        container.innerHTML = this.menus.map(m => {
-          const iconContent = m.image_url 
-            ? `<img src="${m.image_url}" alt="${m.title}">`
-            : `<i class="${m.icon_class}" style="color: ${m.icon_color || 'var(--primary)'}"></i>`;
-
-          return `
-            <div class="menu-admin-item">
-              <div class="menu-admin-info">
-                ${iconContent}
-                <div>
-                  <strong style="font-size:var(--font-base); color:var(--text-main-dark); font-weight:var(--fw-bold);">${m.title}</strong>
-                  <span class="text-muted" style="display:block;">Key: ${m.menu_key} | Order: ${m.sort_order}</span>
-                </div>
-              </div>
-              <div style="display:flex; gap:6px; align-items:center;">
-                <button class="btn btn-sm ${m.is_active ? 'btn-primary' : 'btn-danger'}" onclick="app.toggleMenuStatus('${m.id}', ${!m.is_active})">
-                  ${m.is_active ? 'Aktif' : 'Nonaktif'}
-                </button>
-                <button class="btn btn-sm btn-gold" onclick="app.editMenuModal('${m.id}')"><i class="fa-solid fa-pen"></i></button>
+        container.innerHTML = this.menus.map(m => `
+          <div class="menu-admin-item">
+            <div class="menu-admin-info">
+              ${m.image_url ? `<img src="${m.image_url}">` : `<i class="${m.icon_class}"></i>`}
+              <div>
+                <strong style="font-size:var(--font-base); font-weight:var(--fw-bold);">${m.title}</strong>
+                <span class="text-muted" style="display:block;">Key: ${m.menu_key} | Order: ${m.sort_order}</span>
               </div>
             </div>
-          `;
-        }).join('');
+            <div style="display:flex; gap:6px; align-items:center;">
+              <button class="btn btn-sm ${m.is_active ? 'btn-primary' : 'btn-danger'}" onclick="app.toggleMenuStatus('${m.id}', ${!m.is_active})">
+                ${m.is_active ? 'Aktif' : 'Nonaktif'}
+              </button>
+              <button class="btn btn-sm btn-gold" onclick="app.editMenuModal('${m.id}')"><i class="fa-solid fa-pen"></i></button>
+            </div>
+          </div>
+        `).join('');
       }
 
       async toggleMenuStatus(menuId, newStatus) {
@@ -2233,7 +2199,7 @@
         container.appendChild(toast);
         setTimeout(() => {
           toast.style.opacity = '0';
-          setTimeout(() => toast.remove(), 300);
+          setTimeout(() => toast.remove(), 3500);
         }, 3500);
       }
     }
