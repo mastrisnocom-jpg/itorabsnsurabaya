@@ -8,8 +8,9 @@
   <meta name="theme-color" content="#00875A">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.json">
 
-  <!-- CDNs -->
+  <!-- CDNs (FontAwesome, Fonts, Supabase, QRCode) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -31,6 +32,14 @@
       --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
     }
 
+    body.light-mode {
+      --bg-dark: #F1F5F9;
+      --card-bg-dark: rgba(255, 255, 255, 0.9);
+      --text-main-dark: #0F172A;
+      --text-muted-dark: #64748B;
+      --border-dark: rgba(226, 232, 240, 0.8);
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -44,22 +53,98 @@
       color: var(--text-main-dark);
       overflow-x: hidden;
       padding-bottom: 90px;
-    }
-
-    /* KONTEN UTAMA DISEMBUNYIKAN SEBELUM LOGIN */
-    .protected-content {
-      display: none;
+      transition: background-color 0.3s ease;
     }
 
     .glass {
       background: var(--card-bg-dark);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-dark);
       box-shadow: var(--shadow-glass);
     }
 
-    /* HEADER & NAVIGATION */
+    /* SPLASH SCREEN */
+    #splash-screen {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-dark);
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .splash-logo {
+      text-align: center;
+      color: var(--primary);
+    }
+
+    .splash-logo i {
+      font-size: 3.5rem;
+      color: var(--accent-gold);
+    }
+
+    .splash-logo h1 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin-top: 10px;
+    }
+
+    .splash-logo span {
+      color: var(--accent-gold);
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s infinite linear;
+      margin-top: 30px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* AUTH OVERLAY */
+    .auth-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(12px);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 420px;
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      border: 1px solid var(--border-dark);
+    }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .auth-icon {
+      font-size: 2.5rem;
+      color: var(--accent-gold);
+      margin-bottom: 8px;
+    }
+
+    /* HEADER & NAVBAR */
     .app-header {
       position: sticky;
       top: 0;
@@ -87,7 +172,7 @@
 
     .header-actions {
       display: flex;
-      gap: 12px;
+      gap: 10px;
     }
 
     .icon-btn {
@@ -96,7 +181,7 @@
       border-radius: 50%;
       border: none;
       background: rgba(255, 255, 255, 0.05);
-      color: #fff;
+      color: var(--text-main-dark);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -130,8 +215,11 @@
       width: 20%;
     }
 
-    .nav-item.active { color: var(--primary); }
+    .nav-item.active {
+      color: var(--primary);
+    }
 
+    /* CONTAINERS & PAGES */
     .container {
       padding: 16px;
       max-width: 600px;
@@ -139,7 +227,12 @@
     }
 
     .page { display: none; }
-    .page.active { display: block; }
+    .page.active { display: block; animation: fadeIn 0.3s ease; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
     .card {
       border-radius: var(--radius-md);
@@ -153,16 +246,28 @@
       border: none;
     }
 
-    .badge {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 0.7rem;
-      font-weight: 700;
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
     }
 
-    .badge-gold { background: var(--accent-gold); color: #000; }
-    .badge-primary { background: var(--primary); color: #fff; }
+    .stat-card {
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .stat-card h3 {
+      font-size: 1.1rem;
+      margin-top: 4px;
+    }
+
+    .stat-card span {
+      font-size: 0.68rem;
+      color: var(--text-muted-dark);
+    }
 
     .quick-menu {
       display: grid;
@@ -191,9 +296,10 @@
       font-size: 1.2rem;
       background: var(--card-bg-dark);
       color: var(--primary);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-dark);
     }
 
+    /* FORMS & BUTTONS */
     .form-group { margin-bottom: 16px; }
     .form-group label {
       display: block;
@@ -208,8 +314,8 @@
       padding: 12px 16px;
       border-radius: var(--radius-sm);
       border: 1px solid var(--border-dark);
-      background: rgba(15, 23, 42, 0.8);
-      color: #fff;
+      background: rgba(15, 23, 42, 0.5);
+      color: var(--text-main-dark);
       outline: none;
       font-size: 0.9rem;
     }
@@ -230,7 +336,23 @@
 
     .btn-primary { background: var(--primary); color: white; }
     .btn-gold { background: var(--accent-gold); color: #000; }
-    .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+    .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); margin-top: 10px; }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    .badge-gold { background: var(--accent-gold); color: #000; }
+    .badge-primary { background: var(--primary); color: #fff; }
+
+    .text-muted {
+      font-size: 0.8rem;
+      color: var(--text-muted-dark);
+    }
 
     /* TOAST POP-UP */
     #toast-container {
@@ -262,13 +384,12 @@
       to { transform: translateY(0); opacity: 1; }
     }
 
-    /* MODAL POP-UP STYLING */
+    /* MODAL */
     .modal-overlay {
       position: fixed;
       inset: 0;
       background: rgba(15, 23, 42, 0.95);
       backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
       z-index: 9000;
       display: none;
       align-items: center;
@@ -276,15 +397,7 @@
       padding: 20px;
     }
 
-    .modal-overlay.active {
-      display: flex;
-      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    @keyframes popIn {
-      from { transform: scale(0.9); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
+    .modal-overlay.active { display: flex; }
 
     .modal-card {
       width: 100%;
@@ -300,7 +413,7 @@
       right: 16px;
       background: rgba(255,255,255,0.1);
       border: none;
-      color: #fff;
+      color: var(--text-main-dark);
       width: 32px;
       height: 32px;
       border-radius: 50%;
@@ -314,32 +427,108 @@
       display: inline-block;
       margin: 15px 0;
     }
+
+    .avatar-placeholder {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: white;
+      font-weight: 800;
+      margin: 0 auto 10px;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .gallery-item {
+      height: 130px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
   </style>
 </head>
-<body>
+<body class="dark-mode">
 
   <!-- TOAST ALERTS CONTAINER -->
   <div id="toast-container"></div>
 
-  <!-- DASHBOARD UTAMA (HANYA MUNCUL SETELAH LOGIN) -->
-  <div id="app-dashboard" class="protected-content">
+  <!-- SPLASH SCREEN -->
+  <div id="splash-screen">
+    <div class="splash-logo">
+      <i class="fa-solid fa-motorcycle"></i>
+      <h1>ITORA BSN</h1>
+      <span>SURABAYA CLUB</span>
+    </div>
+    <div class="spinner"></div>
+  </div>
 
-    <!-- HEADER -->
+  <!-- AUTH / LOGIN & REGISTER OVERLAY -->
+  <div id="auth-screen" class="auth-overlay">
+    <div class="auth-card glass">
+      <div class="auth-header">
+        <i class="fa-solid fa-shield-halved auth-icon"></i>
+        <h2 id="auth-title">Masuk Anggota</h2>
+        <p id="auth-subtitle">Gunakan email & kata sandi akun ITORA Anda</p>
+      </div>
+
+      <form id="auth-form" onsubmit="app.handleAuthSubmit(event)">
+        <div class="form-group" id="group-fullname" style="display: none;">
+          <label><i class="fa-solid fa-user"></i> Nama Lengkap</label>
+          <input type="text" class="input-control" id="auth-fullname" placeholder="Ahmad Fauzi">
+        </div>
+        <div class="form-group">
+          <label><i class="fa-solid fa-envelope"></i> Email Resmi</label>
+          <input type="email" class="input-control" id="auth-email" placeholder="nama@bsn.co.id" required>
+        </div>
+        <div class="form-group">
+          <label><i class="fa-solid fa-lock"></i> Kata Sandi</label>
+          <input type="password" class="input-control" id="auth-password" placeholder="••••••••" required minlength="6">
+        </div>
+        <button type="submit" class="btn btn-primary" id="auth-submit-btn">
+          <i class="fa-solid fa-right-to-bracket"></i> Masuk Sekarang
+        </button>
+      </form>
+
+      <button type="button" class="btn btn-outline" id="auth-toggle-btn" onclick="app.toggleAuthMode()">
+        Belum Memiliki Akun? Daftar Disini
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN APP CONTAINER -->
+  <div id="app-dashboard" class="app-container" style="display: none;">
+
+    <!-- APP HEADER -->
     <header class="app-header glass">
       <div class="brand-title">
         <h1>ITORA BSN</h1>
         <span>SURABAYA CLUB</span>
       </div>
       <div class="header-actions">
-        <button type="button" class="icon-btn" onclick="openModal('qr-modal')"><i class="fa-solid fa-qrcode"></i></button>
-        <button type="button" class="icon-btn" onclick="navigateTo('profil')"><i class="fa-solid fa-user-check" style="color: var(--accent-gold);"></i></button>
+        <button type="button" class="icon-btn" onclick="app.openModal('qr-modal')"><i class="fa-solid fa-qrcode"></i></button>
+        <button type="button" class="icon-btn" onclick="app.toggleTheme()"><i class="fa-solid fa-moon" id="theme-icon"></i></button>
+        <button type="button" class="icon-btn" onclick="app.navigateTo('profil')"><i class="fa-solid fa-user-circle" style="color: var(--accent-gold);"></i></button>
       </div>
     </header>
 
-    <!-- MAIN CONTAINER -->
+    <!-- MAIN VIEW / PAGES -->
     <main class="container">
 
-      <!-- 1. BERANDA -->
+      <!-- 1. BERANDA / DASHBOARD -->
       <section id="page-beranda" class="page active">
         <div class="card banner-card glass">
           <span class="badge badge-gold">Komunitas Resmi</span>
@@ -347,70 +536,76 @@
           <p style="font-size: 0.85rem; opacity: 0.9; margin-top: 4px;">Bank Syariah Nasional Cabang Surabaya</p>
         </div>
 
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px;">
-          <div class="card glass" style="padding: 12px; text-align: center; cursor: pointer;" onclick="navigateTo('anggota')">
+        <div class="stats-grid">
+          <div class="card glass stat-card" onclick="app.navigateTo('anggota')">
             <i class="fa-solid fa-users" style="color: var(--primary);"></i>
-            <h3 style="font-size: 1.1rem; margin-top: 4px;" id="stat-members">0</h3>
-            <span style="font-size: 0.68rem; color: var(--text-muted-dark);">Anggota</span>
+            <h3 id="stat-members">0</h3>
+            <span>Anggota</span>
           </div>
-          <div class="card glass" style="padding: 12px; text-align: center; cursor: pointer;" onclick="navigateTo('touring')">
+          <div class="card glass stat-card" onclick="app.navigateTo('touring')">
             <i class="fa-solid fa-route" style="color: var(--accent-gold);"></i>
-            <h3 style="font-size: 1.1rem; margin-top: 4px;">24</h3>
-            <span style="font-size: 0.68rem; color: var(--text-muted-dark);">Touring</span>
+            <h3>24</h3>
+            <span>Touring</span>
           </div>
-          <div class="card glass" style="padding: 12px; text-align: center; cursor: pointer;" onclick="navigateTo('kas')">
+          <div class="card glass stat-card" onclick="app.navigateTo('kas')">
             <i class="fa-solid fa-wallet" style="color: #10B981;"></i>
-            <h3 style="font-size: 0.95rem; margin-top: 4px;">12.5M</h3>
-            <span style="font-size: 0.68rem; color: var(--text-muted-dark);">Kas (IDR)</span>
+            <h3>12.5M</h3>
+            <span>Kas (IDR)</span>
           </div>
         </div>
 
         <div class="quick-menu">
-          <div class="quick-item" onclick="navigateTo('pengumuman')"><div class="quick-icon"><i class="fa-solid fa-bullhorn"></i></div><span>Info</span></div>
-          <div class="quick-item" onclick="navigateTo('kas')"><div class="quick-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div><span>Kas</span></div>
-          <div class="quick-item" onclick="navigateTo('merchandise')"><div class="quick-icon"><i class="fa-solid fa-shirt"></i></div><span>Merch</span></div>
-          <div class="quick-item" onclick="navigateTo('sponsor')"><div class="quick-icon"><i class="fa-solid fa-handshake"></i></div><span>Sponsor</span></div>
-          <div class="quick-item" onclick="navigateTo('kontak')"><div class="quick-icon"><i class="fa-solid fa-address-book"></i></div><span>Kontak</span></div>
-          <div class="quick-item" onclick="navigateTo('profil')"><div class="quick-icon"><i class="fa-solid fa-id-card"></i></div><span>Profil</span></div>
-          <div class="quick-item" onclick="navigateTo('pengaturan')"><div class="quick-icon"><i class="fa-solid fa-gear"></i></div><span>Setelan</span></div>
-          <div class="quick-item" onclick="handleLogout()"><div class="quick-icon"><i class="fa-solid fa-right-from-bracket"></i></div><span>Keluar</span></div>
+          <div class="quick-item" onclick="app.navigateTo('pengumuman')"><div class="quick-icon"><i class="fa-solid fa-bullhorn"></i></div><span>Info</span></div>
+          <div class="quick-item" onclick="app.navigateTo('kas')"><div class="quick-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div><span>Kas</span></div>
+          <div class="quick-item" onclick="app.navigateTo('merchandise')"><div class="quick-icon"><i class="fa-solid fa-shirt"></i></div><span>Merch</span></div>
+          <div class="quick-item" onclick="app.navigateTo('sponsor')"><div class="quick-icon"><i class="fa-solid fa-handshake"></i></div><span>Sponsor</span></div>
+          <div class="quick-item" onclick="app.navigateTo('kontak')"><div class="quick-icon"><i class="fa-solid fa-address-book"></i></div><span>Kontak</span></div>
+          <div class="quick-item" onclick="app.navigateTo('profil')"><div class="quick-icon"><i class="fa-solid fa-id-card"></i></div><span>Profil</span></div>
+          <div class="quick-item" onclick="app.navigateTo('pengaturan')"><div class="quick-icon"><i class="fa-solid fa-gear"></i></div><span>Setelan</span></div>
+          <div class="quick-item" onclick="app.handleLogout()"><div class="quick-icon"><i class="fa-solid fa-right-from-bracket"></i></div><span>Keluar</span></div>
         </div>
 
         <div class="card glass">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-            <h3 style="font-size: 0.95rem; font-weight: 700;"><i class="fa-solid fa-compass" style="color: var(--accent-gold);"></i> Touring Terdekat</h3>
-            <span class="badge badge-primary">Siap Meluncur</span>
+          <div class="card-header-flex">
+            <h3><i class="fa-solid fa-compass" style="color: var(--accent-gold);"></i> Touring Terdekat</h3>
+            <span class="badge badge-primary">Agustus 2026</span>
           </div>
-          <h4 style="font-size: 1.1rem;">Touring Kemerdekaan Bromo</h4>
-          <p style="font-size: 0.8rem; color: var(--text-muted-dark); margin-top: 4px;"><i class="fa-regular fa-calendar"></i> 17 Agustus 2026 | 05:00 WIB</p>
-          <p style="font-size: 0.8rem; color: var(--text-muted-dark);"><i class="fa-solid fa-location-dot"></i> Meeting Point: Alun-Alun Surabaya</p>
-          <button type="button" class="btn btn-gold" style="margin-top: 14px; padding: 10px;" onclick="navigateTo('touring')">Lihat Rute & Detail</button>
+          <h4 style="font-size: 1.1rem; margin-top: 6px;">Touring Kemerdekaan Bromo</h4>
+          <p class="text-muted"><i class="fa-regular fa-calendar"></i> 17 Agustus 2026 | 05:00 WIB</p>
+          <p class="text-muted"><i class="fa-solid fa-location-dot"></i> Meeting Point: Alun-Alun Surabaya</p>
+          <button type="button" class="btn btn-gold" style="margin-top: 14px;" onclick="app.navigateTo('touring')">Detail & Rute</button>
         </div>
       </section>
 
       <!-- 2. ANGGOTA -->
       <section id="page-anggota" class="page">
-        <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Daftar Anggota</h2>
-        <div class="form-group">
-          <input type="text" class="input-control" placeholder="Cari nama atau plat nomor..." id="search-member" onkeyup="filterMembers()">
+        <h2>Daftar Anggota</h2>
+        <div class="form-group" style="margin-top: 12px;">
+          <input type="text" class="input-control" placeholder="Cari nama atau nomor anggota..." id="search-member" onkeyup="app.filterMembers()">
         </div>
-        <div id="members-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
+        <div id="members-list" class="list-container"></div>
       </section>
 
       <!-- 3. EVENT -->
       <section id="page-event" class="page">
-        <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Agenda & Kegiatan</h2>
-        <div id="event-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
+        <h2>Agenda & Event</h2>
+        <div class="card glass" style="margin-top: 12px;">
+          <span class="badge badge-gold">Mendatang</span>
+          <h3 style="margin-top: 6px;">Kopdar Wajib & Doa Bersama</h3>
+          <p class="text-muted"><i class="fa-regular fa-clock"></i> Jumat, 14 Agustus 2026 • 19:00 WIB</p>
+          <p class="text-muted"><i class="fa-solid fa-map-marker-alt"></i> BSN KC Surabaya Lt. 3</p>
+          <button type="button" class="btn btn-primary" style="margin-top: 12px;" onclick="app.showToast('RSVP Anda berhasil dikonfirmasi!', 'success')">Konfirmasi Hadir (RSVP)</button>
+        </div>
       </section>
 
       <!-- 4. TOURING -->
       <section id="page-touring" class="page">
-        <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Jadwal Touring</h2>
-        <div class="card glass">
-          <span class="badge badge-gold">Next Destination</span>
-          <h3 style="margin-top: 8px;">Bromo Sunrise Ride 2026</h3>
-          <p style="font-size: 0.85rem; margin-top: 8px;">Meeting Point: Halaman BSN KC Surabaya</p>
-          <button type="button" class="btn btn-primary" style="margin-top: 16px;" onclick="window.open('https://maps.google.com/?q=Bromo', '_blank')">
+        <h2>Jadwal Touring</h2>
+        <div class="card glass" style="margin-top: 12px;">
+          <span class="badge badge-gold">Destination</span>
+          <h3 style="margin-top: 6px;">Bromo Sunrise Ride</h3>
+          <p class="text-muted">Jarak: ~95 km | Estimasi: 2.5 Jam</p>
+          <button type="button" class="btn btn-primary" style="margin-top: 12px;" onclick="window.open('https://maps.google.com/?q=Bromo', '_blank')">
             <i class="fa-solid fa-map-location-dot"></i> Buka Rute Google Maps
           </button>
         </div>
@@ -418,80 +613,84 @@
 
       <!-- 5. GALERI -->
       <section id="page-galeri" class="page">
-        <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Dokumentasi Kegiatan</h2>
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-          <div class="card glass" style="padding: 0; overflow: hidden; height: 130px;">
-            <img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=500" style="width: 100%; height: 100%; object-fit: cover;">
-          </div>
-          <div class="card glass" style="padding: 0; overflow: hidden; height: 130px;">
-            <img src="https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=500" style="width: 100%; height: 100%; object-fit: cover;">
-          </div>
+        <h2>Dokumentasi Kegiatan</h2>
+        <div class="gallery-grid" style="margin-top: 12px;">
+          <div class="gallery-item glass"><img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=500" alt="Galeri 1"></div>
+          <div class="gallery-item glass"><img src="https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=500" alt="Galeri 2"></div>
         </div>
       </section>
 
       <!-- 6. KAS -->
       <section id="page-kas" class="page">
-        <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Laporan Kas Komunitas</h2>
-        <div class="card glass">
-          <span style="font-size: 0.8rem; color: var(--text-muted-dark);">Total Saldo Kas</span>
-          <h1 style="color: var(--primary); font-size: 2rem; margin: 4px 0;">Rp 12.500.000</h1>
+        <h2>Kas Komunitas</h2>
+        <div class="card glass" style="margin-top: 12px; text-align: center;">
+          <span class="text-muted">Total Saldo Kas</span>
+          <h1 style="color: var(--primary); font-size: 2.2rem; margin: 8px 0;">Rp 12.500.000</h1>
+          <div style="display: flex; gap: 10px; margin-top: 10px;">
+            <button type="button" class="btn btn-primary" onclick="app.exportData('Kas', 'PDF')"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
+            <button type="button" class="btn btn-gold" onclick="app.exportData('Kas', 'Excel')"><i class="fa-solid fa-file-excel"></i> Export Excel</button>
+          </div>
         </div>
       </section>
 
       <!-- 7. MERCHANDISE -->
       <section id="page-merchandise" class="page">
-        <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Merchandise Resmi</h2>
-        <div class="card glass">
-          <h4>Kaos Official ITORA</h4>
-          <p style="color: var(--primary); font-weight: 700; margin: 6px 0;">Rp 125.000</p>
-          <button type="button" class="btn btn-primary" onclick="showToast('Pemesanan dicatat!', 'success')">Pesan Sekarang</button>
+        <h2>Merchandise Resmi</h2>
+        <div class="card glass" style="margin-top: 12px;">
+          <h4>Kaos Official ITORA BSN</h4>
+          <p style="color: var(--accent-gold); font-weight: 700; margin: 6px 0;">Rp 125.000</p>
+          <button type="button" class="btn btn-primary" onclick="app.showToast('Pesanan dicatat! Admin akan menghubungi Anda.', 'success')">Pesan Sekarang</button>
         </div>
       </section>
 
       <!-- 8. PENGUMUMAN -->
       <section id="page-pengumuman" class="page">
-        <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Pengumuman</h2>
-        <div class="card glass">
-          <h4>Iuran Kas Bulanan</h4>
-          <p style="font-size: 0.8rem; color: var(--text-muted-dark); margin-top: 4px;">Diharapkan melunasi kas sebelum tanggal 10 tiap bulannya.</p>
+        <h2>Pengumuman Resmi</h2>
+        <div class="card glass" style="margin-top: 12px;">
+          <h4>Penting: Pelunasan Iuran Kas</h4>
+          <p class="text-muted" style="margin-top: 4px;">Diharapkan seluruh anggota melunasi iuran kas paling lambat tanggal 10 tiap bulannya.</p>
         </div>
       </section>
 
       <!-- 9. SPONSOR -->
       <section id="page-sponsor" class="page">
-        <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Sponsor Utama</h2>
-        <div class="card glass" style="text-align: center;">
-          <i class="fa-solid fa-building-columns" style="font-size: 2.5rem; color: var(--primary);"></i>
-          <h3 style="margin-top: 8px;">Bank Syariah Nasional</h3>
+        <h2>Sponsor Utama</h2>
+        <div class="card glass" style="margin-top: 12px; text-align: center;">
+          <i class="fa-solid fa-building-columns" style="font-size: 3rem; color: var(--primary);"></i>
+          <h3 style="margin-top: 10px;">Bank Syariah Nasional</h3>
+          <p class="text-muted">Cabang Surabaya</p>
         </div>
       </section>
 
       <!-- 10. KONTAK -->
       <section id="page-kontak" class="page">
-        <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Pengurus Komunitas</h2>
-        <div class="card glass">
+        <h2>Kontak Pengurus</h2>
+        <div class="card glass" style="margin-top: 12px;">
           <h4 style="color: var(--accent-gold);">Ketua Umum</h4>
-          <p style="font-size: 0.9rem; margin-top: 2px;">Ahmad Fauzi</p>
-          <p style="font-size: 0.8rem; color: var(--text-muted-dark); margin-top: 4px;"><i class="fa-brands fa-whatsapp"></i> +62 812-3456-7890</p>
+          <p>Ahmad Fauzi</p>
+          <p class="text-muted"><i class="fa-brands fa-whatsapp"></i> +62 812-3456-7890</p>
         </div>
       </section>
 
       <!-- 11. PROFIL SAYA -->
       <section id="page-profil" class="page">
-        <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Profil Saya</h2>
-        <div class="card glass" style="text-align: center;">
-          <div style="width: 70px; height: 70px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: white; font-weight: 800; margin: 0 auto 10px;" id="profile-avatar-placeholder">A</div>
+        <h2>Profil Anggota</h2>
+        <div class="card glass" style="margin-top: 12px; text-align: center;">
+          <div class="avatar-placeholder" id="profile-avatar">A</div>
           <h3 id="profile-name">Anggota</h3>
-          <span class="badge badge-gold" style="margin-top: 4px;" id="profile-role">Anggota Terverifikasi</span>
-          <p style="font-size: 0.8rem; color: var(--text-muted-dark); margin-top: 6px;" id="profile-email">-</p>
+          <span class="badge badge-gold" id="profile-role" style="margin-top: 6px;">Anggota Resmi</span>
+          <p class="text-muted" id="profile-email" style="margin-top: 6px;">-</p>
+          <div style="margin-top: 16px;">
+            <button type="button" class="btn btn-primary" onclick="app.openModal('qr-modal')"><i class="fa-solid fa-qrcode"></i> Tampilkan QR Card</button>
+          </div>
         </div>
       </section>
 
       <!-- 12. SETELAN -->
       <section id="page-pengaturan" class="page">
-        <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Setelan</h2>
-        <div class="card glass">
-          <button type="button" class="btn btn-gold" onclick="handleLogout()">
+        <h2>Setelan App</h2>
+        <div class="card glass" style="margin-top: 12px;">
+          <button type="button" class="btn btn-gold" onclick="app.handleLogout()">
             <i class="fa-solid fa-right-from-bracket"></i> Keluar (Logout)
           </button>
         </div>
@@ -499,57 +698,25 @@
 
     </main>
 
-    <!-- NAVIGATION BAR -->
+    <!-- BOTTOM NAVIGATION BAR -->
     <nav class="bottom-nav glass">
-      <a class="nav-item active" onclick="navigateTo('beranda')" id="nav-beranda"><i class="fa-solid fa-house"></i><span>Beranda</span></a>
-      <a class="nav-item" onclick="navigateTo('event')" id="nav-event"><i class="fa-solid fa-calendar-days"></i><span>Event</span></a>
-      <a class="nav-item" onclick="navigateTo('touring')" id="nav-touring"><i class="fa-solid fa-motorcycle"></i><span>Touring</span></a>
-      <a class="nav-item" onclick="navigateTo('galeri')" id="nav-galeri"><i class="fa-solid fa-images"></i><span>Galeri</span></a>
-      <a class="nav-item" onclick="navigateTo('anggota')" id="nav-anggota"><i class="fa-solid fa-users"></i><span>Anggota</span></a>
+      <a class="nav-item active" onclick="app.navigateTo('beranda')" id="nav-beranda"><i class="fa-solid fa-house"></i><span>Beranda</span></a>
+      <a class="nav-item" onclick="app.navigateTo('event')" id="nav-event"><i class="fa-solid fa-calendar-days"></i><span>Event</span></a>
+      <a class="nav-item" onclick="app.navigateTo('touring')" id="nav-touring"><i class="fa-solid fa-motorcycle"></i><span>Touring</span></a>
+      <a class="nav-item" onclick="app.navigateTo('galeri')" id="nav-galeri"><i class="fa-solid fa-images"></i><span>Galeri</span></a>
+      <a class="nav-item" onclick="app.navigateTo('anggota')" id="nav-anggota"><i class="fa-solid fa-users"></i><span>Anggota</span></a>
     </nav>
+
   </div>
 
-  <!-- POP-UP MODAL LOGIN & REGISTER -->
-  <div class="modal-overlay active" id="login-modal">
-    <div class="modal-card glass">
-      
-      <div style="text-align: center; margin-bottom: 20px;">
-        <i class="fa-solid fa-motorcycle" style="font-size: 2.2rem; color: var(--accent-gold);"></i>
-        <h3 style="font-size: 1.2rem; margin-top: 8px;" id="auth-title">Masuk Anggota</h3>
-        <p style="font-size: 0.8rem; color: var(--text-muted-dark);" id="auth-subtitle">Gunakan email & kata sandi terdaftar Anda</p>
-      </div>
-
-      <form id="auth-form" onsubmit="handleAuthSubmit(event)">
-        <div class="form-group" id="group-name" style="display: none;">
-          <label>Nama Lengkap</label>
-          <input type="text" class="input-control" id="auth-fullname" placeholder="Ahmad Fauzi">
-        </div>
-        <div class="form-group">
-          <label>Email Resmi</label>
-          <input type="email" class="input-control" id="auth-email" placeholder="nama@bsn.co.id" required>
-        </div>
-        <div class="form-group">
-          <label>Kata Sandi</label>
-          <input type="password" class="input-control" id="auth-password" placeholder="••••••••" required minlength="6">
-        </div>
-        <button type="submit" class="btn btn-primary" id="auth-submit-btn" style="margin-bottom: 12px;">
-          <i class="fa-solid fa-right-to-bracket"></i> Masuk Sekarang
-        </button>
-      </form>
-      <button type="button" class="btn btn-outline" id="auth-toggle-btn" onclick="toggleAuthMode()">
-        Belum Memiliki Akun? Daftar Disini
-      </button>
-    </div>
-  </div>
-
-  <!-- POP-UP MODAL QR CODE -->
+  <!-- QR CARD MODAL -->
   <div class="modal-overlay" id="qr-modal">
     <div class="modal-card glass" style="text-align: center;">
-      <button type="button" class="close-modal-btn" onclick="closeModal('qr-modal')"><i class="fa-solid fa-xmark"></i></button>
-      <h3>QR Member Card</h3>
+      <button type="button" class="close-modal-btn" onclick="app.closeModal('qr-modal')"><i class="fa-solid fa-xmark"></i></button>
+      <h3>Kartu Anggota Digital</h3>
       <div class="qr-container"><div id="qrcode"></div></div>
       <p style="font-weight: 700; color: var(--primary);" id="qr-member-id">ITORA-BSN-MEMBER</p>
-      <button type="button" class="btn btn-primary" style="margin-top: 15px;" onclick="closeModal('qr-modal')">Tutup</button>
+      <button type="button" class="btn btn-primary" style="margin-top: 15px;" onclick="app.closeModal('qr-modal')">Tutup</button>
     </div>
   </div>
 
@@ -558,296 +725,340 @@
     /* SUPABASE CONFIGURATION */
     const SUPABASE_URL = 'https://lfusrctizdydnsiopzfi.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxmdXNyY3RpemR5ZG5zaW9wemZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU2NjI0OTQsImV4cCI6MjEwMTIzODQ5NH0.vWd4l9zbRg3HxHVECN8I67h7gGUsZdaRJ9bD-gmEDUY';
-    
-    let supabase = null;
-    try {
-      if (window.supabase && typeof window.supabase.createClient === 'function') {
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-          auth: { 
-            persistSession: true,
-            autoRefreshToken: true,
-            detectSessionInUrl: true
-          }
-        });
-      }
-    } catch(e) {
-      console.error('Init Supabase Client Error:', e);
-    }
 
-    let isRegisterMode = false;
-    let currentUser = null;
-    let loadedMembers = [];
-
-    /* TOAST POP-UP ALERTS */
-    function showToast(message, type = 'info') {
-      const container = document.getElementById('toast-container');
-      if (!container) return;
-      
-      const toastEl = document.createElement('div');
-      toastEl.className = 'toast';
-      
-      if (type === 'error') {
-        toastEl.style.background = '#EF4444';
-        toastEl.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> ${message}`;
-      } else if (type === 'success') {
-        toastEl.style.background = '#10B981';
-        toastEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${message}`;
-      } else {
-        toastEl.style.background = 'var(--primary)';
-        toastEl.innerHTML = `<i class="fa-solid fa-circle-info"></i> ${message}`;
+    class App {
+      constructor() {
+        this.supabase = null;
+        this.isRegisterMode = false;
+        this.currentUser = null;
+        this.members = [];
+        this.initSupabase();
       }
 
-      container.appendChild(toastEl);
-      setTimeout(() => {
-        toastEl.style.opacity = '0';
-        setTimeout(() => toastEl.remove(), 300);
-      }, 4000);
-    }
-
-    /* MODAL POP-UP CONTROL */
-    function openModal(id) {
-      const el = document.getElementById(id);
-      if (el) el.classList.add('active');
-    }
-
-    function closeModal(id) {
-      const el = document.getElementById(id);
-      if (el) el.classList.remove('active');
-    }
-
-    document.addEventListener('DOMContentLoaded', async () => {
-      if (supabase) {
+      initSupabase() {
         try {
-          const { data: { session } } = await supabase.auth.getSession();
-          if (session && session.user) {
-            currentUser = session.user;
-            showDashboard();
+          if (window.supabase && typeof window.supabase.createClient === 'function') {
+            this.supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+              auth: { 
+                persistSession: true, 
+                autoRefreshToken: true,
+                detectSessionInUrl: true 
+              }
+            });
           } else {
-            hideDashboard();
+            console.error('Library Supabase SDK belum terload!');
+          }
+        } catch (e) {
+          console.error('Init Supabase Client Error:', e);
+        }
+      }
+
+      async init() {
+        // Sembunyikan Splash Screen
+        setTimeout(() => {
+          const splash = document.getElementById('splash-screen');
+          if (splash) splash.style.display = 'none';
+          this.checkSession();
+        }, 1000);
+      }
+
+      async checkSession() {
+        if (!this.supabase) {
+          this.hideDashboard();
+          return;
+        }
+
+        try {
+          // Cek Sesi Login dari Supabase Auth
+          const { data: { session } } = await this.supabase.auth.getSession();
+          
+          if (session && session.user) {
+            this.currentUser = session.user;
+            this.showDashboard();
+          } else {
+            this.hideDashboard();
           }
 
-          supabase.auth.onAuthStateChange((event, session) => {
+          // Listener perubahan status login secara realtime
+          this.supabase.auth.onAuthStateChange((event, session) => {
             if (session && session.user) {
-              currentUser = session.user;
-              showDashboard();
+              this.currentUser = session.user;
+              this.showDashboard();
             } else {
-              currentUser = null;
-              hideDashboard();
+              this.currentUser = null;
+              this.hideDashboard();
             }
           });
-        } catch(err) {
-          console.warn('Session error:', err);
-          hideDashboard();
+        } catch (err) {
+          console.warn('Session check error:', err);
+          this.hideDashboard();
         }
       }
-    });
 
-    function showDashboard() {
-      closeModal('login-modal');
-      document.getElementById('app-dashboard').style.display = 'block';
-      updateUIForLoggedInUser();
-      loadDataFromSupabase();
-    }
-
-    function hideDashboard() {
-      document.getElementById('app-dashboard').style.display = 'none';
-      openModal('login-modal');
-    }
-
-    /* TOGGLE FORM LOGIN / REGISTER */
-    function toggleAuthMode() {
-      isRegisterMode = !isRegisterMode;
-      
-      const authTitle = document.getElementById('auth-title');
-      const authSubtitle = document.getElementById('auth-subtitle');
-      const groupName = document.getElementById('group-name');
-      const authSubmitBtn = document.getElementById('auth-submit-btn');
-      const authToggleBtn = document.getElementById('auth-toggle-btn');
-      const fullNameInput = document.getElementById('auth-fullname');
-
-      if (isRegisterMode) {
-        authTitle.innerText = 'Daftar Anggota Baru';
-        authSubtitle.innerText = 'Lengkapi data akun anggota Anda';
-        groupName.style.display = 'block';
-        fullNameInput.setAttribute('required', 'required');
-        authSubmitBtn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Daftar Sekarang';
-        authToggleBtn.innerText = 'Sudah Memiliki Akun? Masuk Disini';
-      } else {
-        authTitle.innerText = 'Masuk Anggota';
-        authSubtitle.innerText = 'Gunakan email & kata sandi terdaftar Anda';
-        groupName.style.display = 'none';
-        fullNameInput.removeAttribute('required');
-        authSubmitBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Masuk Sekarang';
-        authToggleBtn.innerText = 'Belum Memiliki Akun? Daftar Disini';
-      }
-    }
-
-    /* AUTHENTICATION HANDLER */
-    async function handleAuthSubmit(e) {
-      e.preventDefault();
-      const email = document.getElementById('auth-email').value.trim();
-      const password = document.getElementById('auth-password').value;
-      const fullname = document.getElementById('auth-fullname').value.trim();
-
-      if (!supabase) {
-        showToast('Supabase Client tidak aktif!', 'error');
-        return;
+      showDashboard() {
+        document.getElementById('auth-screen').style.display = 'none';
+        document.getElementById('app-dashboard').style.display = 'block';
+        this.updateUserUI();
+        this.loadMembersFromSupabase();
       }
 
-      const submitBtn = document.getElementById('auth-submit-btn');
-      submitBtn.disabled = true;
-      submitBtn.innerText = 'Memproses...';
+      hideDashboard() {
+        document.getElementById('app-dashboard').style.display = 'none';
+        document.getElementById('auth-screen').style.display = 'flex';
+      }
 
-      try {
-        if (isRegisterMode) {
-          if (!fullname) {
-            showToast('Harap masukkan nama lengkap.', 'error');
-            submitBtn.disabled = false;
-            return;
-          }
+      toggleAuthMode() {
+        this.isRegisterMode = !this.isRegisterMode;
+        const title = document.getElementById('auth-title');
+        const subtitle = document.getElementById('auth-subtitle');
+        const groupName = document.getElementById('group-fullname');
+        const submitBtn = document.getElementById('auth-submit-btn');
+        const toggleBtn = document.getElementById('auth-toggle-btn');
+        const fullNameInput = document.getElementById('auth-fullname');
 
-          const { data, error } = await supabase.auth.signUp({
-            email: email,
-            password: password,
-            options: { data: { full_name: fullname } }
-          });
-
-          if (error) throw error;
-
-          if (data?.user) {
-            await supabase.from('members').insert([
-              { id: data.user.id, full_name: fullname, email: email, role: 'Anggota Baru' }
-            ]).catch(err => console.log('Insert member table info:', err));
-          }
-
-          if (data?.session) {
-            showToast('Pendaftaran Berhasil! Selamat datang.', 'success');
-            currentUser = data.user;
-            showDashboard();
-          } else {
-            showToast('Pendaftaran Berhasil! Silakan Login dengan akun Anda.', 'success');
-            toggleAuthMode();
-          }
-
+        if (this.isRegisterMode) {
+          title.innerText = 'Daftar Anggota Baru';
+          subtitle.innerText = 'Lengkapi data akun anggota ITORA Anda';
+          groupName.style.display = 'block';
+          fullNameInput.setAttribute('required', 'required');
+          submitBtn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Daftar Sekarang';
+          toggleBtn.innerText = 'Sudah Memiliki Akun? Masuk Disini';
         } else {
-          const { data, error } = await supabase.auth.signInWithPassword({
-            email: email,
-            password: password
-          });
-
-          if (error) throw error;
-
-          showToast('Login Berhasil! Selamat datang.', 'success');
-          currentUser = data.user;
-          showDashboard();
-        }
-      } catch (err) {
-        let msg = err.message || 'Proses gagal. Periksa email & kata sandi Anda.';
-        if (msg.includes('Invalid login credentials')) {
-          msg = 'Email atau Kata Sandi salah.';
-        } else if (msg.includes('Email not confirmed')) {
-          msg = 'Email belum dikonfirmasi. Pastikan Confirm Email sudah OFF di Supabase.';
-        } else if (msg.includes('User already registered')) {
-          msg = 'Email ini sudah terdaftar. Silakan login.';
-        }
-        showToast(msg, 'error');
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = isRegisterMode ? '<i class="fa-solid fa-user-plus"></i> Daftar Sekarang' : '<i class="fa-solid fa-right-to-bracket"></i> Masuk Sekarang';
-      }
-    }
-
-    async function handleLogout() {
-      if (supabase) await supabase.auth.signOut();
-      currentUser = null;
-      hideDashboard();
-      showToast('Anda telah keluar dari akun.', 'info');
-    }
-
-    function updateUIForLoggedInUser() {
-      const email = currentUser ? currentUser.email : '';
-      const name = (currentUser && currentUser.user_metadata && currentUser.user_metadata.full_name) 
-                   ? currentUser.user_metadata.full_name 
-                   : email.split('@')[0];
-
-      document.getElementById('user-greeting').innerText = `Salam, ${name}!`;
-      document.getElementById('profile-name').innerText = name;
-      document.getElementById('profile-email').innerText = email;
-      document.getElementById('profile-role').innerText = 'Anggota Terverifikasi';
-      document.getElementById('profile-avatar-placeholder').innerText = name.charAt(0).toUpperCase();
-
-      const memberCode = `ITORA-BSN-${email.substring(0, 4).toUpperCase()}`;
-      document.getElementById('qr-member-id').innerText = memberCode;
-      generateQRCode(memberCode);
-    }
-
-    async function loadDataFromSupabase() {
-      if (!supabase) return;
-      try {
-        const { data: members, error } = await supabase.from('members').select('*');
-        if (!error && members && members.length > 0) {
-          loadedMembers = members.map(m => ({
-            name: m.full_name || 'Anggota',
-            role: m.role || 'Anggota',
-            bike: m.motor_model || 'Motor',
-            plate: m.plate_number || '-'
-          }));
-          renderMembers(loadedMembers);
-          document.getElementById('stat-members').innerText = loadedMembers.length;
-        }
-      } catch (e) {
-        console.log('Error fetching members:', e);
-      }
-    }
-
-    function navigateTo(pageId) {
-      document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-      const targetPage = document.getElementById(`page-${pageId}`);
-      if (targetPage) targetPage.classList.add('active');
-
-      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-      const activeNav = document.getElementById(`nav-${pageId}`);
-      if (activeNav) activeNav.classList.add('active');
-
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function generateQRCode(text) {
-      if (typeof QRCode !== 'undefined') {
-        const container = document.getElementById("qrcode");
-        if (container) {
-          container.innerHTML = '';
-          new QRCode(container, { text: text, width: 150, height: 150 });
+          title.innerText = 'Masuk Anggota';
+          subtitle.innerText = 'Gunakan email & kata sandi akun ITORA Anda';
+          groupName.style.display = 'none';
+          fullNameInput.removeAttribute('required');
+          submitBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Masuk Sekarang';
+          toggleBtn.innerText = 'Belum Memiliki Akun? Daftar Disini';
         }
       }
-    }
 
-    function renderMembers(data) {
-      const container = document.getElementById('members-list');
-      if (!container) return;
-      if (data.length === 0) {
-        container.innerHTML = '<p style="text-align: center; color: var(--text-muted-dark); font-size: 0.85rem;">Belum ada data anggota.</p>';
-        return;
+      async handleAuthSubmit(e) {
+        e.preventDefault();
+        const email = document.getElementById('auth-email').value.trim();
+        const password = document.getElementById('auth-password').value;
+        const fullname = document.getElementById('auth-fullname').value.trim();
+
+        if (!this.supabase) {
+          this.showToast('Koneksi Supabase tidak tersedia!', 'error');
+          return;
+        }
+
+        const submitBtn = document.getElementById('auth-submit-btn');
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Memproses...';
+
+        try {
+          if (this.isRegisterMode) {
+            if (!fullname) {
+              this.showToast('Harap isi nama lengkap!', 'error');
+              submitBtn.disabled = false;
+              return;
+            }
+
+            // 1. Pendaftaran ke Supabase Auth
+            const { data, error } = await this.supabase.auth.signUp({
+              email: email,
+              password: password,
+              options: {
+                data: { full_name: fullname }
+              }
+            });
+
+            if (error) throw error;
+
+            // 2. Simpan profil ke Tabel PostgreSQL `members`
+            if (data?.user) {
+              const { error: dbError } = await this.supabase.from('members').insert([
+                {
+                  id: data.user.id,
+                  full_name: fullname,
+                  email: email,
+                  role: 'Anggota Baru'
+                }
+              ]);
+              if (dbError) console.warn('Peringatan simpan tabel members:', dbError);
+            }
+
+            if (data?.session) {
+              this.showToast('Pendaftaran Berhasil! Selamat datang.', 'success');
+              this.currentUser = data.user;
+              this.showDashboard();
+            } else {
+              this.showToast('Pendaftaran Berhasil! Silakan Login.', 'success');
+              this.toggleAuthMode();
+            }
+
+          } else {
+            // Login via Supabase Auth
+            const { data, error } = await this.supabase.auth.signInWithPassword({
+              email: email,
+              password: password
+            });
+
+            if (error) throw error;
+
+            this.showToast('Login Berhasil!', 'success');
+            this.currentUser = data.user;
+            this.showDashboard();
+          }
+        } catch (err) {
+          let msg = err.message || 'Proses gagal. Periksa kembali data Anda.';
+          if (msg.includes('Invalid login credentials')) {
+            msg = 'Email atau Kata Sandi salah.';
+          } else if (msg.includes('User already registered')) {
+            msg = 'Email ini sudah terdaftar. Silakan login.';
+          }
+          this.showToast(msg, 'error');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = this.isRegisterMode 
+            ? '<i class="fa-solid fa-user-plus"></i> Daftar Sekarang' 
+            : '<i class="fa-solid fa-right-to-bracket"></i> Masuk Sekarang';
+        }
       }
-      container.innerHTML = data.map(m => `
-        <div class="card glass" style="display: flex; align-items: center; gap: 14px; padding: 14px;">
-          <div style="width: 44px; height: 44px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">
-            ${m.name.charAt(0).toUpperCase()}
+
+      async handleLogout() {
+        if (this.supabase) {
+          await this.supabase.auth.signOut();
+        }
+        this.currentUser = null;
+        this.hideDashboard();
+        this.showToast('Anda telah keluar dari akun.', 'info');
+      }
+
+      updateUserUI() {
+        if (!this.currentUser) return;
+        const email = this.currentUser.email || '';
+        const name = (this.currentUser.user_metadata && this.currentUser.user_metadata.full_name) 
+                     ? this.currentUser.user_metadata.full_name 
+                     : email.split('@')[0];
+
+        document.getElementById('user-greeting').innerText = `Salam, ${name}!`;
+        document.getElementById('profile-name').innerText = name;
+        document.getElementById('profile-email').innerText = email;
+        document.getElementById('profile-avatar').innerText = name.charAt(0).toUpperCase();
+
+        const memberCode = `ITORA-BSN-${email.substring(0, 4).toUpperCase()}`;
+        document.getElementById('qr-member-id').innerText = memberCode;
+        this.generateQRCode(memberCode);
+      }
+
+      async loadMembersFromSupabase() {
+        if (!this.supabase) return;
+        try {
+          const { data: members, error } = await this.supabase.from('members').select('*');
+          
+          if (!error && members && members.length > 0) {
+            this.members = members.map(m => ({
+              name: m.full_name || 'Anggota',
+              role: m.role || 'Anggota',
+              bike: m.bike || 'Motor',
+              plate: m.plate || '-'
+            }));
+          } else {
+            this.members = [];
+          }
+
+          this.renderMembers(this.members);
+          document.getElementById('stat-members').innerText = this.members.length;
+        } catch (e) {
+          console.error('Error mengambil data dari Supabase:', e);
+        }
+      }
+
+      renderMembers(data) {
+        const container = document.getElementById('members-list');
+        if (!container) return;
+
+        if (data.length === 0) {
+          container.innerHTML = '<p class="text-muted" style="text-align:center;">Belum ada anggota terdaftar di database Supabase.</p>';
+          return;
+        }
+
+        container.innerHTML = data.map(m => `
+          <div class="card glass" style="display: flex; align-items: center; gap: 14px; padding: 14px; margin-bottom: 10px;">
+            <div class="avatar-placeholder" style="margin:0; width: 44px; height: 44px; font-size: 1.1rem;">
+              ${m.name.charAt(0).toUpperCase()}
+            </div>
+            <div style="flex: 1;">
+              <h4 style="font-size: 0.9rem;">${m.name}</h4>
+              <p class="text-muted">${m.role} • ${m.bike}</p>
+              <span class="badge badge-gold" style="margin-top: 4px; font-size: 0.65rem;">Plat: ${m.plate}</span>
+            </div>
           </div>
-          <div style="flex: 1;">
-            <h4 style="font-size: 0.9rem;">${m.name}</h4>
-            <p style="font-size: 0.75rem; color: var(--text-muted-dark);">${m.role} • ${m.bike}</p>
-            <span class="badge badge-gold" style="margin-top: 4px; font-size: 0.65rem;">Plat: ${m.plate}</span>
-          </div>
-        </div>
-      `).join('');
+        `).join('');
+      }
+
+      filterMembers() {
+        const query = document.getElementById('search-member').value.toLowerCase();
+        const filtered = this.members.filter(m => m.name.toLowerCase().includes(query) || m.plate.toLowerCase().includes(query));
+        this.renderMembers(filtered);
+      }
+
+      navigateTo(pageId) {
+        document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+        const targetPage = document.getElementById(`page-${pageId}`);
+        if (targetPage) targetPage.classList.add('active');
+
+        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+        const activeNav = document.getElementById(`nav-${pageId}`);
+        if (activeNav) activeNav.classList.add('active');
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      toggleTheme() {
+        document.body.classList.toggle('light-mode');
+        const icon = document.getElementById('theme-icon');
+        if (document.body.classList.contains('light-mode')) {
+          icon.className = 'fa-solid fa-sun';
+        } else {
+          icon.className = 'fa-solid fa-moon';
+        }
+      }
+
+      openModal(id) {
+        const modal = document.getElementById(id);
+        if (modal) modal.classList.add('active');
+      }
+
+      closeModal(id) {
+        const modal = document.getElementById(id);
+        if (modal) modal.classList.remove('active');
+      }
+
+      generateQRCode(text) {
+        if (typeof QRCode !== 'undefined') {
+          const container = document.getElementById("qrcode");
+          if (container) {
+            container.innerHTML = '';
+            new QRCode(container, { text: text, width: 140, height: 140 });
+          }
+        }
+      }
+
+      exportData(type, format) {
+        this.showToast(`Mengeksport data ${type} ke format ${format}...`, 'info');
+      }
+
+      showToast(message, type = 'info') {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.style.background = type === 'error' ? '#EF4444' : type === 'success' ? '#10B981' : 'var(--primary)';
+        toast.innerHTML = `<i class="fa-solid fa-circle-info"></i> ${message}`;
+        container.appendChild(toast);
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          setTimeout(() => toast.remove(), 300);
+        }, 3500);
+      }
     }
 
-    function filterMembers() {
-      const query = document.getElementById('search-member').value.toLowerCase();
-      const filtered = loadedMembers.filter(m => m.name.toLowerCase().includes(query) || m.plate.toLowerCase().includes(query));
-      renderMembers(filtered);
-    }
+    const app = new App();
+    document.addEventListener('DOMContentLoaded', () => app.init());
   </script>
 </body>
 </html>
