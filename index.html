@@ -1,322 +1,972 @@
 <!DOCTYPE html>
-<html lang="id" class="dark scroll-smooth">
+<html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ITORA BSN Surabaya | Portal Resmi Klub Motor Korporat</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ITORA BSN SURABAYA - App Komunitas</title>
   
-  <!-- Tipografi: Syne & Plus Jakarta Sans -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
-  
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-            display: ['Syne', 'sans-serif'],
-          },
-          colors: {
-            emeraldBrand: {
-              400: '#34D399',
-              500: '#10B981',
-              600: '#059669',
-              700: '#047857',
-              darkBg: '#040D0A',
-              cardBg: '#091813',
-              border: '#133027'
-            }
-          }
-        }
-      }
+  <!-- PWA & Mobile Meta -->
+  <meta name="theme-color" content="#00875A">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" id="pwa-manifest">
+
+  <!-- CDNs: Font Awesome, Google Fonts, Supabase, QRCode -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <style>
+    /* ==========================================
+       CSS VARIABLES & THEME CONFIGURATION
+       ========================================== */
+    :root {
+      --primary: #00875A;
+      --primary-dark: #005E3E;
+      --accent-gold: #D4AF37;
+      --accent-gold-light: #F4E086;
+      --bg-light: #F4F6F8;
+      --card-bg-light: rgba(255, 255, 255, 0.85);
+      --text-main-light: #1E293B;
+      --text-muted-light: #64748B;
+      --border-light: rgba(226, 232, 240, 0.8);
+      
+      --bg-dark: #0F172A;
+      --card-bg-dark: rgba(30, 41, 59, 0.85);
+      --text-main-dark: #F8FAFC;
+      --text-muted-dark: #94A3B8;
+      --border-dark: rgba(51, 65, 85, 0.8);
+
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-  </script>
+
+    [data-theme="light"] {
+      --bg: var(--bg-light);
+      --card-bg: var(--card-bg-light);
+      --text-main: var(--text-main-light);
+      --text-muted: var(--text-muted-light);
+      --border: var(--border-light);
+      --glass-border: rgba(255, 255, 255, 0.6);
+    }
+
+    [data-theme="dark"] {
+      --bg: var(--bg-dark);
+      --card-bg: var(--card-bg-dark);
+      --text-main: var(--text-main-dark);
+      --text-muted: var(--text-muted-dark);
+      --border: var(--border-dark);
+      --glass-border: rgba(255, 255, 255, 0.08);
+    }
+
+    /* Reset & Base Styling */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      overflow-x: hidden;
+      padding-bottom: 90px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* Glassmorphism utility */
+    .glass {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--shadow-glass);
+    }
+
+    /* ==========================================
+       SPLASH SCREEN
+       ========================================== */
+    #splash-screen {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      transition: opacity 0.5s ease, visibility 0.5s;
+    }
+
+    .splash-logo {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+      border: 2px solid var(--accent-gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: var(--accent-gold);
+      margin-bottom: 20px;
+      box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--accent-gold);
+      animation: spin 1s linear infinite;
+      margin-top: 25px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ==========================================
+       HEADER & NAVIGATION
+       ========================================== */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom-left-radius: var(--radius-md);
+      border-bottom-right-radius: var(--radius-md);
+    }
+
+    .brand-title h1 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: var(--primary);
+    }
+
+    .brand-title span {
+      color: var(--accent-gold);
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: block;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(0, 0, 0, 0.05);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 70px;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      border-top-left-radius: var(--radius-lg);
+      border-top-right-radius: var(--radius-lg);
+      padding: 0 10px;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.7rem;
+      font-weight: 600;
+      gap: 4px;
+      transition: var(--transition);
+      cursor: pointer;
+      width: 20%;
+    }
+
+    .nav-item i {
+      font-size: 1.25rem;
+      transition: var(--transition);
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+    }
+
+    .nav-item.active i {
+      transform: translateY(-2px);
+      color: var(--primary);
+    }
+
+    /* ==========================================
+       CONTAINER & PAGES
+       ========================================== */
+    .container {
+      padding: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .page {
+      display: none;
+      animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Cards & Components */
+    .card {
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .banner-card {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      position: relative;
+      overflow: hidden;
+      border: none;
+    }
+
+    .banner-card::after {
+      content: '';
+      position: absolute;
+      top: -30px;
+      right: -30px;
+      width: 120px;
+      height: 120px;
+      background: rgba(212, 175, 55, 0.2);
+      border-radius: 50%;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .badge-gold { background: var(--accent-gold); color: #000; }
+    .badge-primary { background: var(--primary); color: #fff; }
+
+    /* Quick Menu Grid */
+    .quick-menu {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .quick-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      text-align: center;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .quick-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      background: var(--card-bg);
+      color: var(--primary);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--glass-border);
+    }
+
+    /* Forms & Inputs */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text-muted);
+    }
+
+    .input-control {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      color: var(--text-main);
+      outline: none;
+      font-size: 0.9rem;
+      transition: var(--transition);
+    }
+
+    .input-control:focus {
+      border-color: var(--primary);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      border: none;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: var(--transition);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 4px 15px rgba(0, 135, 90, 0.3);
+    }
+
+    .btn-gold {
+      background: var(--accent-gold);
+      color: #000;
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+    }
+
+    /* Floating Action Button (FAB) */
+    .fab {
+      position: fixed;
+      bottom: 85px;
+      right: 20px;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: var(--accent-gold);
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+      z-index: 99;
+      cursor: pointer;
+      border: none;
+    }
+
+    /* Modal Component */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal.active { display: flex; }
+
+    .modal-content {
+      width: 100%;
+      max-width: 450px;
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    /* Toast Notification */
+    #toast-container {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3000;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    .toast {
+      padding: 12px 18px;
+      border-radius: var(--radius-md);
+      color: white;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Member Card Specifics */
+    .member-avatar {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      border: 2px solid var(--accent-gold);
+      object-fit: cover;
+    }
+
+    .qr-container {
+      background: white;
+      padding: 15px;
+      border-radius: var(--radius-md);
+      display: inline-block;
+      margin: 15px 0;
+    }
+
+    /* List grids */
+    .data-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .gallery-item {
+      height: 140px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  </style>
 </head>
-<body class="bg-emeraldBrand-darkBg text-slate-200 font-sans antialiased selection:bg-emerald-500 selection:text-black">
+<body data-theme="dark">
 
-  <!-- Efek Pencahayaan Ambient Emerald -->
-  <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] bg-gradient-to-b from-emerald-500/15 via-emerald-700/5 to-transparent blur-3xl pointer-events-none -z-10"></div>
+  <!-- SPLASH SCREEN -->
+  <div id="splash-screen">
+    <div class="splash-logo">
+      <i class="fa-solid => fa-motorcycle"></i>
+    </div>
+    <h2 style="font-weight: 800; letter-spacing: 1px;">ITORA BSN</h2>
+    <p style="color: var(--accent-gold); font-size: 0.85rem; margin-top: 4px;">CABANG SURABAYA</p>
+    <div class="spinner"></div>
+  </div>
 
-  <!-- Header / Navigasi Korporat -->
-  <header class="fixed top-0 w-full z-50 border-b border-emeraldBrand-border/80 bg-emeraldBrand-darkBg/90 backdrop-blur-xl">
-    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center font-display font-extrabold text-black text-xl shadow-lg shadow-emerald-500/20">
-          I
-        </div>
-        <div>
-          <span class="font-display font-bold text-lg tracking-wide text-white block leading-none">ITORA</span>
-          <span class="text-[10px] tracking-widest text-emerald-400 uppercase font-semibold">Chapter BSN Surabaya</span>
-        </div>
-      </div>
+  <!-- TOAST CONTAINER -->
+  <div id="toast-container"></div>
 
-      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
-        <a href="#statistik" class="hover:text-emerald-400 transition">Anggota</a>
-        <a href="#agenda" class="hover:text-emerald-400 transition">Agenda Touring</a>
-        <a href="#galeri" class="hover:text-emerald-400 transition">Galeri Kegiatan</a>
-        <a href="#portal" class="hover:text-emerald-400 transition">Aplikasi WebApp</a>
-      </nav>
-
-      <a href="https://itora.my.id" class="px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider bg-emerald-500 hover:bg-emerald-400 text-black transition shadow-lg shadow-emerald-500/20">
-        Portal WebApp
-      </a>
+  <!-- MAIN APP HEADER -->
+  <header class="app-header glass">
+    <div class="brand-title">
+      <h1>ITORA BSN</h1>
+      <span>SURABAYA CLUB</span>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" id="theme-toggle" onclick="toggleTheme()">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+      <button class="icon-btn" onclick="openModal('qr-modal')">
+        <i class="fa-solid fa-qrcode"></i>
+      </button>
     </div>
   </header>
 
-  <!-- Hero Section -->
-  <section class="pt-36 pb-16 px-6 text-center relative">
-    <div class="max-w-5xl mx-auto">
-      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-emeraldBrand-border bg-emeraldBrand-cardBg/80 text-slate-300 text-xs font-semibold mb-8 backdrop-blur-md">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        KLUB MOTOR RESMI KORPORAT PT BINAYASA PUTRABATARA
+  <!-- MAIN VIEWPORT CONTAINER -->
+  <main class="container">
+
+    <!-- 1. PAGE BERANDA (DASHBOARD) -->
+    <section id="page-beranda" class="page active">
+      <!-- Banner -->
+      <div class="card banner-card glass">
+        <span class="badge badge-gold">Komunitas Resmi</span>
+        <h2 style="margin-top: 8px; font-size: 1.4rem;">Salam Satu Jalur!</h2>
+        <p style="font-size: 0.85rem; opacity: 0.9; margin-top: 4px;">Bank Syariah Nasional Cabang Surabaya</p>
       </div>
 
-      <h1 class="font-display text-4xl sm:text-6xl font-extrabold text-white tracking-tight mb-6 leading-tight">
-        Solidaritas Berpadu <br>
-        <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-200 via-emerald-400 to-emerald-500">
-          Tata Kelola Modern ITORA
-        </span>
-      </h1>
-
-      <p class="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
-        Wadah resmi komunitas otomotif roda dua karyawan PT Binayasa Putrabatara Chapter BSN Surabaya. Terintegrasi langsung dengan WebApp manajemen kegiatan dan keanggotaan.
-      </p>
-
-      <div class="flex flex-wrap justify-center gap-4">
-        <a href="#agenda" class="px-8 py-4 rounded-xl font-bold text-sm bg-gradient-to-r from-emerald-500 to-emerald-600 text-black hover:brightness-110 shadow-xl shadow-emerald-500/20 transition">
-          Lihat Agenda Mendatang
-        </a>
-        <a href="#galeri" class="px-8 py-4 rounded-xl font-semibold text-sm border border-emeraldBrand-border bg-emeraldBrand-cardBg/60 text-slate-300 hover:bg-emeraldBrand-cardBg transition">
-          Galeri Kegiatan
-        </a>
+      <!-- Quick Stats -->
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px;">
+        <div class="card glass" style="padding: 12px; text-align: center;">
+          <i class="fa-solid fa-users" style="color: var(--primary);"></i>
+          <h3 style="font-size: 1.1rem; margin-top: 4px;" id="stat-members">128</h3>
+          <span style="font-size: 0.68rem; color: var(--text-muted);">Anggota</span>
+        </div>
+        <div class="card glass" style="padding: 12px; text-align: center;">
+          <i class="fa-solid fa-route" style="color: var(--accent-gold);"></i>
+          <h3 style="font-size: 1.1rem; margin-top: 4px;">24</h3>
+          <span style="font-size: 0.68rem; color: var(--text-muted);">Touring</span>
+        </div>
+        <div class="card glass" style="padding: 12px; text-align: center;">
+          <i class="fa-solid fa-wallet" style="color: #10B981;"></i>
+          <h3 style="font-size: 0.95rem; margin-top: 4px;">12.5M</h3>
+          <span style="font-size: 0.68rem; color: var(--text-muted);">Kas (IDR)</span>
+        </div>
       </div>
+
+      <!-- Quick Nav Menu -->
+      <div class="quick-menu">
+        <div class="quick-item" onclick="navigateTo('pengumuman')">
+          <div class="quick-icon"><i class="fa-solid fa-bullhorn"></i></div>
+          <span>Info</span>
+        </div>
+        <div class="quick-item" onclick="navigateTo('kas')">
+          <div class="quick-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+          <span>Kas</span>
+        </div>
+        <div class="quick-item" onclick="navigateTo('merchandise')">
+          <div class="quick-icon"><i class="fa-solid fa-shirt"></i></div>
+          <span>Merch</span>
+        </div>
+        <div class="quick-item" onclick="navigateTo('sponsor')">
+          <div class="quick-icon"><i class="fa-solid fa-handshake"></i></div>
+          <span>Sponsor</span>
+        </div>
+      </div>
+
+      <!-- Touring Terdekat -->
+      <div class="card glass">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h3 style="font-size: 0.95rem; font-weight: 700;"><i class="fa-solid fa-compass" style="color: var(--accent-gold);"></i> Touring Terdekat</h3>
+          <span class="badge badge-primary">Siap Meluncur</span>
+        </div>
+        <h4 style="font-size: 1.1rem;">Touring Kemerdekaan Bromo</h4>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;"><i class="fa-regular fa-calendar"></i> 17 Agustus 2026 | 05:00 WIB</p>
+        <p style="font-size: 0.8rem; color: var(--text-muted);"><i class="fa-solid fa-location-dot"></i> Meeting Point: Alun-Alun Surabaya</p>
+        <button class="btn btn-gold" style="margin-top: 14px; padding: 10px;" onclick="navigateTo('touring')">Lihat Rute & Detail</button>
+      </div>
+
+      <!-- Pengumuman Terbaru -->
+      <div class="card glass">
+        <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 12px;"><i class="fa-solid fa-newspaper" style="color: var(--primary);"></i> Pengumuman Terbaru</h3>
+        <div style="border-left: 3px solid var(--accent-gold); padding-left: 10px;">
+          <h5 style="font-size: 0.85rem;">Pembayaran Iuran Kas Bulanan Agustus</h5>
+          <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">Diharapkan seluruh anggota melunasi sebelum tanggal 10.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. PAGE EVENT -->
+    <section id="page-event" class="page">
+      <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Agenda & Kegiatan</h2>
+      <div class="data-list" id="event-list">
+        <!-- Dynamic Content injected via JS -->
+      </div>
+    </section>
+
+    <!-- 3. PAGE TOURING -->
+    <section id="page-touring" class="page">
+      <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Jadwal Touring</h2>
+      <div class="card glass">
+        <span class="badge badge-gold">Next Destination</span>
+        <h3 style="margin-top: 8px;">Bromo Sunrise Ride 2026</h3>
+        <div style="margin: 12px 0; font-size: 0.85rem; display: flex; flex-direction: column; gap: 6px;">
+          <div><i class="fa-solid fa-route" style="width: 20px; color: var(--primary);"></i> <strong>Estimasi Jarak:</strong> 110 Km</div>
+          <div><i class="fa-solid fa-clock" style="width: 20px; color: var(--primary);"></i> <strong>Waktu Tempuh:</strong> ~3.5 Jam</div>
+          <div><i class="fa-solid fa-map-pin" style="width: 20px; color: var(--primary);"></i> <strong>Titik Kumpul:</strong> Halaman BSN KC Surabaya</div>
+        </div>
+        <hr style="border: none; border-top: 1px solid var(--border); margin: 12px 0;">
+        <h4 style="font-size: 0.85rem; margin-bottom: 8px;">Checklist Perlengkapan:</h4>
+        <ul style="font-size: 0.8rem; color: var(--text-muted); padding-left: 20px;">
+          <li>Helm SNI Full Face / 3/4</li>
+          <li>Jaket Touring & Sarung Tangan</li>
+          <li>Jas Hujan & P3K Standar</li>
+          <li>Surat Vehicle (STNK & SIM C Aktif)</li>
+        </ul>
+        <button class="btn btn-primary" style="margin-top: 16px;" onclick="openMapsRoute()">
+          <i class="fa-solid fa-map-location-dot"></i> Buka Rute Google Maps
+        </button>
+      </div>
+    </section>
+
+    <!-- 4. PAGE GALERI -->
+    <section id="page-galeri" class="page">
+      <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Dokumentasi Kegiatan</h2>
+      <div class="gallery-grid">
+        <div class="gallery-item glass"><img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=500" alt="Motorcycle 1"></div>
+        <div class="gallery-item glass"><img src="https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=500" alt="Motorcycle 2"></div>
+        <div class="gallery-item glass"><img src="https://images.unsplash.com/photo-1558980394-4c7c9299fe96?w=500" alt="Motorcycle 3"></div>
+        <div class="gallery-item glass"><img src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=500" alt="Motorcycle 4"></div>
+      </div>
+    </section>
+
+    <!-- 5. PAGE ANGGOTA -->
+    <section id="page-anggota" class="page">
+      <div class="form-group">
+        <input type="text" class="input-control" placeholder="Cari nama atau plat nomor..." id="search-member" onkeyup="filterMembers()">
+      </div>
+      <div class="data-list" id="members-list">
+        <!-- Dynamic Content injected via JS -->
+      </div>
+    </section>
+
+    <!-- 6. PAGE KAS KOMUNITAS -->
+    <section id="page-kas" class="page">
+      <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Laporan Kas Komunitas</h2>
+      <div class="card glass" style="background: linear-gradient(135deg, rgba(0,135,90,0.2) 0%, rgba(212,175,55,0.2) 100%);">
+        <span style="font-size: 0.8rem; color: var(--text-muted);">Total Saldo Kas Saat Ini</span>
+        <h1 style="color: var(--primary); font-size: 2rem; margin: 4px 0;">Rp 12.500.000</h1>
+        <p style="font-size: 0.75rem; color: var(--text-muted);">Diperbarui: Agustus 2026</p>
+      </div>
+
+      <div class="card glass">
+        <h3 style="font-size: 0.95rem; margin-bottom: 12px;">Pemasukan & Pengeluaran Terakhir</h3>
+        <div class="data-list">
+          <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+            <span><i class="fa-solid fa-arrow-down" style="color: #10B981;"></i> Iuran Bulanan 10 Anggota</span>
+            <strong style="color: #10B981;">+ Rp 500.000</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+            <span><i class="fa-solid fa-arrow-up" style="color: #EF4444;"></i> DP Merchandise Kaos</span>
+            <strong style="color: #EF4444;">- Rp 1.200.000</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. PAGE MERCHANDISE -->
+    <section id="page-merchandise" class="page">
+      <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Merchandise Resmi</h2>
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+        <div class="card glass" style="padding: 12px;">
+          <div style="height: 120px; background: #333; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: white;">
+            <i class="fa-solid fa-shirt" style="font-size: 2.5rem; color: var(--accent-gold);"></i>
+          </div>
+          <h4 style="font-size: 0.85rem; margin-top: 8px;">Kaos Official ITORA</h4>
+          <p style="font-size: 0.8rem; color: var(--primary); font-weight: 700;">Rp 125.000</p>
+          <button class="btn btn-primary" style="padding: 6px; font-size: 0.75rem; margin-top: 8px;" onclick="toast('Pemesanan dicatat!')">Pesan</button>
+        </div>
+        <div class="card glass" style="padding: 12px;">
+          <div style="height: 120px; background: #333; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: white;">
+            <i class="fa-solid fa-user-ninja" style="font-size: 2.5rem; color: var(--accent-gold);"></i>
+          </div>
+          <h4 style="font-size: 0.85rem; margin-top: 8px;">Jaket Touring Official</h4>
+          <p style="font-size: 0.8rem; color: var(--primary); font-weight: 700;">Rp 350.000</p>
+          <button class="btn btn-primary" style="padding: 6px; font-size: 0.75rem; margin-top: 8px;" onclick="toast('Pemesanan dicatat!')">Pesan</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. PAGE PENGUMUMAN -->
+    <section id="page-pengumuman" class="page">
+      <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Pengumuman & Berita</h2>
+      <div class="data-list" id="announcement-list"></div>
+    </section>
+
+    <!-- 9. PAGE SPONSOR -->
+    <section id="page-sponsor" class="page">
+      <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Sponsor & Partner</h2>
+      <div class="card glass" style="text-align: center;">
+        <i class="fa-solid fa-building-columns" style="font-size: 3rem; color: var(--primary);"></i>
+        <h3 style="margin-top: 10px;">Bank Syariah Nasional</h3>
+        <p style="font-size: 0.8rem; color: var(--text-muted);">Sponsor Utama Komunitas ITORA Surabaya</p>
+      </div>
+    </section>
+
+    <!-- 10. PAGE KONTAK & PENGATURAN -->
+    <section id="page-pengaturan" class="page">
+      <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Profil & Pengaturan</h2>
+      <div class="card glass" style="text-align: center;">
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200" class="member-avatar" alt="Avatar">
+        <h3 style="margin-top: 8px;">Ahmad Fauzi</h3>
+        <span class="badge badge-gold" style="margin-top: 4px;">Ketua Komunitas</span>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">ID Member: ITORA-BSN-001</p>
+      </div>
+
+      <div class="card glass">
+        <h4 style="font-size: 0.9rem; margin-bottom: 12px;">Pengaturan Aplikasi</h4>
+        <button class="btn btn-primary" style="margin-bottom: 8px; justify-content: flex-start;" onclick="toast('Profil berhasil diperbarui')">
+          <i class="fa-solid fa-user-pen"></i> Edit Profil
+        </button>
+        <button class="btn btn-gold" style="justify-content: flex-start;" onclick="toast('Logout Berhasil')">
+          <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- BOTTOM NAVIGATION BAR -->
+  <nav class="bottom-nav glass">
+    <a class="nav-item active" onclick="navigateTo('beranda')" id="nav-beranda">
+      <i class="fa-solid fa-house"></i>
+      <span>Beranda</span>
+    </a>
+    <a class="nav-item" onclick="navigateTo('event')" id="nav-event">
+      <i class="fa-solid fa-calendar-days"></i>
+      <span>Event</span>
+    </a>
+    <a class="nav-item" onclick="navigateTo('touring')" id="nav-touring">
+      <i class="fa-solid fa-motorcycle"></i>
+      <span>Touring</span>
+    </a>
+    <a class="nav-item" onclick="navigateTo('galeri')" id="nav-galeri">
+      <i class="fa-solid fa-images"></i>
+      <span>Galeri</span>
+    </a>
+    <a class="nav-item" onclick="navigateTo('anggota')" id="nav-anggota">
+      <i class="fa-solid fa-users"></i>
+      <span>Anggota</span>
+    </a>
+  </nav>
+
+  <!-- MODAL QR CODE MEMBER -->
+  <div class="modal" id="qr-modal">
+    <div class="modal-content glass" style="text-align: center;">
+      <h3 style="margin-bottom: 10px;">QR Card Member</h3>
+      <p style="font-size: 0.8rem; color: var(--text-muted);">Gunakan QR ini untuk presisi kehadiran event</p>
+      <div class="qr-container">
+        <div id="qrcode"></div>
+      </div>
+      <p style="font-size: 0.85rem; font-weight: 700; color: var(--primary);">ITORA-BSN-001</p>
+      <button class="btn btn-primary" style="margin-top: 15px;" onclick="closeModal('qr-modal')">Tutup</button>
     </div>
-  </section>
+  </div>
 
-  <!-- Bagian 1: Statistik & Jumlah Anggota -->
-  <section id="statistik" class="py-12 px-6">
-    <div class="max-w-7xl mx-auto">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-        
-        <div class="p-6 rounded-2xl border border-emeraldBrand-border bg-emeraldBrand-cardBg backdrop-blur-md text-center hover:border-emerald-500/40 transition">
-          <div class="font-display font-extrabold text-4xl text-emerald-400 mb-1">128+</div>
-          <div class="text-xs uppercase tracking-wider text-slate-400 font-medium">Anggota Terdaftar</div>
-          <p class="text-[11px] text-slate-500 mt-2">Terverifikasi NIK Karyawan</p>
-        </div>
+  <!-- JAVASCRIPT APPLICATION LOGIC -->
+  <script>
+    /* ==========================================
+       SUPABASE CONFIGURATION (FALLBACK DEMO MODE)
+       ========================================== */
+    const SUPABASE_URL = 'https://your-supabase-url.supabase.co';
+    const SUPABASE_ANON_KEY = 'your-anon-key';
+    const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
-        <div class="p-6 rounded-2xl border border-emeraldBrand-border bg-emeraldBrand-cardBg backdrop-blur-md text-center hover:border-emerald-500/40 transition">
-          <div class="font-display font-extrabold text-4xl text-white mb-1">42</div>
-          <div class="text-xs uppercase tracking-wider text-slate-400 font-medium">Total Agenda Touring</div>
-          <p class="text-[11px] text-slate-500 mt-2">Luar & Dalam Kota</p>
-        </div>
+    /* MOCK DATA (Gunakan jika offline / Tanpa Supabase Backend) */
+    const mockMembers = [
+      { id: 'ITORA-001', name: 'Ahmad Fauzi', role: 'Ketua', bike: 'Honda CB500X', plate: 'L 1234 BS', blood: 'O' },
+      { id: 'ITORA-002', name: 'Budi Santoso', role: 'Sekretaris', bike: 'Yamaha NMAX 155', plate: 'L 5678 AA', blood: 'A' },
+      { id: 'ITORA-003', name: 'Citra Dewi', role: 'Bendahara', bike: 'Vespa Sprint 150', plate: 'L 9101 BSN', blood: 'B' },
+      { id: 'ITORA-004', name: 'Dedi Kurniawan', role: 'Anggota', bike: 'Kawasaki Versys 250', plate: 'L 4321 XY', blood: 'AB' }
+    ];
 
-        <div class="p-6 rounded-2xl border border-emeraldBrand-border bg-emeraldBrand-cardBg backdrop-blur-md text-center hover:border-emerald-500/40 transition">
-          <div class="font-display font-extrabold text-4xl text-emerald-400 mb-1">100%</div>
-          <div class="text-xs uppercase tracking-wider text-slate-400 font-medium">Transparansi Kas</div>
-          <p class="text-[11px] text-slate-500 mt-2">Diaudit via WebApp</p>
-        </div>
+    const mockEvents = [
+      { title: 'Kopdar Rutin Bulanan', date: '10 Agustus 2026', location: 'Sekretariat BSN Surabaya', desc: 'Pembahasan agenda turing dan kas.' },
+      { title: 'Bakti Sosial & Santunan', date: '25 Agustus 2026', location: 'Panti Asuhan Surabaya', desc: 'Penyaluran bantuan BSN Peduli.' }
+    ];
 
-        <div class="p-6 rounded-2xl border border-emeraldBrand-border bg-emeraldBrand-cardBg backdrop-blur-md text-center hover:border-emerald-500/40 transition">
-          <div class="font-display font-extrabold text-4xl text-emerald-400 mb-1">NIHIL</div>
-          <div class="text-xs uppercase tracking-wider text-slate-400 font-medium">Insiden Keselamatan</div>
-          <p class="text-[11px] text-slate-500 mt-2">Protokol K3 Ketat</p>
-        </div>
+    /* ==========================================
+       APP INITIALIZATION & ROUTING
+       ========================================== */
+    document.addEventListener('DOMContentLoaded', () => {
+      // Hide Splash Screen after 1.5 seconds
+      setTimeout(() => {
+        const splash = document.getElementById('splash-screen');
+        splash.style.opacity = '0';
+        setTimeout(() => splash.style.display = 'none', 500);
+      }, 1500);
 
-      </div>
-    </div>
-  </section>
+      // Render Dynamic Data
+      renderMembers(mockMembers);
+      renderEvents(mockEvents);
 
-  <!-- Bagian 2: Agenda & Jadwal Touring -->
-  <section id="agenda" class="py-20 px-6 border-t border-emeraldBrand-border/50 bg-black/30">
-    <div class="max-w-7xl mx-auto">
+      // Generate QR Code
+      new QRCode(document.getElementById("qrcode"), {
+        text: "ITORA-BSN-001-AHMAD_FAUZI",
+        width: 160,
+        height: 160
+      });
+
+      // Register PWA Service Worker via Data URL
+      registerPWA();
+    });
+
+    // Navigation Switcher
+    function navigateTo(pageId) {
+      // Hide all pages
+      document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
       
-      <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
-        <div>
-          <span class="text-xs uppercase tracking-widest text-emerald-400 font-bold">Agenda Mendatang</span>
-          <h2 class="font-display text-3xl sm:text-4xl font-bold text-white mt-1">Jadwal Touring & Kegiatan</h2>
-        </div>
-        <p class="text-slate-400 text-sm max-w-md mt-4 md:mt-0">
-          Seluruh agenda resmi memerlukan konfirmasi pendaftaran dan verifikasi kelaikan kendaraan melalui WebApp ITORA.
-        </p>
-      </div>
+      // Show selected page
+      const targetPage = document.getElementById(`page-${pageId}`);
+      if(targetPage) targetPage.classList.add('active');
 
-      <!-- Kartu Agenda -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        
-        <!-- Kartu 1 -->
-        <div class="rounded-2xl border border-emeraldBrand-border bg-emeraldBrand-cardBg overflow-hidden hover:border-emerald-500/50 transition duration-300 flex flex-col justify-between">
-          <div class="p-6">
-            <div class="flex items-center justify-between mb-4">
-              <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Touring Resmi</span>
-              <span class="text-xs font-mono text-slate-400">18 - 20 Ags 2026</span>
-            </div>
-            <h3 class="font-bold text-xl text-white mb-2">Grand Touring Bromo - Chapter BSN</h3>
-            <p class="text-slate-400 text-sm leading-relaxed mb-4">
-              Rute: Surabaya $\rightarrow$ Probolinggo $\rightarrow$ Bromo $\rightarrow$ Surabaya. Berfokus pada keakraban antar divisi dan bakti sosial masyarakat lokal.
-            </p>
-            <div class="text-xs text-slate-500 space-y-1 font-mono">
-              <div>📍 Titik Kumpul: Kantor BSN Surabaya</div>
-              <div>🏍️ Syarat: Min 150cc + Kelengkapan Standar</div>
-            </div>
-          </div>
-          <div class="px-6 py-4 border-t border-emeraldBrand-border bg-black/40 flex justify-between items-center">
-            <span class="text-xs text-emerald-400 font-medium">● Registrasi Dibuka</span>
-            <a href="https://itora.my.id" class="text-xs font-bold text-emerald-400 hover:underline">Daftar via App $\rightarrow$</a>
-          </div>
-        </div>
+      // Update Nav active state
+      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+      const activeNav = document.getElementById(`nav-${pageId}`);
+      if(activeNav) activeNav.classList.add('active');
 
-        <!-- Kartu 2 -->
-        <div class="rounded-2xl border border-emeraldBrand-border bg-emeraldBrand-cardBg overflow-hidden hover:border-emerald-500/50 transition duration-300 flex flex-col justify-between">
-          <div class="p-6">
-            <div class="flex items-center justify-between mb-4">
-              <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">CSR Korporat</span>
-              <span class="text-xs font-mono text-slate-400">05 Sep 2026</span>
-            </div>
-            <h3 class="font-bold text-xl text-white mb-2">ITORA Peduli & Bakti Sosial</h3>
-            <p class="text-slate-400 text-sm leading-relaxed mb-4">
-              Penyerahan bantuan CSR PT Binayasa Putrabatara ke panti asuhan di area Gresik dan Sidoarjo.
-            </p>
-            <div class="text-xs text-slate-500 space-y-1 font-mono">
-              <div>📍 Titik Kumpul: Mess ITORA Surabaya</div>
-              <div>🎁 Target: 100 Paket Sembako</div>
-            </div>
-          </div>
-          <div class="px-6 py-4 border-t border-emeraldBrand-border bg-black/40 flex justify-between items-center">
-            <span class="text-xs text-amber-400 font-medium">● Persiapan Logistik</span>
-            <a href="https://itora.my.id" class="text-xs font-bold text-emerald-400 hover:underline">Detail Kegiatan $\rightarrow$</a>
-          </div>
-        </div>
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-        <!-- Kartu 3 -->
-        <div class="rounded-2xl border border-emeraldBrand-border bg-emeraldBrand-cardBg overflow-hidden hover:border-emerald-500/50 transition duration-300 flex flex-col justify-between">
-          <div class="p-6">
-            <div class="flex items-center justify-between mb-4">
-              <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-purple-500/10 text-purple-400 border border-purple-500/20">Pelatihan Internal</span>
-              <span class="text-xs font-mono text-slate-400">26 Sep 2026</span>
-            </div>
-            <h3 class="font-bold text-xl text-white mb-2">Pelatihan Safety Riding Lanjutan</h3>
-            <p class="text-slate-400 text-sm leading-relaxed mb-4">
-              Pelatihan *defensive riding* dan penanganan kondisi darurat bersama instruktur bersertifikasi.
-            </p>
-            <div class="text-xs text-slate-500 space-y-1 font-mono">
-              <div>📍 Lokasi: Parkir Barat BSN Surabaya</div>
-              <div>🛡️ Wajib Bagi Anggota Baru</div>
-            </div>
-          </div>
-          <div class="px-6 py-4 border-t border-emeraldBrand-border bg-black/40 flex justify-between items-center">
-            <span class="text-xs text-slate-400 font-medium">● Segera Hadir</span>
-            <a href="https://itora.my.id" class="text-xs font-bold text-emerald-400 hover:underline">Detail Kegiatan $\rightarrow$</a>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- Bagian 3: Galeri Foto Agenda & Touring -->
-  <section id="galeri" class="py-20 px-6">
-    <div class="max-w-7xl mx-auto">
+    /* ==========================================
+       UI INTERACTION & MODALS
+       ========================================== */
+    function toggleTheme() {
+      const body = document.body;
+      const currentTheme = body.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      body.setAttribute('data-theme', newTheme);
       
-      <div class="text-center max-w-3xl mx-auto mb-12">
-        <span class="text-xs uppercase tracking-widest text-emerald-400 font-bold">Dokumentasi & Kenangan</span>
-        <h2 class="font-display text-3xl sm:text-4xl font-bold text-white mt-2">Galeri Kegiatan BSN Surabaya</h2>
-        <p class="text-slate-400 text-sm mt-3">
-          Momen kebersamaan, touring Lintas Jawa, dan aksi sosial anggota ITORA Chapter BSN Surabaya.
-        </p>
-      </div>
+      const themeBtn = document.getElementById('theme-toggle');
+      themeBtn.innerHTML = newTheme === 'dark' ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
+      toast(`Mode ${newTheme === 'dark' ? 'Gelap' : 'Terang'} Diaktifkan`);
+    }
 
-      <!-- Grid Foto (Format Bento Box) -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        
-        <!-- Foto 1 (Utama) -->
-        <div class="md:col-span-2 relative group rounded-2xl overflow-hidden border border-emeraldBrand-border h-72 md:h-96">
-          <img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?q=80&w=1200&auto=format&fit=crop" alt="Touring Bromo" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent p-6 flex flex-col justify-end">
-            <span class="text-xs text-emerald-400 font-semibold font-mono">TOURING TAHUNAN</span>
-            <h3 class="text-xl font-bold text-white">Eksplorasi Jalur Selatan Jawa</h3>
-            <p class="text-xs text-slate-300 mt-1">45 Peserta • Chapter BSN Surabaya</p>
+    function openModal(id) {
+      document.getElementById(id).classList.add('active');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    function toast(message) {
+      const container = document.getElementById('toast-container');
+      const toastEl = document.createElement('div');
+      toastEl.className = 'toast glass';
+      toastEl.style.background = 'var(--primary)';
+      toastEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${message}`;
+      
+      container.appendChild(toastEl);
+      setTimeout(() => {
+        toastEl.remove();
+      }, 3000);
+    }
+
+    function openMapsRoute() {
+      window.open('https://maps.google.com/?q=Bromo', '_blank');
+    }
+
+    /* ==========================================
+       RENDERERS & DATA HELPERS
+       ========================================== */
+    function renderMembers(data) {
+      const container = document.getElementById('members-list');
+      container.innerHTML = data.map(m => `
+        <div class="card glass" style="display: flex; align-items: center; gap: 14px; padding: 14px;">
+          <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">
+            ${m.name.charAt(0)}
+          </div>
+          <div style="flex: 1;">
+            <h4 style="font-size: 0.9rem;">${m.name}</h4>
+            <p style="font-size: 0.75rem; color: var(--text-muted);">${m.role} • ${m.bike}</p>
+            <span class="badge badge-gold" style="margin-top: 4px; font-size: 0.65rem;">Plat: ${m.plate}</span>
           </div>
         </div>
+      `).join('');
+    }
 
-        <!-- Foto 2 -->
-        <div class="relative group rounded-2xl overflow-hidden border border-emeraldBrand-border h-72 md:h-96">
-          <img src="https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=800&auto=format&fit=crop" alt="Pelatihan Safety Riding" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent p-6 flex flex-col justify-end">
-            <span class="text-xs text-emerald-400 font-semibold font-mono">PELATIHAN</span>
-            <h3 class="text-lg font-bold text-white">Sertifikasi Safety Riding</h3>
-            <p class="text-xs text-slate-300 mt-1">Standar Keselamatan Berkendara K3</p>
-          </div>
+    function filterMembers() {
+      const query = document.getElementById('search-member').value.toLowerCase();
+      const filtered = mockMembers.filter(m => 
+        m.name.toLowerCase().includes(query) || m.plate.toLowerCase().includes(query)
+      );
+      renderMembers(filtered);
+    }
+
+    function renderEvents(data) {
+      const container = document.getElementById('event-list');
+      container.innerHTML = data.map(e => `
+        <div class="card glass">
+          <span class="badge badge-primary">Agenda</span>
+          <h3 style="margin-top: 6px; font-size: 1rem;">${e.title}</h3>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;"><i class="fa-regular fa-calendar"></i> ${e.date}</p>
+          <p style="font-size: 0.8rem; color: var(--text-muted);"><i class="fa-solid fa-location-dot"></i> ${e.location}</p>
+          <button class="btn btn-gold" style="margin-top: 10px; padding: 8px; font-size: 0.8rem;" onclick="toast('RSVP Hadir Terkirim!')">RSVP Hadir</button>
         </div>
+      `).join('');
+    }
 
-        <!-- Foto 3 -->
-        <div class="relative group rounded-2xl overflow-hidden border border-emeraldBrand-border h-64">
-          <img src="https://images.unsplash.com/photo-1609630875171-b1321377ee65?q=80&w=800&auto=format&fit=crop" alt="Kopdar Malam" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent p-6 flex flex-col justify-end">
-            <span class="text-xs text-emerald-400 font-semibold font-mono">KOPDAR</span>
-            <h3 class="text-lg font-bold text-white">Kopdar Rutin Kota Surabaya</h3>
-            <p class="text-xs text-slate-300 mt-1">Silaturahmi Anggota Antar Divisi</p>
-          </div>
-        </div>
+    /* ==========================================
+       INLINE PWA & SERVICE WORKER GENERATOR
+       ========================================== */
+    function registerPWA() {
+      // 1. Dynamic Web App Manifest
+      const manifest = {
+        name: "ITORA BSN SURABAYA",
+        short_name: "ITORA",
+        start_url: ".",
+        display: "standalone",
+        background_color: "#0F172A",
+        theme_color: "#00875A",
+        icons: [{
+          src: "https://via.placeholder.com/192x192/00875A/FFFFFF?text=ITORA",
+          sizes: "192x192",
+          type: "image/png"
+        }]
+      };
+      
+      const manifestStr = JSON.stringify(manifest);
+      const blobManifest = new Blob([manifestStr], {type: 'application/json'});
+      document.getElementById('pwa-manifest').setAttribute('href', URL.createObjectURL(blobManifest));
 
-        <!-- Foto 4 -->
-        <div class="relative group rounded-2xl overflow-hidden border border-emeraldBrand-border h-64">
-          <img src="https://images.unsplash.com/photo-1511919884226-fd3cad34687c?q=80&w=800&auto=format&fit=crop" alt="CSR Korporat" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent p-6 flex flex-col justify-end">
-            <span class="text-xs text-emerald-400 font-semibold font-mono">AKSI SOSIAL</span>
-            <h3 class="text-lg font-bold text-white">Bakti Sosial ITORA BSN</h3>
-            <p class="text-xs text-slate-300 mt-1">Penyerahan Program CSR Perusahaan</p>
-          </div>
-        </div>
-
-        <!-- Foto 5 -->
-        <div class="relative group rounded-2xl overflow-hidden border border-emeraldBrand-border h-64">
-          <img src="https://images.unsplash.com/photo-1525160354320-d8e92641c563?q=80&w=800&auto=format&fit=crop" alt="Gathering Pengurus" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent p-6 flex flex-col justify-end">
-            <span class="text-xs text-emerald-400 font-semibold font-mono">KONSOLIDASI</span>
-            <h3 class="text-lg font-bold text-white">Raker & Mini Touring</h3>
-            <p class="text-xs text-slate-300 mt-1">Konsolidasi Pengurus Chapter</p>
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-  </section>
-
-  <!-- Bagian 4: Integrasi Aplikasi WebApp -->
-  <section id="portal" class="py-20 px-6 border-t border-emeraldBrand-border/50 bg-emeraldBrand-cardBg/40">
-    <div class="max-w-5xl mx-auto rounded-3xl border border-emerald-500/30 bg-gradient-to-br from-emeraldBrand-cardBg to-black p-8 sm:p-12 text-center relative overflow-hidden shadow-2xl">
-      <div class="max-w-2xl mx-auto relative z-10">
-        <span class="text-xs font-mono font-bold text-emerald-400 uppercase tracking-widest">Portal Utama ITORA</span>
-        <h2 class="font-display text-3xl sm:text-4xl font-extrabold text-white mt-2 mb-4">
-          Akses Sistem WebApp ITORA
-        </h2>
-        <p class="text-slate-400 text-sm mb-8 leading-relaxed">
-          Kelola Kartu Tanda Anggota (KTA) digital, pantau laporan keuangan kas internal, serta konfirmasi pendaftaran touring BSN Surabaya secara terpadu.
-        </p>
-        <a href="https://itora.my.id" class="inline-block px-10 py-4 rounded-xl font-bold text-sm bg-gradient-to-r from-emerald-500 to-emerald-600 text-black hover:brightness-110 shadow-xl shadow-emerald-500/25 transition">
-          Buka Portal Aplikasi (`itora.my.id`)
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="py-10 px-6 border-t border-emeraldBrand-border/60 text-xs text-slate-500">
-    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
-      <div>
-        © 2026 ITORA Chapter BSN Surabaya — PT Binayasa Putrabatara.
-      </div>
-      <div class="font-mono text-emerald-500/80">
-        DARK MODE EMERALD EDITION
-      </div>
-    </div>
-  </footer>
-
+      // 2. Inline Service Worker Registration for Offline Support
+      if ('serviceWorker' in navigator) {
+        const swCode = `
+          const CACHE_NAME = 'itora-v1';
+          self.addEventListener('install', e => {
+            e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(['./'])));
+          });
+          self.addEventListener('fetch', e => {
+            e.respondWith(caches.match(e.request).then(res => res || fetch(e.request)));
+          });
+        `;
+        const blobSW = new Blob([swCode], {type: 'application/javascript'});
+        navigator.serviceWorker.register(URL.createObjectURL(blobSW))
+          .then(() => console.log('Service Worker Registered'))
+          .catch(err => console.log('SW Error:', err));
+      }
+    }
+  </script>
 </body>
 </html>
