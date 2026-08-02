@@ -333,14 +333,6 @@
       margin-bottom: 16px;
     }
 
-    .form-group label {
-      display: block;
-      font-size: 0.8rem;
-      font-weight: 600;
-      margin-bottom: 6px;
-      color: var(--text-muted);
-    }
-
     .input-control {
       width: 100%;
       padding: 12px 16px;
@@ -382,26 +374,6 @@
       background: var(--accent-gold);
       color: #000;
       box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
-    }
-
-    /* Floating Action Button (FAB) */
-    .fab {
-      position: fixed;
-      bottom: 85px;
-      right: 20px;
-      width: 54px;
-      height: 54px;
-      border-radius: 50%;
-      background: var(--accent-gold);
-      color: #000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.4rem;
-      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
-      z-index: 99;
-      cursor: pointer;
-      border: none;
     }
 
     /* Modal Component */
@@ -507,7 +479,7 @@
   <!-- SPLASH SCREEN -->
   <div id="splash-screen">
     <div class="splash-logo">
-      <i class="fa-solid => fa-motorcycle"></i>
+      <i class="fa-solid fa-motorcycle"></i>
     </div>
     <h2 style="font-weight: 800; letter-spacing: 1px;">ITORA BSN</h2>
     <p style="color: var(--accent-gold); font-size: 0.85rem; margin-top: 4px;">CABANG SURABAYA</p>
@@ -609,9 +581,7 @@
     <!-- 2. PAGE EVENT -->
     <section id="page-event" class="page">
       <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Agenda & Kegiatan</h2>
-      <div class="data-list" id="event-list">
-        <!-- Dynamic Content injected via JS -->
-      </div>
+      <div class="data-list" id="event-list"></div>
     </section>
 
     <!-- 3. PAGE TOURING -->
@@ -655,9 +625,7 @@
       <div class="form-group">
         <input type="text" class="input-control" placeholder="Cari nama atau plat nomor..." id="search-member" onkeyup="filterMembers()">
       </div>
-      <div class="data-list" id="members-list">
-        <!-- Dynamic Content injected via JS -->
-      </div>
+      <div class="data-list" id="members-list"></div>
     </section>
 
     <!-- 6. PAGE KAS KOMUNITAS -->
@@ -710,7 +678,10 @@
     <!-- 8. PAGE PENGUMUMAN -->
     <section id="page-pengumuman" class="page">
       <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Pengumuman & Berita</h2>
-      <div class="data-list" id="announcement-list"></div>
+      <div class="card glass">
+        <h4 style="font-size: 0.9rem;">Iuran Kas Bulanan Agustus 2026</h4>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Diharapkan seluruh anggota melunasi sebelum tanggal 10 melalui transfer bendahara.</p>
+      </div>
     </section>
 
     <!-- 9. PAGE SPONSOR -->
@@ -774,7 +745,7 @@
   <div class="modal" id="qr-modal">
     <div class="modal-content glass" style="text-align: center;">
       <h3 style="margin-bottom: 10px;">QR Card Member</h3>
-      <p style="font-size: 0.8rem; color: var(--text-muted);">Gunakan QR ini untuk presisi kehadiran event</p>
+      <p style="font-size: 0.8rem; color: var(--text-muted);">Gunakan QR ini untuk absensi kehadiran event</p>
       <div class="qr-container">
         <div id="qrcode"></div>
       </div>
@@ -783,16 +754,39 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT APPLICATION LOGIC -->
+  <!-- JAVASCRIPT LOGIC -->
   <script>
     /* ==========================================
-       SUPABASE CONFIGURATION (FALLBACK DEMO MODE)
+       1. SPLASH SCREEN HANDLER (WITH SAFETY)
+       ========================================== */
+    function hideSplashScreen() {
+      const splash = document.getElementById('splash-screen');
+      if (splash && splash.style.display !== 'none') {
+        splash.style.opacity = '0';
+        setTimeout(() => {
+          splash.style.display = 'none';
+        }, 500);
+      }
+    }
+
+    // Safety timeout: buka layar otomatis maksimal setelah 2 detik
+    const splashSafetyTimeout = setTimeout(hideSplashScreen, 2000);
+
+    /* ==========================================
+       2. MOCK DATA & CONFIG
        ========================================== */
     const SUPABASE_URL = 'https://your-supabase-url.supabase.co';
     const SUPABASE_ANON_KEY = 'your-anon-key';
-    const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+    
+    let supabase = null;
+    if (window.supabase && typeof window.supabase.createClient === 'function') {
+      try {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      } catch (e) {
+        console.warn('Supabase init failed:', e);
+      }
+    }
 
-    /* MOCK DATA (Gunakan jika offline / Tanpa Supabase Backend) */
     const mockMembers = [
       { id: 'ITORA-001', name: 'Ahmad Fauzi', role: 'Ketua', bike: 'Honda CB500X', plate: 'L 1234 BS', blood: 'O' },
       { id: 'ITORA-002', name: 'Budi Santoso', role: 'Sekretaris', bike: 'Yamaha NMAX 155', plate: 'L 5678 AA', blood: 'A' },
@@ -806,51 +800,50 @@
     ];
 
     /* ==========================================
-       APP INITIALIZATION & ROUTING
+       3. INITIALIZATION ON DOM READY
        ========================================== */
     document.addEventListener('DOMContentLoaded', () => {
-      // Hide Splash Screen after 1.5 seconds
-      setTimeout(() => {
-        const splash = document.getElementById('splash-screen');
-        splash.style.opacity = '0';
-        setTimeout(() => splash.style.display = 'none', 500);
-      }, 1500);
+      try {
+        renderMembers(mockMembers);
+        renderEvents(mockEvents);
 
-      // Render Dynamic Data
-      renderMembers(mockMembers);
-      renderEvents(mockEvents);
+        if (typeof QRCode !== 'undefined') {
+          const qrContainer = document.getElementById("qrcode");
+          if (qrContainer) {
+            qrContainer.innerHTML = '';
+            new QRCode(qrContainer, {
+              text: "ITORA-BSN-001-AHMAD_FAUZI",
+              width: 160,
+              height: 160
+            });
+          }
+        }
 
-      // Generate QR Code
-      new QRCode(document.getElementById("qrcode"), {
-        text: "ITORA-BSN-001-AHMAD_FAUZI",
-        width: 160,
-        height: 160
-      });
-
-      // Register PWA Service Worker via Data URL
-      registerPWA();
+        registerPWA();
+      } catch (err) {
+        console.error('Init Error:', err);
+      } finally {
+        clearTimeout(splashSafetyTimeout);
+        setTimeout(hideSplashScreen, 800);
+      }
     });
 
-    // Navigation Switcher
+    /* ==========================================
+       4. HELPER FUNCTIONS & ROUTING
+       ========================================== */
     function navigateTo(pageId) {
-      // Hide all pages
       document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
       
-      // Show selected page
       const targetPage = document.getElementById(`page-${pageId}`);
-      if(targetPage) targetPage.classList.add('active');
+      if (targetPage) targetPage.classList.add('active');
 
-      // Update Nav active state
       document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
       const activeNav = document.getElementById(`nav-${pageId}`);
-      if(activeNav) activeNav.classList.add('active');
+      if (activeNav) activeNav.classList.add('active');
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    /* ==========================================
-       UI INTERACTION & MODALS
-       ========================================== */
     function toggleTheme() {
       const body = document.body;
       const currentTheme = body.getAttribute('data-theme');
@@ -858,40 +851,41 @@
       body.setAttribute('data-theme', newTheme);
       
       const themeBtn = document.getElementById('theme-toggle');
-      themeBtn.innerHTML = newTheme === 'dark' ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
+      if (themeBtn) {
+        themeBtn.innerHTML = newTheme === 'dark' ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
+      }
       toast(`Mode ${newTheme === 'dark' ? 'Gelap' : 'Terang'} Diaktifkan`);
     }
 
     function openModal(id) {
-      document.getElementById(id).classList.add('active');
+      const el = document.getElementById(id);
+      if (el) el.classList.add('active');
     }
 
     function closeModal(id) {
-      document.getElementById(id).classList.remove('active');
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('active');
     }
 
     function toast(message) {
       const container = document.getElementById('toast-container');
+      if (!container) return;
       const toastEl = document.createElement('div');
       toastEl.className = 'toast glass';
       toastEl.style.background = 'var(--primary)';
       toastEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${message}`;
       
       container.appendChild(toastEl);
-      setTimeout(() => {
-        toastEl.remove();
-      }, 3000);
+      setTimeout(() => toastEl.remove(), 3000);
     }
 
     function openMapsRoute() {
       window.open('https://maps.google.com/?q=Bromo', '_blank');
     }
 
-    /* ==========================================
-       RENDERERS & DATA HELPERS
-       ========================================== */
     function renderMembers(data) {
       const container = document.getElementById('members-list');
+      if (!container) return;
       container.innerHTML = data.map(m => `
         <div class="card glass" style="display: flex; align-items: center; gap: 14px; padding: 14px;">
           <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">
@@ -907,7 +901,9 @@
     }
 
     function filterMembers() {
-      const query = document.getElementById('search-member').value.toLowerCase();
+      const input = document.getElementById('search-member');
+      if (!input) return;
+      const query = input.value.toLowerCase();
       const filtered = mockMembers.filter(m => 
         m.name.toLowerCase().includes(query) || m.plate.toLowerCase().includes(query)
       );
@@ -916,6 +912,7 @@
 
     function renderEvents(data) {
       const container = document.getElementById('event-list');
+      if (!container) return;
       container.innerHTML = data.map(e => `
         <div class="card glass">
           <span class="badge badge-primary">Agenda</span>
@@ -927,44 +924,41 @@
       `).join('');
     }
 
-    /* ==========================================
-       INLINE PWA & SERVICE WORKER GENERATOR
-       ========================================== */
     function registerPWA() {
-      // 1. Dynamic Web App Manifest
-      const manifest = {
-        name: "ITORA BSN SURABAYA",
-        short_name: "ITORA",
-        start_url: ".",
-        display: "standalone",
-        background_color: "#0F172A",
-        theme_color: "#00875A",
-        icons: [{
-          src: "https://via.placeholder.com/192x192/00875A/FFFFFF?text=ITORA",
-          sizes: "192x192",
-          type: "image/png"
-        }]
-      };
-      
-      const manifestStr = JSON.stringify(manifest);
-      const blobManifest = new Blob([manifestStr], {type: 'application/json'});
-      document.getElementById('pwa-manifest').setAttribute('href', URL.createObjectURL(blobManifest));
+      try {
+        const manifest = {
+          name: "ITORA BSN SURABAYA",
+          short_name: "ITORA",
+          start_url: ".",
+          display: "standalone",
+          background_color: "#0F172A",
+          theme_color: "#00875A",
+          icons: [{
+            src: "https://via.placeholder.com/192x192/00875A/FFFFFF?text=ITORA",
+            sizes: "192x192",
+            type: "image/png"
+          }]
+        };
+        
+        const manifestStr = JSON.stringify(manifest);
+        const blobManifest = new Blob([manifestStr], {type: 'application/json'});
+        const manifestLink = document.getElementById('pwa-manifest');
+        if (manifestLink) {
+          manifestLink.setAttribute('href', URL.createObjectURL(blobManifest));
+        }
 
-      // 2. Inline Service Worker Registration for Offline Support
-      if ('serviceWorker' in navigator) {
-        const swCode = `
-          const CACHE_NAME = 'itora-v1';
-          self.addEventListener('install', e => {
-            e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(['./'])));
-          });
-          self.addEventListener('fetch', e => {
-            e.respondWith(caches.match(e.request).then(res => res || fetch(e.request)));
-          });
-        `;
-        const blobSW = new Blob([swCode], {type: 'application/javascript'});
-        navigator.serviceWorker.register(URL.createObjectURL(blobSW))
-          .then(() => console.log('Service Worker Registered'))
-          .catch(err => console.log('SW Error:', err));
+        if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
+          const swCode = `
+            const CACHE_NAME = 'itora-v1';
+            self.addEventListener('install', e => self.skipWaiting());
+            self.addEventListener('activate', e => self.clients.claim());
+            self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => caches.match(e.request))));
+          `;
+          const blobSW = new Blob([swCode], {type: 'application/javascript'});
+          navigator.serviceWorker.register(URL.createObjectURL(blobSW)).catch(() => {});
+        }
+      } catch(e) {
+        console.warn('PWA init issue:', e);
       }
     }
   </script>
