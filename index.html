@@ -69,8 +69,8 @@
     body {
       background-color: var(--bg-dark);
       color: var(--text-main-dark);
-      overflow-x: hidden;
-      padding-bottom: 90px;
+      overflow-x: clip; /* Aman untuk Mozilla Firefox & Chrome Mobile */
+      padding-bottom: 100px; /* Menghindari konten tertutup bottom nav */
       transition: background-color 0.3s ease;
       font-size: var(--font-base);
       line-height: 1.4;
@@ -287,14 +287,14 @@
       display: none;
     }
 
-    /* BOTTOM NAV BAR */
+    /* BOTTOM NAV BAR (PERBAIKAN COMPATIBILITY BROWSER) */
     .bottom-nav {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
       height: 70px;
-      z-index: 1000;
+      z-index: 9999; /* Ditingkatkan agar selalu berada di atas layer Mozilla & Chrome */
       display: flex;
       justify-content: space-around;
       align-items: center;
@@ -302,7 +302,8 @@
       border-top: 1px solid var(--border-dark);
       border-top-left-radius: var(--radius-lg);
       border-top-right-radius: var(--radius-lg);
-      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+      padding-bottom: env(safe-area-inset-bottom, 0px); /* Memperhitungkan gesture bar mobile */
     }
 
     .nav-item {
@@ -2426,46 +2427,63 @@
             if (this.currentUser && (this.currentUser.email === 'mastrisnobpb@gmail.com' || this.currentProfile?.role === 'Admin')) {
               this.renderAdminMenuList();
             }
+          } else {
+            this.renderDynamicMenus(); // Tetap panggil render dengan fallback default jika database kosong
           }
         } catch (e) {
           console.error('Error fetching menus:', e);
+          this.renderDynamicMenus();
         }
       }
 
       renderDynamicMenus() {
         const isSuperAdmin = (this.currentUser && this.currentUser.email === 'mastrisnobpb@gmail.com');
         const isAdmin = (this.currentProfile?.role === 'Admin' || isSuperAdmin);
-        const activeMenus = this.menus.filter(m => m.is_active);
 
-        const quickMenuContainer = document.getElementById('dynamic-quick-menu');
-        if (quickMenuContainer) {
-          const quickItems = activeMenus.filter(m => m.show_in_quick_menu);
-          quickMenuContainer.innerHTML = quickItems.map(m => {
-            if (m.menu_key === 'admin' && !isAdmin) return '';
+        // Fallback default jika data Supabase belum terisi
+        let navItems = this.menus.filter(m => m.is_active && m.show_in_bottom_nav);
 
-            let actionCall = `app.navigateTo('${m.menu_key}')`;
-            if (m.menu_key === 'setor_iuran') actionCall = `app.openModal('modal-iuran')`;
-            if (m.menu_key === 'keluar') actionCall = `app.handleLogout()`;
-
-            const iconContent = m.image_url 
-              ? `<img src="${m.image_url}" alt="${m.title}" style="width: 24px; height: 24px; object-fit: contain;">`
-              : `<i class="${m.icon_class}"></i>`;
-
-            return `
-              <div class="quick-item" onclick="${actionCall}">
-                <div class="quick-icon">
-                  ${iconContent}
-                  ${m.menu_key === 'admin' ? '<span class="notification-badge" id="admin-notif-dot"></span>' : ''}
-                </div>
-                <span>${m.title}</span>
-              </div>
-            `;
-          }).join('');
+        if (navItems.length === 0) {
+          navItems = [
+            { menu_key: 'beranda', title: 'Beranda', icon_class: 'fa-solid fa-house' },
+            { menu_key: 'event', title: 'Event', icon_class: 'fa-solid fa-calendar-days' },
+            { menu_key: 'touring', title: 'Touring', icon_class: 'fa-solid fa-route' },
+            { menu_key: 'profil', title: 'Profil', icon_class: 'fa-solid fa-user' }
+          ];
         }
 
+        // Render Quick Menu
+        const quickMenuContainer = document.getElementById('dynamic-quick-menu');
+        if (quickMenuContainer) {
+          const quickItems = this.menus.filter(m => m.is_active && m.show_in_quick_menu);
+          if (quickItems.length > 0) {
+            quickMenuContainer.innerHTML = quickItems.map(m => {
+              if (m.menu_key === 'admin' && !isAdmin) return '';
+
+              let actionCall = `app.navigateTo('${m.menu_key}')`;
+              if (m.menu_key === 'setor_iuran') actionCall = `app.openModal('modal-iuran')`;
+              if (m.menu_key === 'keluar') actionCall = `app.handleLogout()`;
+
+              const iconContent = m.image_url 
+                ? `<img src="${m.image_url}" alt="${m.title}" style="width: 24px; height: 24px; object-fit: contain;">`
+                : `<i class="${m.icon_class}"></i>`;
+
+              return `
+                <div class="quick-item" onclick="${actionCall}">
+                  <div class="quick-icon">
+                    ${iconContent}
+                    ${m.menu_key === 'admin' ? '<span class="notification-badge" id="admin-notif-dot"></span>' : ''}
+                  </div>
+                  <span>${m.title}</span>
+                </div>
+              `;
+            }).join('');
+          }
+        }
+
+        // Render Bottom Nav (Aman untuk Chrome & Mozilla Firefox)
         const bottomNavContainer = document.getElementById('dynamic-bottom-nav');
         if (bottomNavContainer) {
-          const navItems = activeMenus.filter(m => m.show_in_bottom_nav);
           bottomNavContainer.innerHTML = navItems.map((m, index) => {
             const iconContent = m.image_url 
               ? `<img src="${m.image_url}" alt="${m.title}" style="width: 20px; height: 20px; object-fit: contain;">`
@@ -3112,7 +3130,6 @@
               ctx.fillStyle = "#FFFFFF";
               ctx.beginPath();
               
-              // Fallback aman untuk peramban (browser) lama
               if (ctx.roundRect) {
                 ctx.roundRect(badgeX, badgeY, badgeWidth, badgeHeight, 6);
               } else {
