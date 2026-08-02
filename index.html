@@ -112,7 +112,7 @@
       to { transform: rotate(360deg); }
     }
 
-    /* AUTH OVERLAY */
+    /* AUTH OVERLAY / ONBOARDING OVERLAY */
     .auth-overlay {
       position: fixed;
       inset: 0;
@@ -123,6 +123,7 @@
       align-items: center;
       justify-content: center;
       padding: 20px;
+      overflow-y: auto;
     }
 
     .auth-card {
@@ -540,7 +541,7 @@
     <div class="spinner"></div>
   </div>
 
-  <!-- AUTH / LOGIN & REGISTER OVERLAY -->
+  <!-- 1. AUTH SCREEN (LOGIN / REGISTER) -->
   <div id="auth-screen" class="auth-overlay">
     <div class="auth-card glass">
       <div class="auth-header">
@@ -573,7 +574,78 @@
     </div>
   </div>
 
-  <!-- MAIN APP CONTAINER -->
+  <!-- 2. SCREEN FORM LENGKAPI DATA DIRI (WAJIB SEBELUM AKSES DASHBOARD) -->
+  <div id="complete-data-screen" class="auth-overlay" style="display: none;">
+    <div class="auth-card glass">
+      <div class="auth-header">
+        <i class="fa-solid fa-id-card-clip auth-icon" style="color: var(--accent-gold);"></i>
+        <h2>Lengkapi Data Anggota</h2>
+        <p style="font-size:0.8rem; color:var(--text-muted-dark); margin-top:4px;">
+          Lengkapi data diri & kendaraan Anda untuk mengajukan persetujuan akun ke Super Admin.
+        </p>
+      </div>
+
+      <form id="form-complete-data" onsubmit="app.handleSaveInitialData(event)">
+        <div class="form-group">
+          <label><i class="fa-solid fa-user"></i> Nama Lengkap</label>
+          <input type="text" class="input-control" id="init-fullname" placeholder="Sutrisno" required>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-brands fa-whatsapp"></i> Nomor WhatsApp</label>
+          <input type="text" class="input-control" id="init-phone" placeholder="081234567890" required>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-motorcycle"></i> Merek / Tipe Motor</label>
+          <input type="text" class="input-control" id="init-bike" placeholder="Honda Vario 160 / Yamaha NMAX" required>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-rectangle-ad"></i> Nomor Plat Kendaraan</label>
+          <input type="text" class="input-control" id="init-plate" placeholder="L 1234 ABC" required>
+        </div>
+
+        <button type="submit" class="btn btn-gold" id="btn-submit-init-data">
+          <i class="fa-solid fa-paper-plane"></i> Kirim Data & Ajukan Verifikasi
+        </button>
+      </form>
+      <button type="button" class="btn btn-outline" onclick="app.handleLogout()" style="margin-top:10px;">
+        <i class="fa-solid fa-right-from-bracket"></i> Keluar
+      </button>
+    </div>
+  </div>
+
+  <!-- 3. SCREEN PENDING APPROVAL (MENUNGGU PERSETUJUAN SUPER ADMIN) -->
+  <div id="pending-approval-screen" class="auth-overlay" style="display: none;">
+    <div class="auth-card glass" style="text-align: center;">
+      <div class="auth-header">
+        <i class="fa-solid fa-clock-rotate-left auth-icon" style="color: #F59E0B; font-size:3.5rem;"></i>
+        <h2 style="margin-top:10px;">Menunggu Persetujuan</h2>
+        <span class="badge badge-warning" style="margin-top:6px;">Status: Pending Approval</span>
+      </div>
+
+      <p style="font-size: 0.88rem; color: var(--text-muted-dark); line-height: 1.5; margin-bottom: 20px;">
+        Data diri Anda telah dikirim. Akun Anda sedang ditinjau oleh <strong>Super Admin ITORA BSN SURABAYA</strong>.
+        <br><br>
+        Silakan hubungi Super Admin untuk mempercepat proses persetujuan.
+      </p>
+
+      <button type="button" class="btn btn-primary" onclick="app.contactAdminForApproval()">
+        <i class="fa-brands fa-whatsapp"></i> Hubungi Super Admin via WA
+      </button>
+
+      <button type="button" class="btn btn-outline" onclick="app.checkSession()" style="margin-top:10px;">
+        <i class="fa-solid fa-rotate"></i> Cek Status Ulang
+      </button>
+
+      <button type="button" class="btn btn-outline" onclick="app.handleLogout()" style="margin-top:8px;">
+        <i class="fa-solid fa-right-from-bracket"></i> Keluar
+      </button>
+    </div>
+  </div>
+
+  <!-- 4. MAIN APP DASHBOARD (HANYA TERBUKA APABILA SUDAH APPROVED) -->
   <div id="app-dashboard" class="app-container" style="display: none;">
 
     <!-- APP HEADER -->
@@ -653,12 +725,21 @@
       <!-- 2. PANEL SUPER ADMIN -->
       <section id="page-admin" class="page">
         <h2 style="color: var(--accent-gold);"><i class="fa-solid fa-user-shield"></i> Panel Super Admin</h2>
-        <p class="text-muted" style="margin-bottom: 15px;">Kontrol penuh verifikasi iuran, anggota, WhatsApp konfirmasi, dan touring</p>
+        <p class="text-muted" style="margin-bottom: 15px;">Kontrol penuh persetujuan anggota baru, verifikasi iuran, dan sistem</p>
+
+        <!-- APPROVAL PERSETUJUAN ANGGOTA BARU -->
+        <div class="card glass">
+          <h3 style="margin-bottom: 8px;"><i class="fa-solid fa-user-check" style="color: var(--accent-gold);"></i> Persetujuan Anggota Baru</h3>
+          <p class="text-muted" style="font-size: 0.75rem; margin-bottom: 12px;">Daftar calon anggota yang telah melengkapi data diri & menunggu persetujuan</p>
+          <div id="admin-pending-members-list">
+            <p class="text-muted" style="text-align:center;">Memuat pendaftaran anggota...</p>
+          </div>
+        </div>
 
         <!-- PENGATURAN NOMOR WHATSAPP KONFIRMASI -->
         <div class="card glass">
           <h3 style="margin-bottom: 6px;"><i class="fa-brands fa-whatsapp" style="color: #25D366;"></i> Pengaturan WhatsApp Konfirmasi</h3>
-          <p class="text-muted" style="font-size: 0.75rem; margin-bottom: 10px;">Nomor WA ini akan menerima konfirmasi otomatis saat anggota menembak bukti pembayaran</p>
+          <p class="text-muted" style="font-size: 0.75rem; margin-bottom: 10px;">Nomor WA ini akan menerima konfirmasi otomatis dari anggota</p>
           <div class="form-group">
             <label>Nomor WA Penerima (Format: 628xxxxxxxxxx)</label>
             <input type="text" class="input-control" id="admin-wa-input" placeholder="6281234567890" value="6281234567890">
@@ -828,7 +909,7 @@
 
           <div class="profile-info-list">
             <div class="info-item">
-              <i class="fa-solid id-card"></i>
+              <i class="fa-solid fa-id-card"></i>
               <div>
                 <span>Nomor Induk Anggota (NIA)</span>
                 <strong id="profile-nia">ITORA-BSN-0000</strong>
@@ -863,7 +944,7 @@
               <i class="fa-solid fa-shield-check"></i>
               <div>
                 <span>Status Keanggotaan</span>
-                <strong style="color: #10B981;">Aktif & Terverifikasi</strong>
+                <strong style="color: #10B981;" id="profile-status-text">Aktif & Terverifikasi</strong>
               </div>
             </div>
           </div>
@@ -1189,15 +1270,15 @@
           const { data: { session } } = await this.supabase.auth.getSession();
           if (session && session.user) {
             this.currentUser = session.user;
-            this.showDashboard();
+            await this.validateUserFlow();
           } else {
             this.hideDashboard();
           }
 
-          this.supabase.auth.onAuthStateChange((event, session) => {
+          this.supabase.auth.onAuthStateChange(async (event, session) => {
             if (session && session.user) {
               this.currentUser = session.user;
-              this.showDashboard();
+              await this.validateUserFlow();
             } else if (event === 'SIGNED_OUT') {
               this.currentUser = null;
               this.hideDashboard();
@@ -1209,10 +1290,55 @@
         }
       }
 
-      async showDashboard() {
-        document.getElementById('auth-screen').style.display = 'none';
-        document.getElementById('app-dashboard').style.display = 'block';
+      /* LOGIKA FLOW VERIFIKASI SEBELUM AKSES DASHBOARD */
+      async validateUserFlow() {
+        if (!this.currentUser) return;
+        const email = this.currentUser.email;
+
+        // Super Admin selalu langsung bisa akses dashboard
+        if (email === 'mastrisnobpb@gmail.com') {
+          this.showDashboard();
+          return;
+        }
+
         await this.loadUserProfileDetails();
+
+        // 1. Jika belum mengisi data diri awal
+        if (!this.currentProfile || !this.currentProfile.full_name || this.currentProfile.full_name === email.split('@')[0]) {
+          this.showCompleteDataScreen();
+          return;
+        }
+
+        // 2. Jika status persetujuan masih 'Pending'
+        if (this.currentProfile.approval_status === 'Pending') {
+          this.showPendingApprovalScreen();
+          return;
+        }
+
+        // 3. Jika sudah Approved
+        this.showDashboard();
+      }
+
+      showCompleteDataScreen() {
+        document.getElementById('auth-screen').style.display = 'none';
+        document.getElementById('pending-approval-screen').style.display = 'none';
+        document.getElementById('app-dashboard').style.display = 'none';
+        document.getElementById('complete-data-screen').style.display = 'flex';
+      }
+
+      showPendingApprovalScreen() {
+        document.getElementById('auth-screen').style.display = 'none';
+        document.getElementById('complete-data-screen').style.display = 'none';
+        document.getElementById('app-dashboard').style.display = 'none';
+        document.getElementById('pending-approval-screen').style.display = 'flex';
+      }
+
+      showDashboard() {
+        document.getElementById('auth-screen').style.display = 'none';
+        document.getElementById('complete-data-screen').style.display = 'none';
+        document.getElementById('pending-approval-screen').style.display = 'none';
+        document.getElementById('app-dashboard').style.display = 'block';
+
         this.updateUserUI();
         this.loadMembersFromSupabase();
         this.loadIuranHistory();
@@ -1222,6 +1348,8 @@
 
       hideDashboard() {
         document.getElementById('app-dashboard').style.display = 'none';
+        document.getElementById('complete-data-screen').style.display = 'none';
+        document.getElementById('pending-approval-screen').style.display = 'none';
         document.getElementById('auth-screen').style.display = 'flex';
       }
 
@@ -1237,8 +1365,8 @@
         if (this.isRegisterMode) {
           title.innerText = 'Daftar Anggota Baru';
           subtitle.innerText = 'Lengkapi data akun anggota ITORA Anda';
-          groupName.style.display = 'block';
-          fullNameInput.setAttribute('required', 'required');
+          groupName.style.display = 'none';
+          fullNameInput.removeAttribute('required');
           submitBtn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Daftar Sekarang';
           toggleBtn.innerText = 'Sudah Memiliki Akun? Masuk Disini';
         } else {
@@ -1255,7 +1383,6 @@
         e.preventDefault();
         const email = document.getElementById('auth-email').value.trim();
         const password = document.getElementById('auth-password').value;
-        const fullname = document.getElementById('auth-fullname').value.trim();
 
         if (!this.supabase) {
           this.showToast('Koneksi Supabase tidak tersedia!', 'error');
@@ -1268,21 +1395,14 @@
 
         try {
           if (this.isRegisterMode) {
-            if (!fullname) {
-              this.showToast('Harap isi nama lengkap!', 'error');
-              submitBtn.disabled = false;
-              return;
-            }
-
             const { data, error } = await this.supabase.auth.signUp({
               email: email,
-              password: password,
-              options: { data: { full_name: fullname } }
+              password: password
             });
 
             if (error) throw error;
 
-            this.showToast('Pendaftaran Berhasil! Silakan Login.', 'success');
+            this.showToast('Pendaftaran Akun Berhasil! Silakan Login.', 'success');
             this.toggleAuthMode();
 
           } else {
@@ -1295,7 +1415,7 @@
 
             this.showToast('Login Berhasil!', 'success');
             this.currentUser = data.user;
-            this.showDashboard();
+            await this.validateUserFlow();
           }
         } catch (err) {
           let msg = 'Terjadi kesalahan sistem.';
@@ -1325,6 +1445,58 @@
             ? '<i class="fa-solid fa-user-plus"></i> Daftar Sekarang' 
             : '<i class="fa-solid fa-right-to-bracket"></i> Masuk Sekarang';
         }
+      }
+
+      /* FORM SIMPAN DATA DIRI PADA AWAL AKSES */
+      async handleSaveInitialData(e) {
+        e.preventDefault();
+        if (!this.currentUser || !this.supabase) return;
+
+        const btnSubmit = document.getElementById('btn-submit-init-data');
+        btnSubmit.disabled = true;
+        btnSubmit.innerText = 'Mengirim Data...';
+
+        const name = document.getElementById('init-fullname').value.trim();
+        const phone = document.getElementById('init-phone').value.trim();
+        const bike = document.getElementById('init-bike').value.trim();
+        const plate = document.getElementById('init-plate').value.trim();
+
+        try {
+          const { error } = await this.supabase
+            .from('members')
+            .upsert([
+              {
+                id: this.currentUser.id,
+                full_name: name,
+                email: this.currentUser.email,
+                phone: phone,
+                bike: bike,
+                plate: plate,
+                role: 'Anggota Resmi',
+                approval_status: 'Pending'
+              }
+            ], { onConflict: 'id' });
+
+          if (error) throw error;
+
+          this.showToast('Data diri berhasil dikirim! Menunggu persetujuan Super Admin.', 'success');
+          await this.loadUserProfileDetails();
+          this.showPendingApprovalScreen();
+
+        } catch(err) {
+          console.error(err);
+          this.showToast('Gagal menyimpan data diri.', 'error');
+        } finally {
+          btnSubmit.disabled = false;
+          btnSubmit.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Kirim Data & Ajukan Verifikasi';
+        }
+      }
+
+      contactAdminForApproval() {
+        const targetWA = this.adminWANumber || "6281234567890";
+        const myName = this.currentProfile?.full_name || this.currentUser.email;
+        const msg = `Halo Super Admin ITORA BSN SURABAYA,%0ASaya *${myName}* (${this.currentUser.email}) telah melengkapi data pendaftaran anggota.%0A%0AMohon bantuannya untuk verifikasi & persetujuan akun saya. Terima kasih!`;
+        window.open(`https://wa.me/${targetWA}?text=${msg}`, '_blank');
       }
 
       async handleLogout() {
@@ -1359,7 +1531,8 @@
               phone: '-',
               bike: 'Motor BSN',
               plate: 'L 1234 IT',
-              role: (this.currentUser.email === 'mastrisnobpb@gmail.com') ? 'Super Admin' : 'Anggota Resmi'
+              role: (this.currentUser.email === 'mastrisnobpb@gmail.com') ? 'Super Admin' : 'Anggota Resmi',
+              approval_status: (this.currentUser.email === 'mastrisnobpb@gmail.com') ? 'Approved' : 'Pending'
             };
           }
         } catch (e) {
@@ -1401,6 +1574,7 @@
         if (isSuperAdmin) {
           if (adminMenuItem) adminMenuItem.style.display = 'flex';
           if (adminProfileBtn) adminProfileBtn.style.display = 'flex';
+          this.loadAdminPendingMembersList();
           this.loadAdminDuesList();
         } else {
           if (adminMenuItem) adminMenuItem.style.display = 'none';
@@ -1436,7 +1610,8 @@
                 phone: newPhone,
                 bike: newBike,
                 plate: newPlate,
-                role: (this.currentUser.email === 'mastrisnobpb@gmail.com') ? 'Super Admin' : 'Anggota Resmi'
+                role: (this.currentUser.email === 'mastrisnobpb@gmail.com') ? 'Super Admin' : 'Anggota Resmi',
+                approval_status: 'Approved'
               }
             ], { onConflict: 'id' });
 
@@ -1454,6 +1629,62 @@
         } finally {
           btnSave.disabled = false;
           btnSave.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan Profil';
+        }
+      }
+
+      /* DAFTAR CALON ANGGOTA YANG MENUNGGU APPROVAL KHUSUS SUPER ADMIN */
+      async loadAdminPendingMembersList() {
+        const container = document.getElementById('admin-pending-members-list');
+        if (!container || !this.supabase) return;
+
+        try {
+          const { data: pendingMembers, error } = await this.supabase
+            .from('members')
+            .select('*')
+            .eq('approval_status', 'Pending')
+            .order('created_at', { ascending: false });
+
+          if (!error && pendingMembers && pendingMembers.length > 0) {
+            container.innerHTML = pendingMembers.map(m => `
+              <div class="card glass" style="padding: 12px; margin-bottom: 10px; border-left: 4px solid #F59E0B;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <h4>${m.full_name || 'Calon Anggota'}</h4>
+                  <span class="badge badge-warning">Pending Approval</span>
+                </div>
+                <p class="text-muted" style="font-size:0.75rem; margin-top:2px;"><i class="fa-solid fa-envelope"></i> ${m.email} | <i class="fa-brands fa-whatsapp"></i> ${m.phone || '-'}</p>
+                <p class="text-muted" style="font-size:0.75rem;"><i class="fa-solid fa-motorcycle"></i> ${m.bike || '-'} (${m.plate || '-'})</p>
+
+                <div style="display: flex; gap: 8px; margin-top: 10px;">
+                  <button type="button" class="btn btn-sm btn-primary" onclick="app.adminApproveMember('${m.id}', 'Approved')"><i class="fa-solid fa-check"></i> Setujui Anggota</button>
+                  <button type="button" class="btn btn-sm btn-danger" onclick="app.adminApproveMember('${m.id}', 'Rejected')"><i class="fa-solid fa-xmark"></i> Tolak</button>
+                </div>
+              </div>
+            `).join('');
+          } else {
+            container.innerHTML = '<p class="text-muted" style="text-align:center;">Tidak ada pendaftaran anggota baru yang pending.</p>';
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      async adminApproveMember(memberId, status) {
+        if (!this.supabase) return;
+        try {
+          const { error } = await this.supabase
+            .from('members')
+            .update({ approval_status: status })
+            .eq('id', memberId);
+
+          if (error) throw error;
+
+          this.showToast(`Pendaftaran Anggota Berhasil di-${status}!`, 'success');
+          this.loadAdminPendingMembersList();
+          this.loadMembersFromSupabase();
+          this.checkRealtimeNotifications();
+
+        } catch (e) {
+          this.showToast('Gagal memproses persetujuan anggota.', 'error');
         }
       }
 
@@ -1580,20 +1811,25 @@
         }
       }
 
-      /* CEK REAL-TIME NOTIFIKASI */
       async checkRealtimeNotifications() {
         if (!this.supabase || !this.currentUser) return;
         const isSuperAdmin = (this.currentUser.email === 'mastrisnobpb@gmail.com');
 
         try {
           if (isSuperAdmin) {
-            // Cek apakah ada iuran dengan status 'Pending'
-            const { count, error } = await this.supabase
+            const { count: pendingDuesCount } = await this.supabase
               .from('dues')
               .select('*', { count: 'exact', head: true })
               .eq('status', 'Pending');
 
-            if (!error && count > 0) {
+            const { count: pendingMembersCount } = await this.supabase
+              .from('members')
+              .select('*', { count: 'exact', head: true })
+              .eq('approval_status', 'Pending');
+
+            const totalNotif = (pendingDuesCount || 0) + (pendingMembersCount || 0);
+
+            if (totalNotif > 0) {
               document.getElementById('admin-notif-dot').style.display = 'block';
               document.getElementById('header-notif-dot').style.display = 'block';
             } else {
@@ -1623,24 +1859,19 @@
             .order('created_at', { ascending: false });
 
           if (!error && dues && dues.length > 0) {
-            // Cek apakah ada notifikasi perubahan status baru
-            let hasPendingAlert = false;
-            historyContainer.innerHTML = dues.map(item => {
-              if (item.status === 'Verified') hasPendingAlert = true;
-              return `
-                <div class="card glass" style="padding: 14px; margin-bottom: 10px;">
-                  <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h4>${item.period_month}</h4>
-                    <span class="badge ${item.status === 'Verified' ? 'badge-success' : item.status === 'Rejected' ? 'badge-danger' : 'badge-warning'}">${item.status === 'Verified' ? 'Disetujui (Approved)' : item.status === 'Rejected' ? 'Ditolak' : 'Menunggu Verifikasi'}</span>
-                  </div>
-                  <p style="color: var(--accent-gold); font-weight: 700; margin-top: 4px;">Rp ${parseFloat(item.amount).toLocaleString('id-ID')}</p>
-                  <p class="text-muted" style="font-size: 0.75rem; margin-top: 4px;">
-                    <i class="fa-regular fa-clock"></i> ${new Date(item.payment_date).toLocaleDateString('id-ID')} • ${item.payment_method}
-                  </p>
-                  ${item.receipt_url ? `<a href="${item.receipt_url}" target="_blank" class="text-muted" style="font-size:0.7rem; color:var(--primary); margin-top:4px; display:inline-block;"><i class="fa-solid fa-image"></i> Lihat Bukti Foto</a>` : ''}
+            historyContainer.innerHTML = dues.map(item => `
+              <div class="card glass" style="padding: 14px; margin-bottom: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <h4>${item.period_month}</h4>
+                  <span class="badge ${item.status === 'Verified' ? 'badge-success' : item.status === 'Rejected' ? 'badge-danger' : 'badge-warning'}">${item.status === 'Verified' ? 'Disetujui (Approved)' : item.status === 'Rejected' ? 'Ditolak' : 'Menunggu Verifikasi'}</span>
                 </div>
-              `;
-            }).join('');
+                <p style="color: var(--accent-gold); font-weight: 700; margin-top: 4px;">Rp ${parseFloat(item.amount).toLocaleString('id-ID')}</p>
+                <p class="text-muted" style="font-size: 0.75rem; margin-top: 4px;">
+                  <i class="fa-regular fa-clock"></i> ${new Date(item.payment_date).toLocaleDateString('id-ID')} • ${item.payment_method}
+                </p>
+                ${item.receipt_url ? `<a href="${item.receipt_url}" target="_blank" class="text-muted" style="font-size:0.7rem; color:var(--primary); margin-top:4px; display:inline-block;"><i class="fa-solid fa-image"></i> Lihat Bukti Foto</a>` : ''}
+              </div>
+            `).join('');
           } else {
             historyContainer.innerHTML = '<p class="text-muted" style="text-align:center;">Belum ada riwayat setoran iuran di Supabase.</p>';
           }
@@ -1709,9 +1940,11 @@
       async loadMembersFromSupabase() {
         if (!this.supabase) return;
         try {
+          // Hanya menampilkan anggota yang disetujui (Approved)
           const { data: members, error } = await this.supabase
             .from('members')
             .select('*')
+            .or('approval_status.eq.Approved,email.eq.mastrisnobpb@gmail.com')
             .order('created_at', { ascending: false });
 
           let list = [];
@@ -1725,24 +1958,6 @@
               bike: m.bike || 'Motor BSN',
               plate: m.plate || '-'
             }));
-          }
-
-          if (this.currentUser) {
-            const myEmail = this.currentUser.email;
-            const myName = this.currentProfile?.full_name || myEmail.split('@')[0];
-            const myRole = (myEmail === 'mastrisnobpb@gmail.com') ? 'Super Admin' : 'Anggota Resmi';
-
-            const exist = list.some(item => item.email === myEmail);
-            if (!exist) {
-              list.unshift({
-                id: this.currentUser.id,
-                name: myName,
-                email: myEmail,
-                role: myRole,
-                bike: this.currentProfile?.bike || 'Motor BSN',
-                plate: this.currentProfile?.plate || 'L 1234 IT'
-              });
-            }
           }
 
           this.members = list;
@@ -1761,7 +1976,7 @@
         if (!container) return;
 
         if (data.length === 0) {
-          container.innerHTML = '<p class="text-muted" style="text-align:center;">Belum ada data anggota lain.</p>';
+          container.innerHTML = '<p class="text-muted" style="text-align:center;">Belum ada data anggota lain yang terverifikasi.</p>';
           return;
         }
 
