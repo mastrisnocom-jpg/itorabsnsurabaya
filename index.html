@@ -1,1 +1,210 @@
-ITORA BSN SURABAYA
+<!DOCTYPE html>
+<html lang="id" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ITORA BSN Surabaya | Corporate Motor Club Portal</title>
+  
+  <!-- Fonts: Syne & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            display: ['Syne', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              gold: '#D4AF37',
+              goldHover: '#F3E5AB',
+              accent: '#38BDF8',
+              darkBg: '#080C14',
+              cardBg: '#0F172A',
+              border: '#1E293B'
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-brand-darkBg text-slate-200 font-sans antialiased selection:bg-brand-gold selection:text-black">
+
+  <!-- Background Decorative Ambient Lighting -->
+  <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[500px] bg-gradient-to-b from-amber-500/10 via-cyan-500/5 to-transparent blur-3xl pointer-events-none -z-10"></div>
+
+  <!-- Header / Executive Navigation -->
+  <header class="fixed top-0 w-full z-50 border-b border-slate-800/80 bg-brand-darkBg/80 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center font-display font-extrabold text-black text-xl shadow-lg shadow-amber-500/20">
+          I
+        </div>
+        <div>
+          <span class="font-display font-bold text-lg tracking-wide text-white block leading-none">ITORA</span>
+          <span class="text-[10px] tracking-widest text-amber-400 uppercase font-semibold">Chapter BSN Surabaya</span>
+        </div>
+      </div>
+
+      <nav class="hidden lg:flex items-center gap-8 text-sm font-medium text-slate-400">
+        <a href="#overview" class="hover:text-amber-400 transition">Overview</a>
+        <a href="#features" class="hover:text-amber-400 transition">Enterprise Suite</a>
+        <a href="#safety" class="hover:text-amber-400 transition">Safety Protocol</a>
+        <a href="#governance" class="hover:text-amber-400 transition">Governance</a>
+      </nav>
+
+      <div class="flex items-center gap-4">
+        <a href="https://itora.my.id" class="relative group px-6 py-2.5 rounded-lg font-semibold text-xs uppercase tracking-wider overflow-hidden border border-amber-500/30 bg-amber-500/10 text-amber-300 hover:text-black transition duration-300">
+          <span class="absolute inset-0 w-full h-full bg-amber-400 transition-all duration-300 ease-out transform -translate-x-full group-hover:translate-x-0 -z-10"></span>
+          Portal WebApp SSO
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section id="overview" class="pt-36 pb-20 px-6 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto text-center">
+      
+      <!-- Corporate Tag Badge -->
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-slate-800 bg-slate-900/60 text-slate-300 text-xs font-medium mb-8 backdrop-blur-md">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        PT Binayasa Putrabatara — Internal Corporate Chapter
+      </div>
+
+      <!-- Main Title -->
+      <h1 class="font-display text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight mb-8 leading-tight">
+        Excellence on the Road, <br>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600">
+          Synergy in the Enterprise.
+        </span>
+      </h1>
+
+      <p class="text-slate-400 text-base sm:text-lg max-w-3xl mx-auto mb-12 font-normal leading-relaxed">
+        Platform manajemen club motor korporat modern. Mengintegrasikan sistem keanggotaan terverifikasi, transparansi keuangan internal, hingga protokol keselamatan berkendara bagi anggota ITORA BSN Surabaya.
+      </p>
+
+      <!-- CTA Buttons -->
+      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
+        <a href="https://itora.my.id" class="w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-sm bg-gradient-to-r from-amber-500 to-amber-600 text-black hover:brightness-110 shadow-xl shadow-amber-500/20 transition">
+          Akses Portal WebApp
+        </a>
+        <a href="#features" class="w-full sm:w-auto px-8 py-4 rounded-xl font-semibold text-sm border border-slate-800 bg-slate-900/40 text-slate-300 hover:bg-slate-800/50 transition">
+          Eksplorasi Fitur Enterprise
+        </a>
+      </div>
+
+      <!-- Metric Strip -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto border border-slate-800/80 rounded-2xl p-6 bg-slate-900/30 backdrop-blur-md">
+        <div class="border-r border-slate-800/60 last:border-0">
+          <div class="font-display font-bold text-2xl text-white">100%</div>
+          <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Integrasi SSO</div>
+        </div>
+        <div class="border-r border-slate-800/60 last:border-0">
+          <div class="font-display font-bold text-2xl text-amber-400">Zero</div>
+          <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Accident Protocol</div>
+        </div>
+        <div class="border-r border-slate-800/60 last:border-0">
+          <div class="font-display font-bold text-2xl text-white">Real-Time</div>
+          <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Kas & Financial Audit</div>
+        </div>
+        <div>
+          <div class="font-display font-bold text-2xl text-amber-400">BSN</div>
+          <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider">Surabaya Chapter</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Bento Grid Section: Enterprise Features -->
+  <section id="features" class="py-24 px-6 border-t border-slate-900 bg-slate-950/50">
+    <div class="max-w-7xl mx-auto">
+      <div class="mb-16">
+        <h2 class="font-display text-xs uppercase tracking-widest text-amber-400 mb-2 font-bold">System Architecture</h2>
+        <h3 class="text-3xl sm:text-4xl font-bold text-white">Fitur Eksekutif ITORA WebApp</h3>
+      </div>
+
+      <!-- Bento Grid Layout -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Large Card 1 -->
+        <div class="md:col-span-2 p-8 rounded-3xl border border-slate-800 bg-gradient-to-b from-slate-900/80 to-slate-950/80 backdrop-blur-sm flex flex-col justify-between hover:border-slate-700 transition">
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 mb-6">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+            </div>
+            <h4 class="text-xl font-bold text-white mb-3">Enterprise Digital KTA & Member Verification</h4>
+            <p class="text-slate-400 text-sm leading-relaxed mb-6">
+              Sistem verifikasi identitas terenkripsi yang memastikan seluruh anggota klub terdaftar secara sah sebagai bagian dari ekosistem korporasi PT Binayasa Putrabatara.
+            </p>
+          </div>
+          <div class="p-4 rounded-xl border border-slate-800 bg-black/40 text-xs text-slate-500 font-mono">
+            STATUS: ENCRYPTED_AUTH_OK // NIK_VERIFIED
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="p-8 rounded-3xl border border-slate-800 bg-gradient-to-b from-slate-900/80 to-slate-950/80 backdrop-blur-sm flex flex-col justify-between hover:border-slate-700 transition">
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 mb-6">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <h4 class="text-xl font-bold text-white mb-3">Audited Financial Kas</h4>
+            <p class="text-slate-400 text-sm leading-relaxed">
+              Manajemen keuangan dan iuran kas transparan dengan *ledger* digital yang dapat ditinjau kapan pun oleh jajaran pengurus & anggota.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="p-8 rounded-3xl border border-slate-800 bg-gradient-to-b from-slate-900/80 to-slate-950/80 backdrop-blur-sm flex flex-col justify-between hover:border-slate-700 transition">
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 mb-6">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            </div>
+            <h4 class="text-xl font-bold text-white mb-3">Riding SOS & Emergency Signal</h4>
+            <p class="text-slate-400 text-sm leading-relaxed">
+              Fitur sinyal darurat *one-click* saat *official touring* untuk respon cepat tim medis dan teknis internal chapter.
+            </p>
+          </div>
+        </div>
+
+        <!-- Large Card 4 -->
+        <div class="md:col-span-2 p-8 rounded-3xl border border-slate-800 bg-gradient-to-b from-slate-900/80 to-slate-950/80 backdrop-blur-sm flex flex-col justify-between hover:border-slate-700 transition">
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 mb-6">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            </div>
+            <h4 class="text-xl font-bold text-white mb-3">Official Event & Touring Governance</h4>
+            <p class="text-slate-400 text-sm leading-relaxed mb-6">
+              Persetujuan rute resmi, titik kumpul (RBP), instruksi *Road Captain*, hingga verifikasi kelayakan kendaraan sesuai standar K3 Korporasi.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-12 px-6 border-t border-slate-900 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div>
+        © 2026 ITORA Chapter BSN Surabaya. All rights reserved.
+      </div>
+      <div class="font-mono text-slate-600">
+        POWERED BY ITORA WEBAPP SYSTEM
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
