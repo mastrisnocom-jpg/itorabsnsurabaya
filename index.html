@@ -791,7 +791,7 @@
   <script>
     /* SUPABASE CONFIGURATION */
     const SUPABASE_URL = 'https://lfusrctizdydnsiopzfi.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxmdXNyY3RpemR5ZG5zaW9wemZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU2NjI0OTQsImV4cCI6MjEwMTIzODQ5NH0.vWd4l9zbRg3HxHVECN8I67h7gGUsZdaRJ9bD-gmEDUY';
+    const SUPABASE_ANON_KEY = 'Sb_publishable_AKKR_z1iI5-Bi9-pAQnGOw_1gG7jj-q';
 
     class App {
       constructor() {
@@ -1003,7 +1003,6 @@
         } catch (err) {
           let msg = 'Terjadi kesalahan sistem.';
 
-          // AMAN DARI OBJECT {}
           if (typeof err === 'string' && err.trim() !== '') {
             msg = err;
           } else if (err && typeof err.message === 'string' && err.message.trim() !== '') {
@@ -1281,7 +1280,6 @@
         
         let displayMsg = 'Terjadi kesalahan pada sistem.';
 
-        // PENANGANAN AMAN FORMAT STRING SUPAYA TIDAK MENJADI {}
         if (typeof message === 'string' && message.trim() !== '') {
           displayMsg = message;
         } else if (message && typeof message.message === 'string' && message.message.trim() !== '') {
