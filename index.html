@@ -489,9 +489,10 @@
       gap: 12px;
     }
 
-    .menu-admin-info i {
-      font-size: 1.2rem;
+    .menu-admin-info i, .menu-admin-info img {
       width: 24px;
+      height: 24px;
+      object-fit: contain;
       text-align: center;
     }
   </style>
@@ -840,7 +841,12 @@
         </div>
         <div class="form-group">
           <label>Icon FontAwesome Class</label>
-          <input type="text" class="input-control" id="menu-icon" placeholder="fa-solid fa-newspaper" required>
+          <input type="text" class="input-control" id="menu-icon" placeholder="fa-solid fa-newspaper">
+        </div>
+        <div class="form-group">
+          <label>Gambar / Ikon Kustom (Upload ke Storage)</label>
+          <input type="file" class="input-control" id="menu-image-file" accept="image/*">
+          <small class="text-muted" style="display:block; margin-top:4px;">*Jika diunggah, gambar akan mengesampingkan FontAwesome.</small>
         </div>
         <div class="form-group">
           <label>Urutan Tampil (Sort Order)</label>
@@ -870,7 +876,34 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT LOGIC DENGAN MANAJEMEN MENU DINAMIS SUPABASE -->
+  <!-- MODAL SETOR IURAN -->
+  <div class="modal-overlay" id="modal-iuran">
+    <div class="modal-card glass">
+      <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-iuran')"><i class="fa-solid fa-xmark"></i></button>
+      <h3 style="text-align: center; margin-bottom: 15px;"><i class="fa-solid fa-receipt" style="color: var(--accent-gold);"></i> Setor Iuran Anggota</h3>
+      <form id="form-iuran" onsubmit="app.handleSubmitIuran(event)">
+        <div class="form-group">
+          <label>Periode Bulan Iuran</label>
+          <select class="input-control" id="iuran-periode" required>
+            <option value="Agustus 2026">Agustus 2026</option>
+            <option value="September 2026">September 2026</option>
+            <option value="Oktober 2026">Oktober 2026</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Nominal (Rp)</label>
+          <input type="number" class="input-control" id="iuran-jumlah" value="25000" required>
+        </div>
+        <div class="form-group">
+          <label>Upload Bukti Transfer</label>
+          <input type="file" class="input-control" id="iuran-bukti" accept="image/*" required>
+        </div>
+        <button type="submit" class="btn btn-primary" id="btn-submit-iuran"><i class="fa-solid fa-paper-plane"></i> Kirim Bukti Pembayaran</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC LENGKAP -->
   <script>
     const SUPABASE_URL = 'https://lfusrctizdydnsiopzfi.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxmdXNyY3RpemR5ZG5zaW9wemZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU2NjI0OTQsImV4cCI6MjEwMTIzODQ5NH0.vWd4l9zbRg3HxHVECN8I67h7gGUsZdaRJ9bD-gmEDUY';
@@ -878,9 +911,10 @@
     class App {
       constructor() {
         this.supabase = null;
+        this.isRegisterMode = false;
         this.currentUser = null;
         this.currentProfile = null;
-        this.menus = []; // Storage menu dinamis dari Supabase
+        this.menus = [];
         this.members = [];
         this.adminWANumber = "6281234567890";
         this.initSupabase();
@@ -969,7 +1003,7 @@
         document.getElementById('pending-approval-screen').style.display = 'none';
         document.getElementById('app-dashboard').style.display = 'block';
 
-        this.loadMenusFromSupabase(); // Muat menu dari Supabase
+        this.loadMenusFromSupabase();
         this.updateUserUI();
       }
 
@@ -1005,22 +1039,25 @@
         const isSuperAdmin = (this.currentUser && this.currentUser.email === 'mastrisnobpb@gmail.com');
         const activeMenus = this.menus.filter(m => m.is_active);
 
-        // 1. Render Quick Menu Grid Beranda
+        // 1. Quick Menu Grid
         const quickMenuContainer = document.getElementById('dynamic-quick-menu');
         if (quickMenuContainer) {
           const quickItems = activeMenus.filter(m => m.show_in_quick_menu);
           quickMenuContainer.innerHTML = quickItems.map(m => {
-            // Sembunyikan menu Super Admin jika bukan admin
             if (m.menu_key === 'admin' && !isSuperAdmin) return '';
 
             let actionCall = `app.navigateTo('${m.menu_key}')`;
             if (m.menu_key === 'setor_iuran') actionCall = `app.openModal('modal-iuran')`;
             if (m.menu_key === 'keluar') actionCall = `app.handleLogout()`;
 
+            const iconContent = m.image_url 
+              ? `<img src="${m.image_url}" alt="${m.title}" style="width: 26px; height: 26px; object-fit: contain;">`
+              : `<i class="${m.icon_class}"></i>`;
+
             return `
               <div class="quick-item" onclick="${actionCall}">
                 <div class="quick-icon" style="color: ${m.icon_color || 'var(--primary)'};">
-                  <i class="${m.icon_class}"></i>
+                  ${iconContent}
                   ${m.menu_key === 'admin' ? '<span class="notification-badge" id="admin-notif-dot"></span>' : ''}
                 </div>
                 <span>${m.title}</span>
@@ -1029,51 +1066,59 @@
           }).join('');
         }
 
-        // 2. Render Bottom Nav Bar
+        // 2. Bottom Nav Bar
         const bottomNavContainer = document.getElementById('dynamic-bottom-nav');
         if (bottomNavContainer) {
           const navItems = activeMenus.filter(m => m.show_in_bottom_nav);
-          bottomNavContainer.innerHTML = navItems.map((m, index) => `
-            <a class="nav-item ${index === 0 ? 'active' : ''}" onclick="app.navigateTo('${m.menu_key}')" id="nav-${m.menu_key}">
-              <i class="${m.icon_class}"></i>
-              <span>${m.title}</span>
-            </a>
-          `).join('');
+          bottomNavContainer.innerHTML = navItems.map((m, index) => {
+            const iconContent = m.image_url 
+              ? `<img src="${m.image_url}" alt="${m.title}" style="width: 20px; height: 20px; object-fit: contain;">`
+              : `<i class="${m.icon_class}"></i>`;
+
+            return `
+              <a class="nav-item ${index === 0 ? 'active' : ''}" onclick="app.navigateTo('${m.menu_key}')" id="nav-${m.menu_key}">
+                ${iconContent}
+                <span>${m.title}</span>
+              </a>
+            `;
+          }).join('');
         }
       }
 
-      /* SUPER ADMIN MANAJEMEN MENU LIST */
+      /* PANEL SUPER ADMIN MANAJEMEN MENU */
       renderAdminMenuList() {
         const container = document.getElementById('admin-menu-list');
         if (!container) return;
 
-        container.innerHTML = this.menus.map(m => `
-          <div class="menu-admin-item">
-            <div class="menu-admin-info">
-              <i class="${m.icon_class}" style="color: ${m.icon_color || 'var(--primary)'}"></i>
-              <div>
-                <strong style="font-size:0.85rem; color:var(--text-main-dark);">${m.title}</strong>
-                <span class="text-muted" style="display:block; font-size:0.7rem;">Key: ${m.menu_key} | Order: ${m.sort_order}</span>
+        container.innerHTML = this.menus.map(m => {
+          const iconContent = m.image_url 
+            ? `<img src="${m.image_url}" alt="${m.title}">`
+            : `<i class="${m.icon_class}" style="color: ${m.icon_color || 'var(--primary)'}"></i>`;
+
+          return `
+            <div class="menu-admin-item">
+              <div class="menu-admin-info">
+                ${iconContent}
+                <div>
+                  <strong style="font-size:0.85rem; color:var(--text-main-dark);">${m.title}</strong>
+                  <span class="text-muted" style="display:block; font-size:0.7rem;">Key: ${m.menu_key} | Order: ${m.sort_order}</span>
+                </div>
+              </div>
+              <div style="display:flex; gap:6px; align-items:center;">
+                <button class="btn btn-sm ${m.is_active ? 'btn-primary' : 'btn-danger'}" onclick="app.toggleMenuStatus('${m.id}', ${!m.is_active})">
+                  ${m.is_active ? 'Aktif' : 'Nonaktif'}
+                </button>
+                <button class="btn btn-sm btn-gold" onclick="app.editMenuModal('${m.id}')"><i class="fa-solid fa-pen"></i></button>
               </div>
             </div>
-            <div style="display:flex; gap:6px; align-items:center;">
-              <button class="btn btn-sm ${m.is_active ? 'btn-primary' : 'btn-danger'}" onclick="app.toggleMenuStatus('${m.id}', ${!m.is_active})">
-                ${m.is_active ? 'Aktif' : 'Nonaktif'}
-              </button>
-              <button class="btn btn-sm btn-gold" onclick="app.editMenuModal('${m.id}')"><i class="fa-solid fa-pen"></i></button>
-            </div>
-          </div>
-        `).join('');
+          `;
+        }).join('');
       }
 
       async toggleMenuStatus(menuId, newStatus) {
         if (!this.supabase) return;
         try {
-          const { error } = await this.supabase
-            .from('menus')
-            .update({ is_active: newStatus })
-            .eq('id', menuId);
-
+          const { error } = await this.supabase.from('menus').update({ is_active: newStatus }).eq('id', menuId);
           if (error) throw error;
           this.showToast('Status menu diperbarui!', 'success');
           this.loadMenusFromSupabase();
@@ -1101,49 +1146,168 @@
         e.preventDefault();
         if (!this.supabase) return;
 
+        const btnSave = document.getElementById('btn-save-menu');
+        btnSave.disabled = true;
+        btnSave.innerText = 'Mengunggah & Menyimpan...';
+
         const id = document.getElementById('menu-id').value;
-        const payload = {
-          menu_key: document.getElementById('menu-key').value.trim().toLowerCase(),
-          title: document.getElementById('menu-title').value.trim(),
-          icon_class: document.getElementById('menu-icon').value.trim(),
-          sort_order: parseInt(document.getElementById('menu-order').value) || 0,
-          show_in_quick_menu: document.getElementById('menu-show-quick').checked,
-          show_in_bottom_nav: document.getElementById('menu-show-bottom').checked
-        };
+        const imageFileInput = document.getElementById('menu-image-file').files[0];
+        let imageUrl = '';
 
         try {
-          let error;
-          if (id) {
-            ({ error } = await this.supabase.from('menus').update(payload).eq('id', id));
-          } else {
-            ({ error } = await this.supabase.from('menus').insert([payload]));
+          if (imageFileInput) {
+            const compressedFile = await this.compressImage(imageFileInput, 200);
+            const fileName = `icon_${Date.now()}_${compressedFile.name}`;
+
+            const { data: uploadData, error: uploadErr } = await this.supabase.storage
+              .from('menu-icons')
+              .upload(fileName, compressedFile, { upsert: true });
+
+            if (uploadErr) throw uploadErr;
+
+            const { data: urlData } = this.supabase.storage.from('menu-icons').getPublicUrl(fileName);
+            imageUrl = urlData ? urlData.publicUrl : '';
           }
 
-          if (error) throw error;
+          const payload = {
+            menu_key: document.getElementById('menu-key').value.trim().toLowerCase(),
+            title: document.getElementById('menu-title').value.trim(),
+            icon_class: document.getElementById('menu-icon').value.trim() || 'fa-solid fa-square',
+            sort_order: parseInt(document.getElementById('menu-order').value) || 0,
+            show_in_quick_menu: document.getElementById('menu-show-quick').checked,
+            show_in_bottom_nav: document.getElementById('menu-show-bottom').checked
+          };
 
-          this.showToast('Menu berhasil disimpan!', 'success');
+          if (imageUrl) payload.image_url = imageUrl;
+
+          let dbError;
+          if (id) {
+            ({ error: dbError } = await this.supabase.from('menus').update(payload).eq('id', id));
+          } else {
+            ({ error: dbError } = await this.supabase.from('menus').insert([payload]));
+          }
+
+          if (dbError) throw dbError;
+
+          this.showToast('Menu Berhasil Disimpan!', 'success');
           this.closeModal('modal-add-menu');
           document.getElementById('form-menu').reset();
           document.getElementById('menu-id').value = '';
           this.loadMenusFromSupabase();
-        } catch (e) {
-          this.showToast('Gagal menyimpan menu: ' + e.message, 'error');
+
+        } catch (err) {
+          console.error(err);
+          this.showToast('Gagal menyimpan menu: ' + err.message, 'error');
+        } finally {
+          btnSave.disabled = false;
+          btnSave.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Menu';
         }
       }
 
-      /* LOGIKA LAINNYA */
+      /* KOMPRESI GAMBAR OTOMATIS (< 200 KB) */
+      compressImage(file, maxKB = 200) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = () => {
+              const canvas = document.createElement('canvas');
+              let width = img.width;
+              let height = img.height;
+
+              const maxDimension = 1200;
+              if (width > height && width > maxDimension) {
+                height = Math.round((height * maxDimension) / width);
+                width = maxDimension;
+              } else if (height > maxDimension) {
+                width = Math.round((width * maxDimension) / height);
+                height = maxDimension;
+              }
+
+              canvas.width = width;
+              canvas.height = height;
+
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0, width, height);
+
+              let quality = 0.85;
+              let dataUrl = canvas.toDataURL('image/jpeg', quality);
+
+              while (dataUrl.length / 1024 > maxKB && quality > 0.1) {
+                quality -= 0.1;
+                dataUrl = canvas.toDataURL('image/jpeg', quality);
+              }
+
+              fetch(dataUrl)
+                .then(res => res.blob())
+                .then(blob => {
+                  const compressedFile = new File([blob], `compressed_${file.name.split('.')[0]}.jpg`, {
+                    type: 'image/jpeg',
+                    lastModified: Date.now()
+                  });
+                  resolve(compressedFile);
+                })
+                .catch(err => reject(err));
+            };
+            img.onerror = (err) => reject(err);
+          };
+          reader.onerror = (err) => reject(err);
+        });
+      }
+
+      /* LOGIKA UTILITY */
+      toggleAuthMode() {
+        this.isRegisterMode = !this.isRegisterMode;
+        document.getElementById('auth-title').innerText = this.isRegisterMode ? 'Daftar Anggota Baru' : 'Masuk Anggota';
+        document.getElementById('auth-submit-btn').innerHTML = this.isRegisterMode ? '<i class="fa-solid fa-user-plus"></i> Daftar Sekarang' : '<i class="fa-solid fa-right-to-bracket"></i> Masuk Sekarang';
+      }
+
       async handleAuthSubmit(e) {
         e.preventDefault();
         const email = document.getElementById('auth-email').value.trim();
         const password = document.getElementById('auth-password').value;
 
         try {
-          const { data, error } = await this.supabase.auth.signInWithPassword({ email, password });
-          if (error) throw error;
-          this.currentUser = data.user;
-          this.validateUserFlow();
+          if (this.isRegisterMode) {
+            const { error } = await this.supabase.auth.signUp({ email, password });
+            if (error) throw error;
+            this.showToast('Pendaftaran Berhasil! Silakan Login.', 'success');
+            this.toggleAuthMode();
+          } else {
+            const { data, error } = await this.supabase.auth.signInWithPassword({ email, password });
+            if (error) throw error;
+            this.currentUser = data.user;
+            this.validateUserFlow();
+          }
         } catch (err) {
-          this.showToast('Login Gagal: ' + err.message, 'error');
+          this.showToast('Autentikasi Gagal: ' + err.message, 'error');
+        }
+      }
+
+      async handleSaveInitialData(e) {
+        e.preventDefault();
+        if (!this.currentUser || !this.supabase) return;
+
+        try {
+          const { error } = await this.supabase.from('members').upsert([{
+            id: this.currentUser.id,
+            full_name: document.getElementById('init-fullname').value.trim(),
+            email: this.currentUser.email,
+            phone: document.getElementById('init-phone').value.trim(),
+            bike: document.getElementById('init-bike').value.trim(),
+            plate: document.getElementById('init-plate').value.trim(),
+            role: 'Anggota Resmi',
+            approval_status: 'Pending'
+          }], { onConflict: 'id' });
+
+          if (error) throw error;
+          this.showToast('Data diri terkirim! Menunggu persetujuan.', 'success');
+          await this.loadUserProfileDetails();
+          this.showPendingApprovalScreen();
+        } catch(e) {
+          this.showToast('Gagal menyimpan data.', 'error');
         }
       }
 
