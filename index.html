@@ -823,7 +823,7 @@
       <!-- 2. PANEL SUPER ADMIN DENGAN MENU MODAL -->
       <section id="page-admin" class="page">
         <h2 style="color: var(--primary); font-size: var(--font-lg); font-weight: var(--fw-bold);"><i class="fa-solid fa-user-shield"></i> Panel Super Admin</h2>
-        <p class="text-muted" style="margin-bottom: 15px;">Kontrol penuh sistem, menu dinamis, persetujuan anggota, dan kas</p>
+        <p class="text-muted" style="margin-bottom: 15px;">Kontrol penuh sistem, menu dinamis, persetujuan anggota, kas, dan merchandise</p>
 
         <div class="quick-menu" style="grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px;">
           
@@ -853,6 +853,15 @@
             <span class="text-muted" style="display:block; font-size:var(--font-xs);">Konfirmasi Setoran</span>
           </div>
 
+          <div class="card" style="margin:0; padding:16px; text-align:center; cursor:pointer; position:relative;" onclick="app.openModal('modal-admin-orders')">
+            <div class="quick-icon" style="margin: 0 auto 8px; width:48px; height:48px; background:#F3E8FF; color:#9333EA;">
+              <i class="fa-solid fa-shirt"></i>
+              <span class="notification-badge" id="admin-order-notif-dot" style="top:2px; right:2px;"></span>
+            </div>
+            <strong style="font-size:var(--font-base); font-weight:var(--fw-bold);">Pesanan Merch</strong>
+            <span class="text-muted" style="display:block; font-size:var(--font-xs);">Konfirmasi Pemesanan</span>
+          </div>
+
           <div class="card" style="margin:0; padding:16px; text-align:center; cursor:pointer;" onclick="app.openModal('modal-admin-settings')">
             <div class="quick-icon" style="margin: 0 auto 8px; width:48px; height:48px; background:#F1F5F9; color:var(--primary);">
               <i class="fa-solid fa-sliders"></i>
@@ -861,7 +870,7 @@
             <span class="text-muted" style="display:block; font-size:var(--font-xs);">Kas Pokok & WhatsApp</span>
           </div>
 
-          <div class="card" style="margin:0; padding:16px; text-align:center; cursor:pointer; grid-column: span 2;" onclick="app.openModal('modal-admin-touring')">
+          <div class="card" style="margin:0; padding:16px; text-align:center; cursor:pointer;" onclick="app.openModal('modal-admin-touring')">
             <div class="quick-icon" style="margin: 0 auto 8px; width:48px; height:48px; background:#FEE2E2; color:#DC2626;">
               <i class="fa-solid fa-route"></i>
             </div>
@@ -943,7 +952,7 @@
         <div class="card" style="margin-top: 12px;">
           <h4 style="font-size: var(--font-base); font-weight: var(--fw-bold);">Kaos Official ITORA BSN</h4>
           <p style="color: var(--primary); font-weight: var(--fw-bold); margin: 6px 0;">Rp 125.000</p>
-          <button type="button" class="btn btn-primary" onclick="app.showToast('Pesanan dicatat! Admin akan menghubungi Anda.', 'success')">Pesan Sekarang</button>
+          <button type="button" class="btn btn-primary" onclick="app.openModal('modal-order-merch')">Pesan Sekarang</button>
         </div>
       </section>
 
@@ -1051,7 +1060,51 @@
 
   </div>
 
-  <!-- MODAL POP-UP 1: PENGATURAN MENU APP -->
+  <!-- MODAL POP-UP PEMESANAN MERCHANDISE -->
+  <div class="modal-overlay" id="modal-order-merch">
+    <div class="modal-card">
+      <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-order-merch')"><i class="fa-solid fa-xmark"></i></button>
+      <h3 style="text-align: center; margin-bottom: 15px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-shirt" style="color: var(--primary);"></i> Form Pemesanan Merch</h3>
+      
+      <form id="form-order-merch" onsubmit="app.handleOrderMerchSubmit(event)">
+        <div class="form-group">
+          <label>Nama Barang</label>
+          <input type="text" class="input-control" id="merch-item-name" value="Kaos Official ITORA BSN" readonly>
+        </div>
+
+        <div class="form-group">
+          <label>Harga Satuan</label>
+          <input type="text" class="input-control" id="merch-item-price" value="Rp 125.000" readonly>
+        </div>
+
+        <div class="form-group">
+          <label>Ukuran Kaos</label>
+          <select class="input-control" id="merch-item-size" required>
+            <option value="M">Ukuran M</option>
+            <option value="L" selected>Ukuran L</option>
+            <option value="XL">Ukuran XL</option>
+            <option value="XXL">Ukuran XXL (+10rb)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Jumlah Pesanan (Pcs)</label>
+          <input type="number" class="input-control" id="merch-item-qty" value="1" min="1" required>
+        </div>
+
+        <div class="form-group">
+          <label>Catatan Tambahan (Lengan Panjang/Pendek)</label>
+          <input type="text" class="input-control" id="merch-item-note" placeholder="Misal: Lengan Panjang">
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="btn-submit-merch">
+          <i class="fa-brands fa-whatsapp"></i> Pesan & Kirim ke WA Admin
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL POP-UP ADMIN 1: PENGATURAN MENU APP -->
   <div class="modal-overlay" id="modal-admin-menu">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-menu')"><i class="fa-solid fa-xmark"></i></button>
@@ -1065,7 +1118,7 @@
     </div>
   </div>
 
-  <!-- MODAL POP-UP 2: PERSETUJUAN ANGGOTA BARU -->
+  <!-- MODAL POP-UP ADMIN 2: PERSETUJUAN ANGGOTA BARU -->
   <div class="modal-overlay" id="modal-admin-members">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-members')"><i class="fa-solid fa-xmark"></i></button>
@@ -1076,7 +1129,7 @@
     </div>
   </div>
 
-  <!-- MODAL POP-UP 3: VERIFIKASI IURAN ANGGOTA -->
+  <!-- MODAL POP-UP ADMIN 3: VERIFIKASI IURAN ANGGOTA -->
   <div class="modal-overlay" id="modal-admin-dues">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-dues')"><i class="fa-solid fa-xmark"></i></button>
@@ -1087,7 +1140,18 @@
     </div>
   </div>
 
-  <!-- MODAL POP-UP 4: PENGATURAN KAS POKOK & WHATSAPP -->
+  <!-- MODAL POP-UP ADMIN 4: VERIFIKASI PESANAN MERCHANDISE -->
+  <div class="modal-overlay" id="modal-admin-orders">
+    <div class="modal-card">
+      <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-orders')"><i class="fa-solid fa-xmark"></i></button>
+      <h3 style="margin-bottom: 12px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-shirt" style="color: #9333EA;"></i> Pemesanan Merchandise</h3>
+      <div id="admin-orders-list">
+        <p class="text-muted" style="text-align:center;">Memuat data pesanan merchandise...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL POP-UP ADMIN 5: PENGATURAN KAS POKOK & WHATSAPP -->
   <div class="modal-overlay" id="modal-admin-settings">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-settings')"><i class="fa-solid fa-xmark"></i></button>
@@ -1109,7 +1173,7 @@
     </div>
   </div>
 
-  <!-- MODAL POP-UP 5: UPDATE JADWAL TOURING -->
+  <!-- MODAL POP-UP ADMIN 6: UPDATE JADWAL TOURING -->
   <div class="modal-overlay" id="modal-admin-touring">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-touring')"><i class="fa-solid fa-xmark"></i></button>
@@ -1605,7 +1669,6 @@
         }
       }
 
-      /* DISERTAI SUNTIKAN MEMBER_NUMBER AGAR TIDAK ERROR NOT-NULL CONSTRAINT */
       async handleSaveInitialData(e) {
         e.preventDefault();
         if (!this.currentUser || !this.supabase) return;
@@ -1618,7 +1681,6 @@
         const bike = document.getElementById('init-bike').value.trim();
         const plate = document.getElementById('init-plate').value.trim();
 
-        // SUNTIKAN NOMOR INDUK ANGGOTA OTOMATIS
         const memberNumber = `ITORA-BSN-${this.currentUser.id.substring(0, 4).toUpperCase()}`;
 
         try {
@@ -1692,6 +1754,7 @@
         if (isSuperAdmin) {
           this.loadAdminPendingMembersList();
           this.loadAdminDuesList();
+          this.loadAdminOrdersList();
         }
 
         const niaCode = this.currentProfile?.member_number || `ITORA-BSN-${this.currentUser.id ? this.currentUser.id.substring(0, 4).toUpperCase() : '0000'}`;
@@ -1918,6 +1981,55 @@
         }
       }
 
+      /* FITUR PEMESANAN MERCHANDISE DIARAHKAN LANGSUNG KE WA ADMIN */
+      async handleOrderMerchSubmit(e) {
+        e.preventDefault();
+        if (!this.currentUser) return;
+
+        const btnSubmit = document.getElementById('btn-submit-merch');
+        btnSubmit.disabled = true;
+
+        const itemName = document.getElementById('merch-item-name').value;
+        const size = document.getElementById('merch-item-size').value;
+        const qty = parseInt(document.getElementById('merch-item-qty').value) || 1;
+        const note = document.getElementById('merch-item-note').value.trim();
+
+        let basePrice = 125000;
+        if (size === 'XXL') basePrice += 10000;
+        const totalPrice = basePrice * qty;
+
+        const userName = this.currentProfile?.full_name || 'Sutrisno';
+        const userPhone = this.currentProfile?.phone || '-';
+        const userPlate = this.currentProfile?.plate || '-';
+
+        try {
+          if (this.supabase) {
+            await this.supabase.from('orders').insert([{
+              user_id: this.currentUser.id,
+              member_name: userName,
+              item_name: `${itemName} (${size}) x${qty}`,
+              price: totalPrice,
+              status: 'Pending'
+            }]);
+          }
+
+          this.showToast('Pesanan tersimpan! Mengalihkan ke WhatsApp Admin...', 'success');
+          this.closeModal('modal-order-merch');
+
+          const targetWA = this.adminWANumber || "6281234567890";
+          const waMsg = `Halo Admin ITORA BSN SURABAYA,%0ASaya *${userName}* (${userPlate}) ingin memesan Merchandise:%0A- *Barang:* ${itemName}%0A- *Ukuran:* ${size}%0A- *Jumlah:* ${qty} Pcs%0A- *Total Harga:* Rp ${totalPrice.toLocaleString('id-ID')}%0A- *Catatan:* ${note || '-'}%0A- *No WA Pemesan:* ${userPhone}%0A%0AMohon diproses pesanan saya. Terima kasih!`;
+
+          setTimeout(() => {
+            window.open(`https://wa.me/${targetWA}?text=${waMsg}`, '_blank');
+          }, 800);
+
+        } catch (err) {
+          this.showToast('Gagal memproses pesanan.', 'error');
+        } finally {
+          btnSubmit.disabled = false;
+        }
+      }
+
       async loadAdminPendingMembersList() {
         const container = document.getElementById('admin-pending-members-list');
         if (!container || !this.supabase) return;
@@ -1962,6 +2074,50 @@
           this.checkRealtimeNotifications();
         } catch (e) {
           this.showToast('Gagal memproses persetujuan anggota.', 'error');
+        }
+      }
+
+      async loadAdminOrdersList() {
+        const container = document.getElementById('admin-orders-list');
+        if (!container || !this.supabase) return;
+
+        try {
+          const { data: orders, error } = await this.supabase
+            .from('orders')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+          if (!error && orders && orders.length > 0) {
+            container.innerHTML = orders.map(o => `
+              <div class="card" style="padding: 12px; margin-bottom: 10px; border-left: 4px solid ${o.status === 'Completed' ? '#10B981' : '#9333EA'}">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <h4 style="font-size:var(--font-base); font-weight:var(--fw-bold);">${o.member_name}</h4>
+                  <span class="badge ${o.status === 'Completed' ? 'badge-success' : 'badge-warning'}">${o.status}</span>
+                </div>
+                <p style="font-weight:var(--fw-bold); color:var(--primary); margin-top:2px;">${o.item_name} - Rp ${parseFloat(o.price).toLocaleString('id-ID')}</p>
+                <p class="text-muted">${new Date(o.created_at).toLocaleDateString('id-ID')}</p>
+
+                <div style="display: flex; gap: 8px; margin-top: 10px;">
+                  <button type="button" class="btn btn-sm btn-primary" onclick="app.adminVerifyOrder('${o.id}', 'Completed')"><i class="fa-solid fa-check"></i> Selesai</button>
+                  <button type="button" class="btn btn-sm btn-danger" onclick="app.adminVerifyOrder('${o.id}', 'Cancelled')"><i class="fa-solid fa-xmark"></i> Batal</button>
+                </div>
+              </div>
+            `).join('');
+          } else {
+            container.innerHTML = '<p class="text-muted" style="text-align:center;">Belum ada antrean pesanan merchandise.</p>';
+          }
+        } catch (e) {}
+      }
+
+      async adminVerifyOrder(orderId, status) {
+        if (!this.supabase) return;
+        try {
+          await this.supabase.from('orders').update({ status }).eq('id', orderId);
+          this.showToast(`Status Pesanan Diubah: ${status}!`, 'success');
+          this.loadAdminOrdersList();
+          this.checkRealtimeNotifications();
+        } catch(e) {
+          this.showToast('Gagal memverifikasi pesanan.', 'error');
         }
       }
 
@@ -2080,13 +2236,21 @@
             .select('*', { count: 'exact', head: true })
             .eq('status', 'Pending');
 
+          const { count: pendingOrdersCount } = await this.supabase
+            .from('orders')
+            .select('*', { count: 'exact', head: true })
+            .eq('status', 'Pending');
+
           const memberNotifDot = document.getElementById('admin-member-notif-dot');
           if (memberNotifDot) memberNotifDot.style.display = (pendingMembersCount > 0) ? 'block' : 'none';
 
           const dueNotifDot = document.getElementById('admin-due-notif-dot');
           if (dueNotifDot) dueNotifDot.style.display = (pendingDuesCount > 0) ? 'block' : 'none';
 
-          const totalNotif = (pendingMembersCount || 0) + (pendingDuesCount || 0);
+          const orderNotifDot = document.getElementById('admin-order-notif-dot');
+          if (orderNotifDot) orderNotifDot.style.display = (pendingOrdersCount > 0) ? 'block' : 'none';
+
+          const totalNotif = (pendingMembersCount || 0) + (pendingDuesCount || 0) + (pendingOrdersCount || 0);
 
           const adminNotifDot = document.getElementById('admin-notif-dot');
           const headerNotifDot = document.getElementById('header-notif-dot');
@@ -2122,6 +2286,17 @@
             this.loadAdminDuesList();
             if (payload.eventType === 'INSERT') {
               this.showToast('Setoran iuran baru masuk!', 'info');
+            }
+          })
+          .subscribe();
+
+        this.supabase
+          .channel('realtime-orders-channel')
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (payload) => {
+            this.checkRealtimeNotifications();
+            this.loadAdminOrdersList();
+            if (payload.eventType === 'INSERT') {
+              this.showToast('Pesanan Merchandise baru masuk!', 'info');
             }
           })
           .subscribe();
