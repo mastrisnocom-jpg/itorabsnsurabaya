@@ -227,13 +227,13 @@
     .btn-gold { background: var(--accent-gold); color: #000; }
     .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
 
-    /* TOAST NOTIFICATION POP-UP */
+    /* TOAST POP-UP ALERTS */
     #toast-container {
       position: fixed;
       top: 20px;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 9999;
+      z-index: 99999;
       width: 90%;
       max-width: 400px;
     }
@@ -248,7 +248,7 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.6);
       animation: slideDown 0.3s ease;
     }
 
@@ -288,7 +288,7 @@
 </head>
 <body>
 
-  <!-- TOAST CONTAINER FOR POP-UP ALERTS -->
+  <!-- POP-UP TOAST CONTAINER -->
   <div id="toast-container"></div>
 
   <!-- HEADER -->
@@ -512,8 +512,14 @@
     const SUPABASE_ANON_KEY = 'Sb_publishable_AKKR_z1iI5-Bi9-pAQnGOw_1gG7jj-q';
     
     let supabase = null;
-    if (window.supabase && typeof window.supabase.createClient === 'function') {
-      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    try {
+      if (window.supabase && typeof window.supabase.createClient === 'function') {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+          auth: { persistSession: true }
+        });
+      }
+    } catch(e) {
+      console.error('Init Supabase Client Error:', e);
     }
 
     let isRegisterMode = false;
@@ -549,23 +555,29 @@
     document.addEventListener('DOMContentLoaded', async () => {
       // Cek Sesi User
       if (supabase) {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
-          currentUser = session.user;
-          updateUIForLoggedInUser();
-        }
-
-        supabase.auth.onAuthStateChange((event, session) => {
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
           if (session) {
             currentUser = session.user;
             updateUIForLoggedInUser();
-          } else {
-            currentUser = null;
-            updateUIForLoggedOutUser();
           }
-        });
+
+          supabase.auth.onAuthStateChange((event, session) => {
+            if (session) {
+              currentUser = session.user;
+              updateUIForLoggedInUser();
+            } else {
+              currentUser = null;
+              updateUIForLoggedOutUser();
+            }
+          });
+        } catch(err) {
+          console.warn('Session check error:', err);
+        }
 
         loadDataFromSupabase();
+      } else {
+        showToast('Koneksi Supabase gagal dimuat. Periksa koneksi internet.', 'error');
       }
       generateQRCode("ITORA-BSN-GUEST");
     });
@@ -588,7 +600,7 @@
       const fullname = document.getElementById('auth-fullname').value.trim();
 
       if (!supabase) {
-        showToast('Koneksi Supabase tidak ditemukan', 'error');
+        showToast('Supabase Client tidak aktif!', 'error');
         return;
       }
 
@@ -614,13 +626,14 @@
           });
 
           if (error) throw error;
+          
           showToast('Login Berhasil! Selamat datang.', 'success');
           currentUser = data.user;
           updateUIForLoggedInUser();
           navigateTo('beranda');
         }
       } catch (err) {
-        showToast(err.message || 'Terjadi kesalahan sistem', 'error');
+        showToast(err.message || 'Login gagal. Periksa email & kata sandi.', 'error');
       } finally {
         submitBtn.disabled = false;
         submitBtn.innerHTML = isRegisterMode ? '<i class="fa-solid fa-user-plus"></i> Daftar Sekarang' : '<i class="fa-solid fa-right-to-bracket"></i> Masuk Sekarang';
@@ -676,8 +689,8 @@
     async function loadDataFromSupabase() {
       if (!supabase) return;
       try {
-        const { data: members } = await supabase.from('members').select('*');
-        if (members && members.length > 0) {
+        const { data: members, error } = await supabase.from('members').select('*');
+        if (!error && members && members.length > 0) {
           loadedMembers = members.map(m => ({
             name: m.full_name,
             role: m.role || 'Anggota',
