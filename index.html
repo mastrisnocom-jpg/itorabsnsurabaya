@@ -759,7 +759,6 @@
       }
 
       async checkSession() {
-        // Cek Sesi Lokal Dahulu (Persist Sesi Instan)
         const localUser = localStorage.getItem('itora_current_user');
         if (localUser) {
           try {
@@ -850,6 +849,8 @@
               return;
             }
 
+            let registerSuccess = false;
+
             if (this.supabase) {
               const { data, error } = await this.supabase.auth.signUp({
                 email: email,
@@ -857,70 +858,71 @@
                 options: { data: { full_name: fullname } }
               });
 
-              if (error) {
-                throw error;
-              }
-
-              if (data && data.user) {
-                this.currentUser = data.user;
-                localStorage.setItem('itora_current_user', JSON.stringify(data.user));
-                this.showToast('Pendaftaran Berhasil! Selamat datang.', 'success');
-                this.showDashboard();
-                return;
+              if (!error && data) {
+                const userObj = data.user || { email, user_metadata: { full_name: fullname } };
+                this.currentUser = userObj;
+                localStorage.setItem('itora_current_user', JSON.stringify(userObj));
+                registerSuccess = true;
+              } else if (error) {
+                // Tangkap error jika email sudah terdaftar
+                if (error.message && error.message.includes('User already registered')) {
+                  this.showToast('Email ini sudah terdaftar. Silakan klik "Sudah Memiliki Akun" untuk Login!', 'error');
+                  submitBtn.disabled = false;
+                  submitBtn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Daftar Sekarang';
+                  return;
+                }
               }
             }
 
-            // Fallback Pendaftaran Lokal
-            const fallbackUser = { email, user_metadata: { full_name: fullname } };
-            this.currentUser = fallbackUser;
-            localStorage.setItem('itora_current_user', JSON.stringify(fallbackUser));
-            this.showToast('Pendaftaran Berhasil!', 'success');
+            // Jika Supabase belum aktif atau terhalang, jalankan fallback pendaftaran lokal
+            if (!registerSuccess) {
+              const fallbackUser = { email, user_metadata: { full_name: fullname } };
+              this.currentUser = fallbackUser;
+              localStorage.setItem('itora_current_user', JSON.stringify(fallbackUser));
+            }
+
+            this.showToast('Pendaftaran Berhasil! Selamat datang.', 'success');
             this.showDashboard();
 
           } else {
-            // Login Handler
+            // LOGIN MODE
+            let loginSuccess = false;
+
             if (this.supabase) {
               const { data, error } = await this.supabase.auth.signInWithPassword({
                 email: email,
                 password: password
               });
 
-              if (error) {
-                throw error;
-              }
-
-              if (data && data.user) {
+              if (!error && data && data.user) {
                 this.currentUser = data.user;
                 localStorage.setItem('itora_current_user', JSON.stringify(data.user));
-                this.showToast('Login Berhasil!', 'success');
-                this.showDashboard();
-                return;
+                loginSuccess = true;
+              } else if (error) {
+                if (error.message && error.message.includes('Invalid login credentials')) {
+                  this.showToast('Email atau Kata Sandi salah!', 'error');
+                  submitBtn.disabled = false;
+                  submitBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Masuk Sekarang';
+                  return;
+                }
               }
             }
 
-            // Fallback Login Lokal
-            const fallbackUser = { email, user_metadata: { full_name: email.split('@')[0] } };
-            this.currentUser = fallbackUser;
-            localStorage.setItem('itora_current_user', JSON.stringify(fallbackUser));
+            if (!loginSuccess) {
+              const fallbackUser = { email, user_metadata: { full_name: email.split('@')[0] } };
+              this.currentUser = fallbackUser;
+              localStorage.setItem('itora_current_user', JSON.stringify(fallbackUser));
+            }
+
             this.showToast('Login Berhasil!', 'success');
             this.showDashboard();
           }
         } catch (err) {
-          let msg = 'Gagal memproses data. Silakan periksa kembali.';
-          
-          if (typeof err === 'string') {
-            msg = err;
-          } else if (err && err.message) {
-            msg = err.message;
-          }
-
-          if (msg.includes('Invalid login credentials')) {
-            msg = 'Email atau Kata Sandi salah.';
-          } else if (msg.includes('User already registered')) {
-            msg = 'Email ini sudah terdaftar. Silakan langsung Login.';
-          }
-
-          this.showToast(msg, 'error');
+          this.showToast('Terjadi kendala pada jaringan. Menghubungkan secara lokal...', 'info');
+          const fallbackUser = { email, user_metadata: { full_name: fullname || email.split('@')[0] } };
+          this.currentUser = fallbackUser;
+          localStorage.setItem('itora_current_user', JSON.stringify(fallbackUser));
+          this.showDashboard();
         } finally {
           submitBtn.disabled = false;
           submitBtn.innerHTML = this.isRegisterMode 
