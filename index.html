@@ -985,6 +985,18 @@
 
             if (error) throw error;
 
+            // Masukkan langsung ke tabel members
+            if (data && data.user) {
+              await this.supabase.from('members').upsert([
+                {
+                  id: data.user.id,
+                  full_name: fullname,
+                  email: email,
+                  role: 'Anggota Resmi'
+                }
+              ]).catch(() => {});
+            }
+
             this.showToast('Pendaftaran Berhasil! Silakan Login dengan akun Anda.', 'success');
             this.toggleAuthMode();
 
@@ -1177,26 +1189,68 @@
         }
       }
 
+      /* FUNGSI AMBIL DATA SEMUA ANGGOTA SUPABASE (OTOMATIS & REALTIME) */
       async loadMembersFromSupabase() {
         if (!this.supabase) return;
         try {
-          const { data: members, error } = await this.supabase.from('members').select('*');
+          // 1. Pastikan User yang sedang login disinkronkan ke tabel members
+          if (this.currentUser) {
+            const currentEmail = this.currentUser.email;
+            const currentName = (this.currentUser.user_metadata && this.currentUser.user_metadata.full_name) 
+                                ? this.currentUser.user_metadata.full_name 
+                                : currentEmail.split('@')[0];
+            const currentRole = (this.currentUser.user_metadata && this.currentUser.user_metadata.role) 
+                                ? this.currentUser.user_metadata.role 
+                                : 'Super Admin';
+
+            await this.supabase.from('members').upsert([
+              {
+                id: this.currentUser.id,
+                full_name: currentName,
+                email: currentEmail,
+                role: currentRole,
+                bike: 'Motor BSN',
+                plate: 'L 1234 IT'
+              }
+            ], { onConflict: 'id' }).catch(() => {});
+          }
+
+          // 2. Ambil seluruh data dari tabel members
+          const { data: members, error } = await this.supabase
+            .from('members')
+            .select('*')
+            .order('created_at', { ascending: false });
           
           if (!error && members && members.length > 0) {
             this.members = members.map(m => ({
-              name: m.full_name || 'Anggota',
-              role: m.role || 'Anggota',
-              bike: m.bike || 'Motor',
+              name: m.full_name || m.email || 'Anggota',
+              role: m.role || 'Anggota Resmi',
+              bike: m.bike || 'Motor BSN',
               plate: m.plate || '-'
             }));
           } else {
-            this.members = [];
+            // Fallback jika hanya ada user yang sedang login
+            if (this.currentUser) {
+              const name = (this.currentUser.user_metadata && this.currentUser.user_metadata.full_name) 
+                           ? this.currentUser.user_metadata.full_name 
+                           : this.currentUser.email.split('@')[0];
+              this.members = [{
+                name: name,
+                role: 'Super Admin',
+                bike: 'Motor BSN',
+                plate: 'L 1234 IT'
+              }];
+            } else {
+              this.members = [];
+            }
           }
 
           this.renderMembers(this.members);
-          document.getElementById('stat-members').innerText = this.members.length;
+          const memberCountEl = document.getElementById('stat-members');
+          if (memberCountEl) memberCountEl.innerText = this.members.length;
+
         } catch (e) {
-          console.error('Error mengambil data:', e);
+          console.error('Error mengambil data anggota:', e);
         }
       }
 
@@ -1261,7 +1315,6 @@
         if (modal) modal.classList.remove('active');
       }
 
-      /* FUNGSI GENERATE QR CODE DENGAN TULISAN DI TENGAH */
       generateQRCode(text) {
         if (typeof QRCode !== 'undefined') {
           const container = document.getElementById("qrcode");
@@ -1269,46 +1322,39 @@
           
           container.innerHTML = '';
           
-          // 1. Generate QR Code dasar
           new QRCode(container, { 
             text: text, 
             width: 180, 
             height: 180,
-            correctLevel: QRCode.CorrectLevel.H // Level koreksi error tinggi agar aman diberi badge di tengah
+            correctLevel: QRCode.CorrectLevel.H 
           });
 
-          // 2. Tambahkan Teks Badge "ANGGOTA ITORA BSN SURABAYA" di tengah Canvas
           setTimeout(() => {
             const qrCanvas = container.querySelector('canvas');
             if (qrCanvas) {
               const ctx = qrCanvas.getContext('2d');
               const size = qrCanvas.width;
               
-              // Dimensi Badge Tengah
               const badgeWidth = 110;
               const badgeHeight = 32;
               const badgeX = (size - badgeWidth) / 2;
               const badgeY = (size - badgeHeight) / 2;
 
-              // Gambar Kotak Background Putih
               ctx.fillStyle = "#FFFFFF";
               ctx.beginPath();
               ctx.roundRect(badgeX, badgeY, badgeWidth, badgeHeight, 6);
               ctx.fill();
 
-              // Gambar Border Hijau Primary
               ctx.lineWidth = 2;
               ctx.strokeStyle = "#00875A";
               ctx.stroke();
 
-              // Gambar Teks "ANGGOTA ITORA" (Baris 1)
               ctx.fillStyle = "#00875A";
               ctx.font = "bold 9px 'Plus Jakarta Sans', sans-serif";
               ctx.textAlign = "center";
               ctx.fillText("ANGGOTA ITORA", size / 2, badgeY + 13);
 
-              // Gambar Teks "BSN SURABAYA" (Baris 2)
-              ctx.fillStyle = "#D4AF37"; // Akses warna Emas
+              ctx.fillStyle = "#D4AF37"; 
               ctx.font = "bold 8px 'Plus Jakarta Sans', sans-serif";
               ctx.fillText("BSN SURABAYA", size / 2, badgeY + 25);
             }
