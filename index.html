@@ -195,12 +195,12 @@
       to { transform: rotate(360deg); }
     }
 
-    /* AUTH OVERLAY */
+    /* AUTH OVERLAY (DESAIN GLASSMORPHISM & MOTOR BACKDROP) */
     .auth-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(248, 250, 252, 0.96);
-      backdrop-filter: blur(12px);
+      background: linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.35)), 
+                  url('https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=1200&auto=format&fit=crop&q=80') center/cover no-repeat;
       z-index: 10000;
       display: flex;
       align-items: center;
@@ -211,12 +211,14 @@
 
     .auth-card {
       width: 100%;
-      max-width: 420px;
-      border-radius: var(--radius-lg);
-      padding: 28px;
-      background: #FFFFFF;
-      border: 1px solid var(--border-dark);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      max-width: 380px;
+      border-radius: 32px;
+      padding: 32px 24px;
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
     }
 
     .auth-header {
@@ -225,21 +227,91 @@
     }
 
     .auth-icon {
-      font-size: 2.5rem;
-      color: var(--primary);
-      margin-bottom: 8px;
+      font-size: 3.2rem;
+      color: #00875A;
+      margin-bottom: 12px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
     }
 
     .auth-header h2 {
-      font-size: var(--font-lg);
-      font-weight: var(--fw-bold);
-      color: var(--text-main-dark);
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #0F172A;
+      letter-spacing: -0.02em;
     }
 
     .auth-header p {
-      font-size: var(--font-xs);
-      color: var(--text-muted-dark);
-      margin-top: 4px;
+      font-size: 0.78rem;
+      color: #475569;
+      margin-top: 6px;
+      font-weight: 500;
+    }
+
+    .auth-card .form-group {
+      margin-bottom: 16px;
+    }
+
+    .auth-card .form-group label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 6px;
+    }
+
+    .auth-card .input-control {
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: 18px;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      background: rgba(248, 250, 252, 0.92);
+      color: #0F172A;
+      outline: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .auth-card .input-control:focus {
+      border-color: #00875A;
+      background: #FFFFFF;
+      box-shadow: 0 0 0 3px rgba(0, 135, 90, 0.15);
+    }
+
+    .auth-card .btn-primary {
+      background: #00875A;
+      color: #FFFFFF;
+      border-radius: 20px;
+      padding: 14px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      border: none;
+      box-shadow: 0 6px 18px rgba(0, 135, 90, 0.3);
+      transition: transform 0.1s ease, background-color 0.2s ease;
+    }
+
+    .auth-card .btn-primary:active {
+      transform: scale(0.98);
+      background: #00704A;
+    }
+
+    .auth-card .btn-outline {
+      background: rgba(255, 255, 255, 0.4);
+      border: 1.5px solid #00875A;
+      color: #00875A;
+      border-radius: 20px;
+      padding: 13px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      margin-top: 10px;
+      transition: all 0.2s ease;
+    }
+
+    .auth-card .btn-outline:active {
+      background: rgba(0, 135, 90, 0.1);
     }
 
     /* HEADER & NAVBAR */
@@ -568,31 +640,6 @@
       font-weight: var(--fw-bold);
     }
 
-    .form-group { margin-bottom: 16px; }
-    .form-group label {
-      display: block;
-      font-size: var(--font-xs);
-      font-weight: var(--fw-bold);
-      margin-bottom: 6px;
-      color: var(--text-muted-dark);
-    }
-
-    .input-control {
-      width: 100%;
-      padding: 12px 16px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border-dark);
-      background: #F8FAFC;
-      color: var(--text-main-dark);
-      outline: none;
-      font-size: var(--font-base);
-    }
-
-    .input-control:focus {
-      border-color: var(--primary);
-      background: #FFFFFF;
-    }
-
     .btn {
       width: 100%;
       padding: 12px 14px;
@@ -789,7 +836,7 @@
     <div class="spinner"></div>
   </div>
 
-  <!-- 1. AUTH SCREEN -->
+  <!-- 1. AUTH SCREEN (FORM LOGIN PRESISI SESUAI GAMBAR REFERENSI) -->
   <div id="auth-screen" class="auth-overlay">
     <div class="auth-card">
       <div class="auth-header">
@@ -803,16 +850,19 @@
           <label><i class="fa-solid fa-user"></i> Nama Lengkap</label>
           <input type="text" class="input-control" id="auth-fullname" placeholder="Sutrisno">
         </div>
+
         <div class="form-group">
           <label><i class="fa-solid fa-envelope"></i> Email Resmi</label>
           <input type="email" class="input-control" id="auth-email" placeholder="nama@bsn.co.id" required>
         </div>
+
         <div class="form-group">
           <label><i class="fa-solid fa-lock"></i> Kata Sandi</label>
           <input type="password" class="input-control" id="auth-password" placeholder="••••••••" required minlength="6">
         </div>
+
         <button type="submit" class="btn btn-primary" id="auth-submit-btn">
-          <i class="fa-solid fa-right-to-bracket"></i> Masuk Sekarang
+          <i class="fa-solid fa-motorcycle"></i> Masuk Sekarang
         </button>
       </form>
 
@@ -1060,7 +1110,7 @@
         </div>
       </section>
 
-      <!-- 5. TOURING (DENGAN FITUR EDIT, HAPUS & JARAK TEMPUH OTOMATIS) -->
+      <!-- 5. TOURING (DENGAN EDIT, HAPUS, JARAK TEMPUH, & FORM PENDATAAN IKUT/TIDAK) -->
       <section id="page-touring" class="page">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <h2 style="font-size: var(--font-lg); font-weight: var(--fw-bold);">Jadwal & Rute Touring</h2>
@@ -1092,9 +1142,39 @@
             <i class="fa-solid fa-gauge-high"></i> Estimasi Jarak Tempuh: <span id="touring-page-distance">± 110 KM</span>
           </p>
 
-          <button type="button" class="btn btn-primary" style="margin-top: 16px;" id="touring-maps-btn" onclick="window.open('https://maps.google.com/?q=Bromo', '_blank')">
+          <button type="button" class="btn btn-primary" style="margin-top: 14px;" id="touring-maps-btn" onclick="window.open('https://maps.google.com/?q=Bromo', '_blank')">
             <i class="fa-solid fa-map-location-dot"></i> Buka Rute Google Maps
           </button>
+        </div>
+
+        <!-- WIDGET FORM RSVP / PENDATAAN KEHADIRAN ANGGOTA -->
+        <div class="card">
+          <h3 style="font-size: var(--font-md); font-weight: var(--fw-bold); margin-bottom: 6px;">
+            <i class="fa-solid fa-clipboard-check" style="color: var(--primary);"></i> Konfirmasi Kehadiran Anda
+          </h3>
+          <p class="text-muted" style="margin-bottom: 12px;">Pilih status partisipasi Anda untuk mendata rombongan touring.</p>
+          
+          <div style="display: flex; gap: 10px;">
+            <button type="button" class="btn btn-primary" style="flex:1;" onclick="app.submitTouringRSVP('Ikut')">
+              <i class="fa-solid fa-circle-check"></i> Saya Ikut
+            </button>
+            <button type="button" class="btn btn-danger" style="flex:1;" onclick="app.submitTouringRSVP('Absen')">
+              <i class="fa-solid fa-circle-xmark"></i> Tidak Ikut
+            </button>
+          </div>
+        </div>
+
+        <!-- DAFTAR LIST ANGGOTA YANG SUDAH HADER & ABSEN -->
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
+            <h3 style="font-size: var(--font-md); font-weight: var(--fw-bold);">
+              <i class="fa-solid fa-users-viewfinder" style="color: var(--accent-gold);"></i> Pendataan Anggota
+            </h3>
+            <span class="badge badge-primary" id="touring-count-badge">0 Ikut</span>
+          </div>
+          <div id="touring-participants-list">
+            <p class="text-muted" style="text-align:center;">Memuat data partisipasi...</p>
+          </div>
         </div>
       </section>
 
@@ -1713,7 +1793,7 @@
         }, 1000);
       }
 
-      // FITUR BARU: Deteksi jika halaman dibuka via Scan QR Code
+      // FITUR VERIFIKASI PROFIL VIA SCAN QR CODE
       async checkScanUrl() {
         const urlParams = new URLSearchParams(window.location.search);
         const verifyId = urlParams.get('verify');
@@ -1787,6 +1867,84 @@
         if (adminMeeting) adminMeeting.value = this.touringData.meeting;
         if (adminDistance) adminDistance.value = this.touringData.distance || '';
         if (adminMaps) adminMaps.value = this.touringData.maps;
+
+        this.loadTouringParticipants();
+      }
+
+      // LOAD DAFTAR PESERTA TOURING DARI SUPABASE
+      async loadTouringParticipants() {
+        const container = document.getElementById('touring-participants-list');
+        const countBadge = document.getElementById('touring-count-badge');
+        if (!container || !this.supabase) return;
+
+        try {
+          const { data, error } = await this.supabase
+            .from('touring_participants')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+          if (!error && data) {
+            const ikutCount = data.filter(d => d.status === 'Ikut').length;
+            if (countBadge) countBadge.innerText = `${ikutCount} Anggota Ikut`;
+
+            if (data.length === 0) {
+              container.innerHTML = '<p class="text-muted" style="text-align:center;">Belum ada konfirmasi kehadiran dari anggota.</p>';
+              return;
+            }
+
+            container.innerHTML = data.map(item => `
+              <div style="display:flex; justify-content:space-between; align-items:center; padding: 10px 0; border-bottom: 1px solid var(--border-dark);">
+                <div>
+                  <strong style="font-size: var(--font-base);">${item.member_name}</strong>
+                  <span class="text-muted" style="display:block; font-size: var(--font-xs);">${item.plate || '-'}</span>
+                </div>
+                <span class="badge ${item.status === 'Ikut' ? 'badge-success' : 'badge-danger'}">
+                  ${item.status === 'Ikut' ? '✓ Ikut' : '✕ Tidak Ikut'}
+                </span>
+              </div>
+            `).join('');
+          } else {
+            container.innerHTML = '<p class="text-muted" style="text-align:center;">Belum ada data partisipasi.</p>';
+          }
+        } catch (e) {
+          console.error('Error load participants:', e);
+        }
+      }
+
+      // SUBMIT KONFIRMASI / RSVP TOURING
+      async submitTouringRSVP(status) {
+        if (!this.currentUser || !this.supabase) {
+          this.showToast('Silakan login terlebih dahulu!', 'error');
+          return;
+        }
+
+        const name = this.currentProfile?.full_name || 'Anggota ITORA';
+        const plate = this.currentProfile?.plate || '-';
+
+        try {
+          const { error } = await this.supabase
+            .from('touring_participants')
+            .upsert([{
+              user_id: this.currentUser.id,
+              member_name: name,
+              plate: plate,
+              status: status
+            }], { onConflict: 'user_id' });
+
+          if (error) throw error;
+
+          this.showToast(`Konfirmasi berhasil: Anda memilih "${status}"`, 'success');
+          this.loadTouringParticipants();
+
+          if (status === 'Ikut') {
+            const targetWA = this.adminWANumber || "6281234567890";
+            const msg = `Halo Admin ITORA,%0ASaya *${name}* (${plate}) mengonfirmasi *IKUT* pada kegiatan Touring ${this.touringData.title}.`;
+            setTimeout(() => window.open(`https://wa.me/${targetWA}?text=${msg}`, '_blank'), 1000);
+          }
+
+        } catch (e) {
+          this.showToast('Gagal menyimpan konfirmasi: ' + e.message, 'error');
+        }
       }
 
       adminUpdateTouring(e) {
@@ -2008,7 +2166,7 @@
         } else {
           title.innerText = 'Masuk Anggota';
           subtitle.innerText = 'Gunakan email & kata sandi akun ITORA Anda';
-          submitBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Masuk Sekarang';
+          submitBtn.innerHTML = '<i class="fa-solid fa-motorcycle"></i> Masuk Sekarang';
           toggleBtn.innerText = 'Belum Memiliki Akun? Daftar Disini';
         }
       }
@@ -3010,6 +3168,13 @@
             }
           })
           .subscribe();
+
+        this.supabase
+          .channel('realtime-touring-channel')
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'touring_participants' }, () => {
+            this.loadTouringParticipants();
+          })
+          .subscribe();
       }
 
       async loadIuranHistory() {
@@ -3197,7 +3362,6 @@
           
           container.innerHTML = '';
 
-          // URL Verifikasi Aktif yang dapat di-scan oleh HP mana saja
           const profileUrl = `${window.location.origin}${window.location.pathname}?verify=${encodeURIComponent(this.currentUser ? this.currentUser.id : niaCode)}`;
 
           new QRCode(container, { 
