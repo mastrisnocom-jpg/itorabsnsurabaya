@@ -8,7 +8,6 @@
   <meta name="theme-color" content="#00875A">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="manifest" href="manifest.json">
 
   <!-- CDNs (FontAwesome, Fonts, Supabase, QRCode) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -856,7 +855,7 @@
               return;
             }
 
-            // 1. Pendaftaran ke Supabase Auth
+            // Pendaftaran ke Supabase Auth
             const { data, error } = await this.supabase.auth.signUp({
               email: email,
               password: password,
@@ -866,19 +865,6 @@
             });
 
             if (error) throw error;
-
-            // 2. Simpan profil ke Tabel PostgreSQL `members`
-            if (data?.user) {
-              const { error: dbError } = await this.supabase.from('members').insert([
-                {
-                  id: data.user.id,
-                  full_name: fullname,
-                  email: email,
-                  role: 'Anggota Baru'
-                }
-              ]);
-              if (dbError) console.warn('Peringatan simpan tabel members:', dbError);
-            }
 
             if (data?.session) {
               this.showToast('Pendaftaran Berhasil! Selamat datang.', 'success');
@@ -903,12 +889,19 @@
             this.showDashboard();
           }
         } catch (err) {
-          let msg = err.message || 'Proses gagal. Periksa kembali data Anda.';
+          let msg = 'Proses gagal. Periksa kembali data Anda.';
+          if (typeof err === 'string') {
+            msg = err;
+          } else if (err && typeof err.message === 'string' && err.message.trim() !== '') {
+            msg = err.message;
+          }
+
           if (msg.includes('Invalid login credentials')) {
             msg = 'Email atau Kata Sandi salah.';
           } else if (msg.includes('User already registered')) {
             msg = 'Email ini sudah terdaftar. Silakan login.';
           }
+          
           this.showToast(msg, 'error');
         } finally {
           submitBtn.disabled = false;
@@ -1045,10 +1038,18 @@
       showToast(message, type = 'info') {
         const container = document.getElementById('toast-container');
         if (!container) return;
+        
+        let displayMsg = 'Terjadi kesalahan pada sistem.';
+        if (typeof message === 'string' && message.trim() !== '') {
+          displayMsg = message;
+        } else if (message && typeof message.message === 'string') {
+          displayMsg = message.message;
+        }
+
         const toast = document.createElement('div');
         toast.className = 'toast';
         toast.style.background = type === 'error' ? '#EF4444' : type === 'success' ? '#10B981' : 'var(--primary)';
-        toast.innerHTML = `<i class="fa-solid fa-circle-info"></i> ${message}`;
+        toast.innerHTML = `<i class="fa-solid fa-circle-info"></i> ${displayMsg}`;
         container.appendChild(toast);
         setTimeout(() => {
           toast.style.opacity = '0';
