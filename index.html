@@ -11,7 +11,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" id="pwa-manifest">
 
-  <!-- CDNs: Font Awesome, Google Fonts, Supabase, QRCode -->
+  <!-- CDNs: Font Awesome, Google Fonts, Supabase Client, QRCode -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -431,7 +431,7 @@
       <button class="icon-btn" onclick="openModal('qr-modal')">
         <i class="fa-solid fa-qrcode"></i>
       </button>
-      <button class="icon-btn" onclick="navigateTo('login')">
+      <button class="icon-btn" id="auth-header-btn" onclick="navigateTo('login')">
         <i class="fa-solid fa-user-lock"></i>
       </button>
     </div>
@@ -444,14 +444,14 @@
     <section id="page-beranda" class="page active">
       <div class="card banner-card glass">
         <span class="badge badge-gold">Komunitas Resmi</span>
-        <h2 style="margin-top: 8px; font-size: 1.4rem;">Salam Satu Jalur!</h2>
+        <h2 style="margin-top: 8px; font-size: 1.4rem;" id="user-greeting">Salam Satu Jalur!</h2>
         <p style="font-size: 0.85rem; opacity: 0.9; margin-top: 4px;">Bank Syariah Nasional Cabang Surabaya</p>
       </div>
 
       <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px;">
         <div class="card glass" style="padding: 12px; text-align: center; cursor: pointer;" onclick="navigateTo('anggota')">
           <i class="fa-solid fa-users" style="color: var(--primary);"></i>
-          <h3 style="font-size: 1.1rem; margin-top: 4px;" id="stat-members">4</h3>
+          <h3 style="font-size: 1.1rem; margin-top: 4px;" id="stat-members">0</h3>
           <span style="font-size: 0.68rem; color: var(--text-muted);">Anggota</span>
         </div>
         <div class="card glass" style="padding: 12px; text-align: center; cursor: pointer;" onclick="navigateTo('touring')">
@@ -466,7 +466,7 @@
         </div>
       </div>
 
-      <!-- Quick Nav Menu (Semua Diaktifkan) -->
+      <!-- Quick Nav Menu -->
       <div class="quick-menu">
         <div class="quick-item" onclick="navigateTo('pengumuman')">
           <div class="quick-icon"><i class="fa-solid fa-bullhorn"></i></div>
@@ -522,30 +522,34 @@
       </div>
     </section>
 
-    <!-- 2. PAGE LOGIN & REGISTRASI -->
+    <!-- 2. PAGE LOGIN & REGISTRASI TERINTEGRASI SUPABASE -->
     <section id="page-login" class="page">
       <div class="card glass" style="text-align: center; margin-bottom: 16px;">
         <i class="fa-solid fa-motorcycle" style="font-size: 2.5rem; color: var(--accent-gold);"></i>
-        <h2 style="font-size: 1.3rem; margin-top: 8px;">Masuk Anggota</h2>
-        <p style="font-size: 0.8rem; color: var(--text-muted);">Silakan masuk untuk akses fitur komunitas</p>
+        <h2 style="font-size: 1.3rem; margin-top: 8px;" id="auth-title">Masuk Anggota</h2>
+        <p style="font-size: 0.8rem; color: var(--text-muted);" id="auth-subtitle">Silakan masuk untuk akses fitur komunitas</p>
       </div>
 
       <div class="card glass">
-        <form onsubmit="handleLogin(event)">
+        <form id="auth-form" onsubmit="handleAuthSubmit(event)">
+          <div class="form-group" id="group-name" style="display: none;">
+            <label>Nama Lengkap</label>
+            <input type="text" class="input-control" id="auth-fullname" placeholder="Ahmad Fauzi">
+          </div>
           <div class="form-group">
-            <label>Email / Nomor Anggota</label>
-            <input type="text" class="input-control" id="login-email" placeholder="nama@bsn.co.id" required>
+            <label>Email Resmi</label>
+            <input type="email" class="input-control" id="auth-email" placeholder="nama@bsn.co.id" required>
           </div>
           <div class="form-group">
             <label>Kata Sandi</label>
-            <input type="password" class="input-control" id="login-password" placeholder="••••••••" required>
+            <input type="password" class="input-control" id="auth-password" placeholder="••••••••" required minlength="6">
           </div>
-          <button type="submit" class="btn btn-primary" style="margin-bottom: 10px;">
+          <button type="submit" class="btn btn-primary" id="auth-submit-btn" style="margin-bottom: 10px;">
             <i class="fa-solid fa-right-to-bracket"></i> Masuk Sekarang
           </button>
         </form>
-        <button class="btn btn-outline" onclick="toast('Silakan hubungi Sekretaris untuk pendaftaran anggota baru')">
-          Daftar Anggota Baru
+        <button class="btn btn-outline" id="auth-toggle-btn" onclick="toggleAuthMode()">
+          Belum Memiliki Akun? Daftar Disini
         </button>
       </div>
     </section>
@@ -651,14 +655,14 @@
       </div>
     </section>
 
-    <!-- 12. PAGE PROFIL ME -->
+    <!-- 12. PAGE PROFIL SAYA -->
     <section id="page-profil" class="page">
       <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Profil Saya</h2>
       <div class="card glass" style="text-align: center;">
         <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200" class="member-avatar" alt="Avatar">
-        <h3 style="margin-top: 8px;" id="profile-name">Ahmad Fauzi</h3>
-        <span class="badge badge-gold" style="margin-top: 4px;">Ketua Komunitas</span>
-        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">ID Member: ITORA-BSN-001</p>
+        <h3 style="margin-top: 8px;" id="profile-name">Tamu</h3>
+        <span class="badge badge-gold" style="margin-top: 4px;" id="profile-role">Pengunjung</span>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;" id="profile-email">Belum Login</p>
       </div>
     </section>
 
@@ -669,8 +673,8 @@
         <button class="btn btn-primary" style="margin-bottom: 10px;" onclick="toggleTheme()">
           <i class="fa-solid fa-circle-half-stroke"></i> Ganti Mode Terang / Gelap
         </button>
-        <button class="btn btn-gold" onclick="navigateTo('login')">
-          <i class="fa-solid fa-right-from-bracket"></i> Keluar / Switch Account
+        <button class="btn btn-gold" id="btn-logout-settings" onclick="handleLogout()">
+          <i class="fa-solid fa-right-from-bracket"></i> Keluar (Logout)
         </button>
       </div>
     </section>
@@ -709,14 +713,14 @@
       <div class="qr-container">
         <div id="qrcode"></div>
       </div>
-      <p style="font-size: 0.85rem; font-weight: 700; color: var(--primary);">ITORA-BSN-001</p>
+      <p style="font-size: 0.85rem; font-weight: 700; color: var(--primary);" id="qr-member-id">ITORA-BSN-GUEST</p>
       <button class="btn btn-primary" style="margin-top: 15px;" onclick="closeModal('qr-modal')">Tutup</button>
     </div>
   </div>
 
-  <!-- JAVASCRIPT APP LOGIC -->
+  <!-- JAVASCRIPT APP LOGIC WITH FULL SUPABASE AUTH INTEGRATION -->
   <script>
-    /* 1. CONFIG SUPABASE & MOCK DATA */
+    /* 1. CONFIG SUPABASE */
     const SUPABASE_URL = 'https://lfusrctizdydnsiopzfi.supabase.co';
     const SUPABASE_ANON_KEY = 'Sb_publishable_AKKR_z1iI5-Bi9-pAQnGOw_1gG7jj-q';
     
@@ -725,10 +729,12 @@
       try {
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       } catch (e) {
-        console.warn('Supabase init failed:', e);
+        console.warn('Supabase Client Init Warning:', e);
       }
     }
 
+    let isRegisterMode = false;
+    let currentUser = null;
     let loadedMembers = [
       { id: 'ITORA-001', name: 'Ahmad Fauzi', role: 'Ketua', bike: 'Honda CB500X', plate: 'L 1234 BS' },
       { id: 'ITORA-002', name: 'Budi Santoso', role: 'Sekretaris', bike: 'Yamaha NMAX 155', plate: 'L 5678 AA' },
@@ -741,32 +747,157 @@
       { title: 'Bakti Sosial & Santunan', date: '25 Agustus 2026', location: 'Panti Asuhan Surabaya' }
     ];
 
-    /* 2. INIT ENGINE ON LOAD */
-    document.addEventListener('DOMContentLoaded', () => {
+    /* 2. INITIALIZATION ON DOM LOAD */
+    document.addEventListener('DOMContentLoaded', async () => {
       renderMembers(loadedMembers);
       renderEvents(mockEvents);
 
-      // Render QR Code
-      if (typeof QRCode !== 'undefined') {
-        const qrContainer = document.getElementById("qrcode");
-        if (qrContainer) {
-          qrContainer.innerHTML = '';
-          new QRCode(qrContainer, {
-            text: "ITORA-BSN-001-AHMAD_FAUZI",
-            width: 150,
-            height: 150
-          });
+      // Cek Session Supabase Auth
+      if (supabase) {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          currentUser = session.user;
+          updateUIForLoggedInUser();
         }
+
+        // Listener Status Perubahan Auth (Login/Logout)
+        supabase.auth.onAuthStateChange((event, session) => {
+          if (session) {
+            currentUser = session.user;
+            updateUIForLoggedInUser();
+          } else {
+            currentUser = null;
+            updateUIForLoggedOutUser();
+          }
+        });
+
+        loadDataFromSupabase();
       }
 
-      loadDataFromSupabase();
+      generateQRCode("ITORA-BSN-GUEST");
     });
 
+    /* 3. AUTHENTICATION LOGIC (LOGIN & REGISTER) */
+    function toggleAuthMode() {
+      isRegisterMode = !isRegisterMode;
+      const title = document.getElementById('auth-title');
+      const subtitle = document.getElementById('auth-subtitle');
+      const nameGroup = document.getElementById('group-name');
+      const submitBtn = document.getElementById('auth-submit-btn');
+      const toggleBtn = document.getElementById('auth-toggle-btn');
+
+      if (isRegisterMode) {
+        title.innerText = 'Daftar Anggota Baru';
+        subtitle.innerText = 'Lengkapi data untuk membuat akun anggota';
+        nameGroup.style.display = 'block';
+        submitBtn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Daftar Sekarang';
+        toggleBtn.innerText = 'Sudah Memiliki Akun? Masuk Disini';
+      } else {
+        title.innerText = 'Masuk Anggota';
+        subtitle.innerText = 'Silakan masuk untuk akses fitur komunitas';
+        nameGroup.style.display = 'none';
+        submitBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Masuk Sekarang';
+        toggleBtn.innerText = 'Belum Memiliki Akun? Daftar Disini';
+      }
+    }
+
+    async function handleAuthSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('auth-email').value;
+      const password = document.getElementById('auth-password').value;
+      const fullname = document.getElementById('auth-fullname').value;
+
+      if (!supabase) {
+        toast('Supabase belum terhubung dengan baik.');
+        return;
+      }
+
+      if (isRegisterMode) {
+        // PROSES REGISTRASI AKUN BARU
+        const { data, error } = await supabase.auth.signUp({
+          email: email,
+          password: password,
+          options: {
+            data: { full_name: fullname }
+          }
+        });
+
+        if (error) {
+          toast(`Gagal Daftar: ${error.message}`);
+        } else {
+          toast('Registrasi Berhasil! Silakan cek email Anda untuk konfirmasi atau langsung Login.');
+          toggleAuthMode();
+        }
+      } else {
+        // PROSES LOGIN
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: email,
+          password: password
+        });
+
+        if (error) {
+          toast(`Login Gagal: ${error.message}`);
+        } else {
+          toast('Login Berhasil! Selamat datang.');
+          currentUser = data.user;
+          updateUIForLoggedInUser();
+          navigateTo('beranda');
+        }
+      }
+    }
+
+    async function handleLogout() {
+      if (supabase) {
+        await supabase.auth.signOut();
+      }
+      currentUser = null;
+      updateUIForLoggedOutUser();
+      toast('Anda telah keluar.');
+      navigateTo('beranda');
+    }
+
+    function updateUIForLoggedInUser() {
+      const email = currentUser ? currentUser.email : '';
+      const name = currentUser && currentUser.user_metadata && currentUser.user_metadata.full_name ? currentUser.user_metadata.full_name : email.split('@')[0];
+
+      document.getElementById('user-greeting').innerText = `Salam, ${name}!`;
+      document.getElementById('profile-name').innerText = name;
+      document.getElementById('profile-email').innerText = email;
+      document.getElementById('profile-role').innerText = 'Anggota Terverifikasi';
+      document.getElementById('qr-member-id').innerText = `ITORA-BSN-${email.substring(0, 5).toUpperCase()}`;
+
+      generateQRCode(`ITORA-BSN-${email}`);
+
+      // Update Ikon Header
+      const headerBtn = document.getElementById('auth-header-btn');
+      if (headerBtn) {
+        headerBtn.innerHTML = '<i class="fa-solid fa-user-check" style="color: var(--accent-gold);"></i>';
+        headerBtn.onclick = () => navigateTo('profil');
+      }
+    }
+
+    function updateUIForLoggedOutUser() {
+      document.getElementById('user-greeting').innerText = 'Salam Satu Jalur!';
+      document.getElementById('profile-name').innerText = 'Tamu';
+      document.getElementById('profile-email').innerText = 'Belum Login';
+      document.getElementById('profile-role').innerText = 'Pengunjung';
+      document.getElementById('qr-member-id').innerText = 'ITORA-BSN-GUEST';
+
+      generateQRCode("ITORA-BSN-GUEST");
+
+      const headerBtn = document.getElementById('auth-header-btn');
+      if (headerBtn) {
+        headerBtn.innerHTML = '<i class="fa-solid fa-user-lock"></i>';
+        headerBtn.onclick = () => navigateTo('login');
+      }
+    }
+
+    /* 4. SUPABASE DATA FETCHING */
     async function loadDataFromSupabase() {
       if (!supabase) return;
       try {
-        const { data: members } = await supabase.from('members').select('*');
-        if (members && members.length > 0) {
+        const { data: members, error: mErr } = await supabase.from('members').select('*');
+        if (!mErr && members && members.length > 0) {
           loadedMembers = members.map(m => ({
             id: m.member_number || m.id,
             name: m.full_name,
@@ -779,8 +910,8 @@
           if (statEl) statEl.innerText = loadedMembers.length;
         }
 
-        const { data: events } = await supabase.from('events').select('*');
-        if (events && events.length > 0) {
+        const { data: events, error: eErr } = await supabase.from('events').select('*');
+        if (!eErr && events && events.length > 0) {
           const formattedEvents = events.map(e => ({
             title: e.title,
             date: new Date(e.event_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
@@ -789,11 +920,11 @@
           renderEvents(formattedEvents);
         }
       } catch (e) {
-        console.log('Supabase offline / standby');
+        console.log('Supabase read fallback:', e);
       }
     }
 
-    /* 3. NAVIGATION & UI FUNCTIONS */
+    /* 5. GENERAL UI & HELPER FUNCTIONS */
     function navigateTo(pageId) {
       document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
       const targetPage = document.getElementById(`page-${pageId}`);
@@ -841,12 +972,18 @@
       setTimeout(() => toastEl.remove(), 3000);
     }
 
-    function handleLogin(e) {
-      e.preventDefault();
-      const email = document.getElementById('login-email').value;
-      toast('Login berhasil! Selamat datang.');
-      document.getElementById('profile-name').innerText = email.split('@')[0];
-      navigateTo('beranda');
+    function generateQRCode(text) {
+      if (typeof QRCode !== 'undefined') {
+        const qrContainer = document.getElementById("qrcode");
+        if (qrContainer) {
+          qrContainer.innerHTML = '';
+          new QRCode(qrContainer, {
+            text: text,
+            width: 150,
+            height: 150
+          });
+        }
+      }
     }
 
     function renderMembers(data) {
