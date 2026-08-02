@@ -8,7 +8,6 @@
   <meta name="theme-color" content="#00875A">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="manifest" id="pwa-manifest">
 
   <!-- CDNs -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -556,7 +555,11 @@
     try {
       if (window.supabase && typeof window.supabase.createClient === 'function') {
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-          auth: { persistSession: true }
+          auth: { 
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true
+          }
         });
       }
     } catch(e) {
@@ -590,7 +593,7 @@
       setTimeout(() => {
         toastEl.style.opacity = '0';
         setTimeout(() => toastEl.remove(), 300);
-      }, 3500);
+      }, 4000);
     }
 
     /* MODAL POP-UP CONTROL */
@@ -616,13 +619,13 @@
       if (supabase) {
         try {
           const { data: { session } } = await supabase.auth.getSession();
-          if (session) {
+          if (session && session.user) {
             currentUser = session.user;
             updateUIForLoggedInUser();
           }
 
           supabase.auth.onAuthStateChange((event, session) => {
-            if (session) {
+            if (session && session.user) {
               currentUser = session.user;
               updateUIForLoggedInUser();
             } else {
@@ -667,15 +670,47 @@
 
       try {
         if (isRegisterMode) {
+          if (!fullname) {
+            showToast('Harap masukkan nama lengkap.', 'error');
+            submitBtn.disabled = false;
+            return;
+          }
+
           const { data, error } = await supabase.auth.signUp({
             email: email,
             password: password,
-            options: { data: { full_name: fullname } }
+            options: {
+              data: {
+                full_name: fullname
+              }
+            }
           });
 
           if (error) throw error;
-          showToast('Pendaftaran Berhasil! Silakan Login.', 'success');
-          toggleAuthMode();
+
+          // Tambahkan data profil ke tabel members jika memungkinkan
+          if (data?.user) {
+            await supabase.from('members').insert([
+              { 
+                id: data.user.id, 
+                full_name: fullname, 
+                email: email,
+                role: 'Anggota Baru' 
+              }
+            ]).catch(err => console.log('Insert member table info:', err));
+          }
+
+          if (data?.session) {
+            showToast('Pendaftaran Berhasil! Anda otomatis masuk.', 'success');
+            currentUser = data.user;
+            updateUIForLoggedInUser();
+            closeModal('login-modal');
+            navigateTo('beranda');
+          } else {
+            showToast('Pendaftaran Berhasil! Silakan cek email Anda untuk konfirmasi akun.', 'success');
+            toggleAuthMode();
+          }
+
         } else {
           const { data, error } = await supabase.auth.signInWithPassword({
             email: email,
@@ -683,7 +718,7 @@
           });
 
           if (error) throw error;
-          
+
           showToast('Login Berhasil! Selamat datang.', 'success');
           currentUser = data.user;
           updateUIForLoggedInUser();
@@ -691,7 +726,13 @@
           navigateTo('beranda');
         }
       } catch (err) {
-        showToast(err.message || 'Login gagal. Periksa email & kata sandi.', 'error');
+        let msg = err.message || 'Proses gagal. Periksa email & kata sandi Anda.';
+        if (msg.includes('Invalid login credentials')) {
+          msg = 'Email atau Kata Sandi salah.';
+        } else if (msg.includes('Email not confirmed')) {
+          msg = 'Email Anda belum dikonfirmasi. Cek inbox email Anda.';
+        }
+        showToast(msg, 'error');
       } finally {
         submitBtn.disabled = false;
         submitBtn.innerHTML = isRegisterMode ? '<i class="fa-solid fa-user-plus"></i> Daftar Sekarang' : '<i class="fa-solid fa-right-to-bracket"></i> Masuk Sekarang';
@@ -708,7 +749,9 @@
 
     function updateUIForLoggedInUser() {
       const email = currentUser ? currentUser.email : '';
-      const name = (currentUser && currentUser.user_metadata && currentUser.user_metadata.full_name) ? currentUser.user_metadata.full_name : email.split('@')[0];
+      const name = (currentUser && currentUser.user_metadata && currentUser.user_metadata.full_name) 
+                   ? currentUser.user_metadata.full_name 
+                   : email.split('@')[0];
 
       document.getElementById('user-greeting').innerText = `Salam, ${name}!`;
       document.getElementById('profile-name').innerText = name;
@@ -750,7 +793,7 @@
         const { data: members, error } = await supabase.from('members').select('*');
         if (!error && members && members.length > 0) {
           loadedMembers = members.map(m => ({
-            name: m.full_name,
+            name: m.full_name || 'Anggota',
             role: m.role || 'Anggota',
             bike: m.motor_model || 'Motor',
             plate: m.plate_number || '-'
@@ -788,10 +831,14 @@
     function renderMembers(data) {
       const container = document.getElementById('members-list');
       if (!container) return;
+      if (data.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: var(--text-muted-dark); font-size: 0.85rem;">Belum ada data anggota.</p>';
+        return;
+      }
       container.innerHTML = data.map(m => `
         <div class="card glass" style="display: flex; align-items: center; gap: 14px; padding: 14px;">
           <div style="width: 44px; height: 44px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">
-            ${m.name.charAt(0)}
+            ${m.name.charAt(0).toUpperCase()}
           </div>
           <div style="flex: 1;">
             <h4 style="font-size: 0.9rem;">${m.name}</h4>
