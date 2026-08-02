@@ -631,7 +631,18 @@
       <!-- 2. PANEL SUPER ADMIN -->
       <section id="page-admin" class="page">
         <h2 style="color: var(--accent-gold);"><i class="fa-solid fa-user-shield"></i> Panel Super Admin</h2>
-        <p class="text-muted" style="margin-bottom: 15px;">Kontrol penuh verifikasi iuran, anggota, saldo kas, dan touring</p>
+        <p class="text-muted" style="margin-bottom: 15px;">Kontrol penuh verifikasi iuran, anggota, WhatsApp konfirmasi, dan touring</p>
+
+        <!-- PENGATURAN NOMOR WHATSAPP KONFIRMASI -->
+        <div class="card glass">
+          <h3 style="margin-bottom: 6px;"><i class="fa-brands fa-whatsapp" style="color: #25D366;"></i> Pengaturan WhatsApp Konfirmasi</h3>
+          <p class="text-muted" style="font-size: 0.75rem; margin-bottom: 10px;">Nomor WA ini akan menerima konfirmasi otomatis saat anggota menembak bukti pembayaran</p>
+          <div class="form-group">
+            <label>Nomor WA Penerima (Format: 628xxxxxxxxxx)</label>
+            <input type="text" class="input-control" id="admin-wa-input" placeholder="6281234567890" value="6281234567890">
+          </div>
+          <button type="button" class="btn btn-gold" onclick="app.adminUpdateWANumber()"><i class="fa-solid fa-floppy-disk"></i> Simpan Nomor WhatsApp</button>
+        </div>
 
         <!-- UPDATE JADWAL TOURING -->
         <div class="card glass">
@@ -779,7 +790,9 @@
         <div class="card glass" style="margin-top: 12px;">
           <h4 style="color: var(--accent-gold);">Ketua Umum</h4>
           <p>Ahmad Fauzi</p>
-          <p class="text-muted"><i class="fa-brands fa-whatsapp"></i> +62 812-3456-7890</p>
+
+          <!-- NOMOR KETUA / WA PENGURUS -->
+          <p class="text-muted"><i class="fa-brands fa-whatsapp"></i> <span id="contact-wa-display">+62 812-3456-7890</span></p>
         </div>
       </section>
 
@@ -981,6 +994,7 @@
         this.iuranHistory = [];
         this.baseKas = 0;
         this.approvedKasTotal = 0;
+        this.adminWANumber = "6281234567890";
         this.touringData = {
           title: "Touring Kemerdekaan Bromo",
           schedule: "17 Agustus 2026 | 05:00 WIB",
@@ -1015,6 +1029,11 @@
         const savedKas = localStorage.getItem('itora_base_kas');
         if (savedKas) this.baseKas = parseFloat(savedKas);
 
+        // Load Saved WA Number
+        const savedWA = localStorage.getItem('itora_admin_wa');
+        if (savedWA) this.adminWANumber = savedWA;
+        this.updateWAUI();
+
         // Load Saved Touring Data
         const savedTouring = localStorage.getItem('itora_touring_data');
         if (savedTouring) {
@@ -1029,8 +1048,27 @@
         }, 1000);
       }
 
+      updateWAUI() {
+        const adminWAInput = document.getElementById('admin-wa-input');
+        if (adminWAInput) adminWAInput.value = this.adminWANumber;
+
+        const displayWA = document.getElementById('contact-wa-display');
+        if (displayWA) displayWA.innerText = `+${this.adminWANumber}`;
+      }
+
+      adminUpdateWANumber() {
+        let val = document.getElementById('admin-wa-input').value.trim();
+        val = val.replace(/[^0-9]/g, ''); // Ambil angka saja
+        if (!val) return;
+        if (val.startsWith('0')) val = '62' + val.substring(1);
+
+        this.adminWANumber = val;
+        localStorage.setItem('itora_admin_wa', val);
+        this.updateWAUI();
+        this.showToast('Nomor WhatsApp Konfirmasi Berhasil Diperbarui!', 'success');
+      }
+
       updateTouringUI() {
-        // Home
         const homeTitle = document.getElementById('home-touring-title');
         const homeSchedule = document.getElementById('home-touring-schedule');
         const homeMeeting = document.getElementById('home-touring-meeting');
@@ -1038,7 +1076,6 @@
         if (homeSchedule) homeSchedule.innerText = this.touringData.schedule;
         if (homeMeeting) homeMeeting.innerText = this.touringData.meeting;
 
-        // Touring Page
         const pageTitle = document.getElementById('touring-page-title');
         const pageSchedule = document.getElementById('touring-page-schedule');
         const pageMeeting = document.getElementById('touring-page-meeting');
@@ -1048,7 +1085,6 @@
         if (pageMeeting) pageMeeting.innerText = this.touringData.meeting;
         if (pageMapsBtn) pageMapsBtn.setAttribute('onclick', `window.open('${this.touringData.maps}', '_blank')`);
 
-        // Admin Input
         const adminTitle = document.getElementById('admin-touring-title');
         const adminDate = document.getElementById('admin-touring-date');
         const adminMeeting = document.getElementById('admin-touring-meeting');
@@ -1510,9 +1546,11 @@
           document.getElementById('form-iuran').reset();
           this.loadIuranHistory();
 
+          // KONTROL WA KONFIRMASI SESUAI ATURAN SUPER ADMIN
+          const targetWA = this.adminWANumber || "6281234567890";
           const waMessage = `Halo Bendahara ITORA BSN,%0ASaya *${userName}* telah melakukan konfirmasi setor iuran:%0A- *Periode:* ${periode}%0A- *Nominal:* Rp ${parseInt(jumlah).toLocaleString('id-ID')}%0A- *Metode:* ${metode}%0A%0AMohon dicek dan diverifikasi. Terima kasih!`;
           setTimeout(() => {
-            window.open(`https://wa.me/6281234567890?text=${waMessage}`, '_blank');
+            window.open(`https://wa.me/${targetWA}?text=${waMessage}`, '_blank');
           }, 1000);
 
         } catch (err) {
