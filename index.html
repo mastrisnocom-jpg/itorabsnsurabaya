@@ -8,6 +8,7 @@
   <meta name="theme-color" content="#00875A">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.json">
 
   <!-- CDNs (FontAwesome, Fonts, Supabase, QRCode) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -347,6 +348,8 @@
 
     .badge-gold { background: var(--accent-gold); color: #000; }
     .badge-primary { background: var(--primary); color: #fff; }
+    .badge-warning { background: #F59E0B; color: #000; }
+    .badge-success { background: #10B981; color: #fff; }
 
     .text-muted {
       font-size: 0.8rem;
@@ -394,6 +397,7 @@
       align-items: center;
       justify-content: center;
       padding: 20px;
+      overflow-y: auto;
     }
 
     .modal-overlay.active { display: flex; }
@@ -404,6 +408,8 @@
       border-radius: var(--radius-lg);
       padding: 24px;
       position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
     }
 
     .close-modal-btn {
@@ -554,7 +560,7 @@
         </div>
 
         <div class="quick-menu">
-          <div class="quick-item" onclick="app.navigateTo('pengumuman')"><div class="quick-icon"><i class="fa-solid fa-bullhorn"></i></div><span>Info</span></div>
+          <div class="quick-item" onclick="app.openModal('modal-iuran')"><div class="quick-icon"><i class="fa-solid fa-receipt"></i></div><span>Setor Iuran</span></div>
           <div class="quick-item" onclick="app.navigateTo('kas')"><div class="quick-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div><span>Kas</span></div>
           <div class="quick-item" onclick="app.navigateTo('merchandise')"><div class="quick-icon"><i class="fa-solid fa-shirt"></i></div><span>Merch</span></div>
           <div class="quick-item" onclick="app.navigateTo('sponsor')"><div class="quick-icon"><i class="fa-solid fa-handshake"></i></div><span>Sponsor</span></div>
@@ -619,17 +625,25 @@
         </div>
       </section>
 
-      <!-- 6. KAS -->
+      <!-- 6. KAS & IURAN -->
       <section id="page-kas" class="page">
-        <h2>Kas Komunitas</h2>
+        <h2>Kas & Iuran Komunitas</h2>
         <div class="card glass" style="margin-top: 12px; text-align: center;">
           <span class="text-muted">Total Saldo Kas</span>
           <h1 style="color: var(--primary); font-size: 2.2rem; margin: 8px 0;">Rp 12.500.000</h1>
+          
+          <button type="button" class="btn btn-gold" style="margin-top: 10px;" onclick="app.openModal('modal-iuran')">
+            <i class="fa-solid fa-receipt"></i> Setor Bukti Iuran Baru
+          </button>
+
           <div style="display: flex; gap: 10px; margin-top: 10px;">
             <button type="button" class="btn btn-primary" onclick="app.exportData('Kas', 'PDF')"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
-            <button type="button" class="btn btn-gold" onclick="app.exportData('Kas', 'Excel')"><i class="fa-solid fa-file-excel"></i> Export Excel</button>
+            <button type="button" class="btn btn-primary" onclick="app.exportData('Kas', 'Excel')"><i class="fa-solid fa-file-excel"></i> Export Excel</button>
           </div>
         </div>
+
+        <h3 style="font-size: 1.1rem; margin: 20px 0 10px;">Riwayat Setoran Iuran Saya</h3>
+        <div id="iuran-history-list"></div>
       </section>
 
       <!-- 7. MERCHANDISE -->
@@ -719,6 +733,60 @@
     </div>
   </div>
 
+  <!-- MODAL POP-UP FORM SETOR IURAN -->
+  <div class="modal-overlay" id="modal-iuran">
+    <div class="modal-card glass">
+      <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-iuran')"><i class="fa-solid fa-xmark"></i></button>
+      <h3 style="text-align: center; margin-bottom: 15px;"><i class="fa-solid fa-receipt" style="color: var(--accent-gold);"></i> Setor Iuran Anggota</h3>
+      
+      <form id="form-iuran" onsubmit="app.handleSubmitIuran(event)">
+        <div class="form-group">
+          <label>Periode Bulan Iuran</label>
+          <select class="input-control" id="iuran-periode" required>
+            <option value="Agustus 2026">Agustus 2026</option>
+            <option value="September 2026">September 2026</option>
+            <option value="Oktober 2026">Oktober 2026</option>
+            <option value="November 2026">November 2026</option>
+            <option value="Desember 2026">Desember 2026</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Jumlah / Nominal (Rp)</label>
+          <input type="number" class="input-control" id="iuran-jumlah" placeholder="25000" value="25000" required>
+        </div>
+
+        <div class="form-group">
+          <label>Tanggal & Waktu Transfer</label>
+          <input type="datetime-local" class="input-control" id="iuran-tanggal" required>
+        </div>
+
+        <div class="form-group">
+          <label>Metode Pembayaran</label>
+          <select class="input-control" id="iuran-metode">
+            <option value="Transfer BSN">Transfer Rekening BSN</option>
+            <option value="QRIS">QRIS Komunitas</option>
+            <option value="Tunai">Tunai (via Bendahara)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Upload Bukti Transfer (Foto/Struk)</label>
+          <input type="file" class="input-control" id="iuran-bukti" accept="image/*" required>
+        </div>
+
+        <div class="form-group">
+          <label>Catatan Tambahan (Opsional)</label>
+          <input type="text" class="input-control" id="iuran-catatan" placeholder="Misal: Lunas iuran Agustus">
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="btn-submit-iuran">
+          <i class="fa-solid fa-paper-plane"></i> Kirim Bukti Pembayaran
+        </button>
+      </form>
+    </div>
+  </div>
+
   <!-- JAVASCRIPT LOGIC -->
   <script>
     /* SUPABASE CONFIGURATION */
@@ -731,6 +799,7 @@
         this.isRegisterMode = false;
         this.currentUser = null;
         this.members = [];
+        this.iuranHistory = [];
         this.initSupabase();
       }
 
@@ -751,6 +820,12 @@
       }
 
       async init() {
+        // Set Default Datetime Input to current time
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        const dateInput = document.getElementById('iuran-tanggal');
+        if (dateInput) dateInput.value = now.toISOString().slice(0,16);
+
         setTimeout(() => {
           const splash = document.getElementById('splash-screen');
           if (splash) splash.style.display = 'none';
@@ -798,6 +873,7 @@
         document.getElementById('app-dashboard').style.display = 'block';
         this.updateUserUI();
         this.loadMembersFromSupabase();
+        this.loadIuranHistory();
       }
 
       hideDashboard() {
@@ -864,7 +940,6 @@
                 localStorage.setItem('itora_current_user', JSON.stringify(userObj));
                 registerSuccess = true;
               } else if (error) {
-                // Tangkap error jika email sudah terdaftar
                 if (error.message && error.message.includes('User already registered')) {
                   this.showToast('Email ini sudah terdaftar. Silakan klik "Sudah Memiliki Akun" untuk Login!', 'error');
                   submitBtn.disabled = false;
@@ -874,7 +949,6 @@
               }
             }
 
-            // Jika Supabase belum aktif atau terhalang, jalankan fallback pendaftaran lokal
             if (!registerSuccess) {
               const fallbackUser = { email, user_metadata: { full_name: fullname } };
               this.currentUser = fallbackUser;
@@ -885,7 +959,6 @@
             this.showDashboard();
 
           } else {
-            // LOGIN MODE
             let loginSuccess = false;
 
             if (this.supabase) {
@@ -956,6 +1029,119 @@
         const memberCode = `ITORA-BSN-${email.substring(0, 4).toUpperCase()}`;
         document.getElementById('qr-member-id').innerText = memberCode;
         this.generateQRCode(memberCode);
+      }
+
+      async handleSubmitIuran(e) {
+        e.preventDefault();
+        
+        if (!this.currentUser) {
+          this.showToast('Silakan login terlebih dahulu!', 'error');
+          return;
+        }
+
+        const btnSubmit = document.getElementById('btn-submit-iuran');
+        btnSubmit.disabled = true;
+        btnSubmit.innerText = 'Mengunggah Bukti...';
+
+        const periode = document.getElementById('iuran-periode').value;
+        const jumlah = document.getElementById('iuran-jumlah').value;
+        const tanggal = document.getElementById('iuran-tanggal').value;
+        const metode = document.getElementById('iuran-metode').value;
+        const catatan = document.getElementById('iuran-catatan').value;
+        const fileBukti = document.getElementById('iuran-bukti').files[0];
+
+        const userName = (this.currentUser.user_metadata && this.currentUser.user_metadata.full_name) 
+                         ? this.currentUser.user_metadata.full_name 
+                         : this.currentUser.email.split('@')[0];
+
+        const newIuranItem = {
+          id: Date.now(),
+          period_month: periode,
+          amount: parseFloat(jumlah),
+          payment_date: tanggal ? new Date(tanggal).toLocaleString('id-ID') : new Date().toLocaleString('id-ID'),
+          payment_method: metode,
+          note: catatan,
+          status: 'Pending'
+        };
+
+        try {
+          // Simpan ke LocalStorage dulu
+          let localHistory = JSON.parse(localStorage.getItem('itora_iuran_history') || '[]');
+          localHistory.unshift(newIuranItem);
+          localStorage.setItem('itora_iuran_history', JSON.stringify(localHistory));
+
+          // Simpan ke Supabase jika terhubung
+          if (this.supabase) {
+            let receiptUrl = '';
+            if (fileBukti) {
+              const fileName = `bukti_${Date.now()}_${fileBukti.name}`;
+              const { data: uploadData } = await this.supabase.storage
+                .from('receipts')
+                .upload(fileName, fileBukti).catch(()=>({}));
+
+              if (uploadData) {
+                const { data: urlData } = this.supabase.storage.from('receipts').getPublicUrl(fileName);
+                receiptUrl = urlData ? urlData.publicUrl : '';
+              }
+            }
+
+            await this.supabase.from('dues').insert([
+              {
+                user_id: this.currentUser.id || null,
+                member_name: userName,
+                amount: parseFloat(jumlah),
+                period_month: periode,
+                payment_date: tanggal ? new Date(tanggal).toISOString() : new Date().toISOString(),
+                payment_method: metode,
+                receipt_url: receiptUrl,
+                note: catatan,
+                status: 'Pending'
+              }
+            ]).catch(err => console.log('Simpan dues supabase:', err));
+          }
+
+          this.showToast('Bukti iuran berhasil dikirim! Menunggu verifikasi Bendahara.', 'success');
+          this.closeModal('modal-iuran');
+          document.getElementById('form-iuran').reset();
+          this.loadIuranHistory();
+
+          // Kirim Notifikasi Pesan Otomatis ke WhatsApp Bendahara
+          const waMessage = `Halo Bendahara ITORA BSN,%0ASaya *${userName}* telah melakukan konfirmasi setor iuran:%0A- *Periode:* ${periode}%0A- *Nominal:* Rp ${parseInt(jumlah).toLocaleString('id-ID')}%0A- *Metode:* ${metode}%0A%0AMohon dicek dan diverifikasi. Terima kasih!`;
+          setTimeout(() => {
+            window.open(`https://wa.me/6281234567890?text=${waMessage}`, '_blank');
+          }, 1000);
+
+        } catch (err) {
+          this.showToast('Gagal mengirim iuran. Silakan coba lagi.', 'error');
+        } finally {
+          btnSubmit.disabled = false;
+          btnSubmit.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Kirim Bukti Pembayaran';
+        }
+      }
+
+      loadIuranHistory() {
+        const historyContainer = document.getElementById('iuran-history-list');
+        if (!historyContainer) return;
+
+        let history = JSON.parse(localStorage.getItem('itora_iuran_history') || '[]');
+        
+        if (history.length === 0) {
+          historyContainer.innerHTML = '<p class="text-muted" style="text-align:center;">Belum ada riwayat setoran iuran.</p>';
+          return;
+        }
+
+        historyContainer.innerHTML = history.map(item => `
+          <div class="card glass" style="padding: 14px; margin-bottom: 10px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <h4>${item.period_month}</h4>
+              <span class="badge ${item.status === 'Verified' ? 'badge-success' : 'badge-warning'}">${item.status}</span>
+            </div>
+            <p style="color: var(--accent-gold); font-weight: 700; margin-top: 4px;">Rp ${item.amount.toLocaleString('id-ID')}</p>
+            <p class="text-muted" style="font-size: 0.75rem; margin-top: 4px;">
+              <i class="fa-regular fa-clock"></i> ${item.payment_date} • ${item.payment_method}
+            </p>
+          </div>
+        `).join('');
       }
 
       async loadMembersFromSupabase() {
