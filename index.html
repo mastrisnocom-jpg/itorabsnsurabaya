@@ -60,7 +60,6 @@
       letter-spacing: -0.015em;
     }
 
-    /* FIX IKON FONTAWESOME AGAR TIDAK PECAH/KOTAK */
     i.fa-solid, i.fa-regular, i.fa-brands, i.fas, i.far, i.fab {
       font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
       font-style: normal;
@@ -1424,27 +1423,32 @@
         }
       }
 
+      /* ALUR VERIFIKASI USER TERPERBARUI */
       async validateUserFlow() {
         if (!this.currentUser) return;
         const email = this.currentUser.email;
 
-        await this.loadUserProfileDetails();
-
+        // Super Admin langsung ke dashboard
         if (email === 'mastrisnobpb@gmail.com') {
           this.showDashboard();
           return;
         }
 
-        if (!this.currentProfile || !this.currentProfile.full_name) {
+        await this.loadUserProfileDetails();
+
+        // 1. Jika belum ada profil di database, atau nama belum lengkap / masih bawaan email
+        if (!this.currentProfile || !this.currentProfile.full_name || this.currentProfile.full_name === email.split('@')[0]) {
           this.showCompleteDataScreen();
           return;
         }
 
+        // 2. Jika sudah isi data tapi statusnya Pending
         if (this.currentProfile.approval_status === 'Pending') {
           this.showPendingApprovalScreen();
           return;
         }
 
+        // 3. Jika sudah Approved
         this.showDashboard();
       }
 
@@ -1474,7 +1478,7 @@
         this.loadIuranHistory();
         this.calculateTotalKas();
 
-        // CEK NOTIFIKASI & REALTIME SUBSCRIPTION KHUSUS SUPER ADMIN
+        // Panggil notifikasi & realtime listener
         this.checkRealtimeNotifications();
         this.subscribeToRealtimeChanges();
       }
@@ -1506,6 +1510,7 @@
         }
       }
 
+      /* HANDLE AUTH REGISTER & LOGIN LANGSUNG DIARAHKAN KE FORM DATA DIRI */
       async handleAuthSubmit(e) {
         e.preventDefault();
         const email = document.getElementById('auth-email').value.trim();
@@ -1521,10 +1526,18 @@
 
         try {
           if (this.isRegisterMode) {
-            const { error } = await this.supabase.auth.signUp({ email, password });
+            const { data, error } = await this.supabase.auth.signUp({ email, password });
             if (error) throw error;
-            this.showToast('Pendaftaran Akun Berhasil! Silakan Login.', 'success');
-            this.toggleAuthMode();
+
+            this.showToast('Pendaftaran Akun Berhasil! Silakan lengkapi data diri Anda.', 'success');
+            this.currentUser = data.user;
+
+            if (this.currentUser) {
+              this.currentProfile = null;
+              this.showCompleteDataScreen();
+            } else {
+              this.toggleAuthMode();
+            }
           } else {
             const { data, error } = await this.supabase.auth.signInWithPassword({ email, password });
             if (error) throw error;
@@ -1546,24 +1559,31 @@
         const btnSubmit = document.getElementById('btn-submit-init-data');
         btnSubmit.disabled = true;
 
+        const fullName = document.getElementById('init-fullname').value.trim();
+        const phone = document.getElementById('init-phone').value.trim();
+        const bike = document.getElementById('init-bike').value.trim();
+        const plate = document.getElementById('init-plate').value.trim();
+
         try {
           const { error } = await this.supabase.from('members').upsert([{
             id: this.currentUser.id,
-            full_name: document.getElementById('init-fullname').value.trim(),
+            full_name: fullName,
             email: this.currentUser.email,
-            phone: document.getElementById('init-phone').value.trim(),
-            bike: document.getElementById('init-bike').value.trim(),
-            plate: document.getElementById('init-plate').value.trim(),
+            phone: phone,
+            bike: bike,
+            plate: plate,
             role: 'Anggota Resmi',
             approval_status: 'Pending'
           }], { onConflict: 'id' });
 
           if (error) throw error;
-          this.showToast('Data berhasil dikirim! Menunggu persetujuan Admin.', 'success');
+
+          this.showToast('Data berhasil dikirim! Menunggu persetujuan Super Admin.', 'success');
           await this.loadUserProfileDetails();
           this.showPendingApprovalScreen();
         } catch(err) {
-          this.showToast('Gagal menyimpan data diri.', 'error');
+          console.error(err);
+          this.showToast('Gagal menyimpan data diri: ' + err.message, 'error');
         } finally {
           btnSubmit.disabled = false;
         }
@@ -1591,18 +1611,11 @@
           if (!error && data) {
             this.currentProfile = data;
           } else {
-            this.currentProfile = {
-              id: this.currentUser.id,
-              full_name: 'Sutrisno',
-              email: this.currentUser.email,
-              phone: '-',
-              bike: 'Motor BSN',
-              plate: 'L 1234 IT',
-              role: (this.currentUser.email === 'mastrisnobpb@gmail.com') ? 'Super Admin' : 'Anggota Resmi',
-              approval_status: (this.currentUser.email === 'mastrisnobpb@gmail.com') ? 'Approved' : 'Pending'
-            };
+            this.currentProfile = null;
           }
-        } catch (e) {}
+        } catch (e) {
+          this.currentProfile = null;
+        }
       }
 
       updateUserUI() {
@@ -1990,7 +2003,7 @@
         }
       }
 
-      /* LOGIKA PENGECEKAN NOTIFIKASI DOT UNTUK SUPER ADMIN */
+      /* LOGIKA NOTIFIKASI SISI SUPER ADMIN */
       async checkRealtimeNotifications() {
         if (!this.supabase || !this.currentUser) return;
         const isSuperAdmin = (this.currentUser.email === 'mastrisnobpb@gmail.com');
@@ -1998,13 +2011,11 @@
         if (!isSuperAdmin) return;
 
         try {
-          // 1. Cek anggota Pending
           const { count: pendingMembersCount } = await this.supabase
             .from('members')
             .select('*', { count: 'exact', head: true })
             .eq('approval_status', 'Pending');
 
-          // 2. Cek iuran Pending
           const { count: pendingDuesCount } = await this.supabase
             .from('dues')
             .select('*', { count: 'exact', head: true })
@@ -2021,14 +2032,12 @@
         }
       }
 
-      /* FITUR SUPABASE REALTIME SUBSCRIPTION */
       subscribeToRealtimeChanges() {
         if (!this.supabase || !this.currentUser) return;
         const isSuperAdmin = (this.currentUser.email === 'mastrisnobpb@gmail.com');
 
         if (!isSuperAdmin) return;
 
-        // Listener Anggota Baru
         this.supabase
           .channel('realtime-members-channel')
           .on('postgres_changes', { event: '*', schema: 'public', table: 'members' }, (payload) => {
@@ -2041,7 +2050,6 @@
           })
           .subscribe();
 
-        // Listener Iuran Baru
         this.supabase
           .channel('realtime-dues-channel')
           .on('postgres_changes', { event: '*', schema: 'public', table: 'dues' }, (payload) => {
