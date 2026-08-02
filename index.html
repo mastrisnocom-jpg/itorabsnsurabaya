@@ -521,7 +521,7 @@
       <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px;">
         <div class="card glass" style="padding: 12px; text-align: center;">
           <i class="fa-solid fa-users" style="color: var(--primary);"></i>
-          <h3 style="font-size: 1.1rem; margin-top: 4px;" id="stat-members">128</h3>
+          <h3 style="font-size: 1.1rem; margin-top: 4px;" id="stat-members">0</h3>
           <span style="font-size: 0.68rem; color: var(--text-muted);">Anggota</span>
         </div>
         <div class="card glass" style="padding: 12px; text-align: center;">
@@ -773,10 +773,10 @@
     const splashSafetyTimeout = setTimeout(hideSplashScreen, 2000);
 
     /* ==========================================
-       2. MOCK DATA & CONFIG
+       2. SUPABASE INITIALIZATION
        ========================================== */
-    const SUPABASE_URL = 'https://your-supabase-url.supabase.co';
-    const SUPABASE_ANON_KEY = 'your-anon-key';
+    const SUPABASE_URL = 'https://lfusrctizdydnsiopzfi.supabase.co';
+    const SUPABASE_ANON_KEY = 'Sb_publishable_AKKR_z1iI5-Bi9-pAQnGOw_1gG7jj-q';
     
     let supabase = null;
     if (window.supabase && typeof window.supabase.createClient === 'function') {
@@ -787,7 +787,7 @@
       }
     }
 
-    const mockMembers = [
+    let loadedMembers = [
       { id: 'ITORA-001', name: 'Ahmad Fauzi', role: 'Ketua', bike: 'Honda CB500X', plate: 'L 1234 BS', blood: 'O' },
       { id: 'ITORA-002', name: 'Budi Santoso', role: 'Sekretaris', bike: 'Yamaha NMAX 155', plate: 'L 5678 AA', blood: 'A' },
       { id: 'ITORA-003', name: 'Citra Dewi', role: 'Bendahara', bike: 'Vespa Sprint 150', plate: 'L 9101 BSN', blood: 'B' },
@@ -800,12 +800,58 @@
     ];
 
     /* ==========================================
-       3. INITIALIZATION ON DOM READY
+       3. FETCH DATA FROM SUPABASE
+       ========================================== */
+    async function loadDataFromSupabase() {
+      if (!supabase) return;
+      try {
+        // Load Members Data
+        const { data: members, error: mError } = await supabase.from('members').select('*');
+        if (!mError && members && members.length > 0) {
+          loadedMembers = members.map(m => ({
+            id: m.member_number || m.id,
+            name: m.full_name,
+            role: m.jabatan || m.role,
+            bike: m.motor_model || 'Motor',
+            plate: m.plate_number || '-',
+            blood: m.blood_type || '-'
+          }));
+        }
+
+        // Update Counter Member
+        const statEl = document.getElementById('stat-members');
+        if (statEl) statEl.innerText = loadedMembers.length;
+
+        // Load Events Data
+        const { data: events, error: eError } = await supabase.from('events').select('*');
+        if (!eError && events && events.length > 0) {
+          const formattedEvents = events.map(e => ({
+            title: e.title,
+            date: new Date(e.event_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
+            location: e.location,
+            desc: e.description
+          }));
+          renderEvents(formattedEvents);
+        } else {
+          renderEvents(mockEvents);
+        }
+      } catch (e) {
+        console.warn('Fallback to mock data:', e);
+        renderEvents(mockEvents);
+      } finally {
+        renderMembers(loadedMembers);
+      }
+    }
+
+    /* ==========================================
+       4. INITIALIZATION ON DOM READY
        ========================================== */
     document.addEventListener('DOMContentLoaded', () => {
       try {
-        renderMembers(mockMembers);
+        renderMembers(loadedMembers);
         renderEvents(mockEvents);
+        
+        loadDataFromSupabase();
 
         if (typeof QRCode !== 'undefined') {
           const qrContainer = document.getElementById("qrcode");
@@ -829,7 +875,7 @@
     });
 
     /* ==========================================
-       4. HELPER FUNCTIONS & ROUTING
+       5. HELPER FUNCTIONS & ROUTING
        ========================================== */
     function navigateTo(pageId) {
       document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
@@ -904,7 +950,7 @@
       const input = document.getElementById('search-member');
       if (!input) return;
       const query = input.value.toLowerCase();
-      const filtered = mockMembers.filter(m => 
+      const filtered = loadedMembers.filter(m => 
         m.name.toLowerCase().includes(query) || m.plate.toLowerCase().includes(query)
       );
       renderMembers(filtered);
