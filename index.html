@@ -300,7 +300,6 @@
       box-shadow: 0 4px 15px rgba(0,0,0,0.03);
     }
 
-    /* BANNER GRADASI EMERALD WAVE & GEOMETRY */
     .banner-card {
       background: linear-gradient(135deg, #009968 0%, #005E3E 100%);
       color: white;
@@ -360,7 +359,6 @@
       font-weight: var(--fw-medium);
     }
 
-    /* QUICK MENU GRID LINGKARAN PRESISI MOBILE */
     .quick-menu {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -400,7 +398,6 @@
       line-height: 1.2;
     }
 
-    /* DETAIL PROFILE STYLES */
     .profile-info-list {
       margin-top: 15px;
       display: flex;
@@ -439,7 +436,6 @@
       font-weight: var(--fw-bold);
     }
 
-    /* FORMS & BUTTONS */
     .form-group { margin-bottom: 16px; }
     .form-group label {
       display: block;
@@ -509,7 +505,6 @@
       color: var(--text-muted-dark);
     }
 
-    /* TOAST POP-UP */
     #toast-container {
       position: fixed;
       top: 20px;
@@ -539,7 +534,6 @@
       to { transform: translateY(0); opacity: 1; }
     }
 
-    /* MODAL */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -826,76 +820,55 @@
         </div>
       </section>
 
-      <!-- 2. PANEL SUPER ADMIN -->
+      <!-- 2. PANEL SUPER ADMIN DENGAN MENU MODAL -->
       <section id="page-admin" class="page">
         <h2 style="color: var(--primary); font-size: var(--font-lg); font-weight: var(--fw-bold);"><i class="fa-solid fa-user-shield"></i> Panel Super Admin</h2>
         <p class="text-muted" style="margin-bottom: 15px;">Kontrol penuh sistem, menu dinamis, persetujuan anggota, dan kas</p>
 
-        <div class="card">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <h3 style="font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-bars-staggered" style="color: var(--primary);"></i> Pengaturan Menu App</h3>
-            <button class="btn btn-sm btn-gold" onclick="app.openModal('modal-add-menu')"><i class="fa-solid fa-plus"></i> Tambah Menu</button>
-          </div>
-          <p class="text-muted" style="margin-bottom: 12px;">Aktifkan, nonaktifkan, atau atur tampilan menu di Dashboard & Bottom Bar</p>
-          <div id="admin-menu-list">
-            <p class="text-muted" style="text-align:center;">Memuat data menu dari Supabase...</p>
-          </div>
-        </div>
-
-        <div class="card">
-          <h3 style="margin-bottom: 8px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-user-check" style="color: var(--accent-gold);"></i> Persetujuan Anggota Baru</h3>
-          <p class="text-muted" style="margin-bottom: 12px;">Daftar calon anggota yang telah melengkapi data diri & menunggu persetujuan</p>
-          <div id="admin-pending-members-list">
-            <p class="text-muted" style="text-align:center;">Memuat pendaftaran anggota...</p>
-          </div>
-        </div>
-
-        <div class="card">
-          <h3 style="margin-bottom: 6px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-brands fa-whatsapp" style="color: #25D366;"></i> Pengaturan WhatsApp Konfirmasi</h3>
-          <div class="form-group">
-            <label>Nomor WA Penerima (Format: 628xxxxxxxxxx)</label>
-            <input type="text" class="input-control" id="admin-wa-input" placeholder="6281234567890" value="6281234567890">
-          </div>
-          <button type="button" class="btn btn-gold" onclick="app.adminUpdateWANumber()"><i class="fa-solid fa-floppy-disk"></i> Simpan Nomor WhatsApp</button>
-        </div>
-
-        <div class="card">
-          <h3 style="margin-bottom: 6px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-route" style="color: var(--primary);"></i> Update Jadwal Touring Utama</h3>
-          <form onsubmit="app.adminUpdateTouring(event)">
-            <div class="form-group">
-              <label>Nama Destinasi / Judul Touring</label>
-              <input type="text" class="input-control" id="admin-touring-title" required>
+        <div class="quick-menu" style="grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px;">
+          
+          <div class="card" style="margin:0; padding:16px; text-align:center; cursor:pointer;" onclick="app.openModal('modal-admin-menu')">
+            <div class="quick-icon" style="margin: 0 auto 8px; width:48px; height:48px; background:#E0F2FE; color:#0284C7;">
+              <i class="fa-solid fa-bars-staggered"></i>
             </div>
-            <div class="form-group">
-              <label>Tanggal & Waktu</label>
-              <input type="text" class="input-control" id="admin-touring-date" required>
-            </div>
-            <div class="form-group">
-              <label>Titik Kumpul (Meeting Point)</label>
-              <input type="text" class="input-control" id="admin-touring-meeting" required>
-            </div>
-            <div class="form-group">
-              <label>Link Google Maps Rute</label>
-              <input type="text" class="input-control" id="admin-touring-maps" placeholder="https://maps.google.com/?q=..." required>
-            </div>
-            <button type="submit" class="btn btn-gold"><i class="fa-solid fa-floppy-disk"></i> Simpan Jadwal Touring</button>
-          </form>
-        </div>
-
-        <div class="card">
-          <h3 style="margin-bottom: 6px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-wallet" style="color: #10B981;"></i> Pengaturan Kas Utama</h3>
-          <div class="form-group">
-            <label>Saldo Kas Pokok Awal (Rp)</label>
-            <input type="number" class="input-control" id="admin-kas-input" placeholder="0" value="0">
+            <strong style="font-size:var(--font-base); font-weight:var(--fw-bold);">Pengaturan Menu</strong>
+            <span class="text-muted" style="display:block; font-size:var(--font-xs);">Atur Menu & Bottom Bar</span>
           </div>
-          <button type="button" class="btn btn-gold" onclick="app.adminUpdateBaseKas()"><i class="fa-solid fa-floppy-disk"></i> Simpan Kas Pokok</button>
-        </div>
 
-        <div class="card">
-          <h3 style="margin-bottom: 12px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-check-to-slot" style="color: var(--primary);"></i> Verifikasi Iuran Anggota</h3>
-          <div id="admin-dues-list">
-            <p class="text-muted" style="text-align:center;">Memuat data iuran...</p>
+          <div class="card" style="margin:0; padding:16px; text-align:center; cursor:pointer; position:relative;" onclick="app.openModal('modal-admin-members')">
+            <div class="quick-icon" style="margin: 0 auto 8px; width:48px; height:48px; background:#FEF3C7; color:#D97706;">
+              <i class="fa-solid fa-user-check"></i>
+              <span class="notification-badge" id="admin-member-notif-dot" style="top:2px; right:2px;"></span>
+            </div>
+            <strong style="font-size:var(--font-base); font-weight:var(--fw-bold);">Persetujuan Anggota</strong>
+            <span class="text-muted" style="display:block; font-size:var(--font-xs);">Calon Anggota Pending</span>
           </div>
+
+          <div class="card" style="margin:0; padding:16px; text-align:center; cursor:pointer; position:relative;" onclick="app.openModal('modal-admin-dues')">
+            <div class="quick-icon" style="margin: 0 auto 8px; width:48px; height:48px; background:#D1FAE5; color:#059669;">
+              <i class="fa-solid fa-check-to-slot"></i>
+              <span class="notification-badge" id="admin-due-notif-dot" style="top:2px; right:2px;"></span>
+            </div>
+            <strong style="font-size:var(--font-base); font-weight:var(--fw-bold);">Verifikasi Iuran</strong>
+            <span class="text-muted" style="display:block; font-size:var(--font-xs);">Konfirmasi Setoran</span>
+          </div>
+
+          <div class="card" style="margin:0; padding:16px; text-align:center; cursor:pointer;" onclick="app.openModal('modal-admin-settings')">
+            <div class="quick-icon" style="margin: 0 auto 8px; width:48px; height:48px; background:#F1F5F9; color:var(--primary);">
+              <i class="fa-solid fa-sliders"></i>
+            </div>
+            <strong style="font-size:var(--font-base); font-weight:var(--fw-bold);">Pengaturan Kas & WA</strong>
+            <span class="text-muted" style="display:block; font-size:var(--font-xs);">Kas Pokok & WhatsApp</span>
+          </div>
+
+          <div class="card" style="margin:0; padding:16px; text-align:center; cursor:pointer; grid-column: span 2;" onclick="app.openModal('modal-admin-touring')">
+            <div class="quick-icon" style="margin: 0 auto 8px; width:48px; height:48px; background:#FEE2E2; color:#DC2626;">
+              <i class="fa-solid fa-route"></i>
+            </div>
+            <strong style="font-size:var(--font-base); font-weight:var(--fw-bold);">Update Jadwal Touring</strong>
+            <span class="text-muted" style="display:block; font-size:var(--font-xs);">Atur Destinasi & Maps Rute</span>
+          </div>
+
         </div>
       </section>
 
@@ -1078,6 +1051,92 @@
 
   </div>
 
+  <!-- MODAL POP-UP 1: PENGATURAN MENU APP -->
+  <div class="modal-overlay" id="modal-admin-menu">
+    <div class="modal-card">
+      <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-menu')"><i class="fa-solid fa-xmark"></i></button>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h3 style="font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-bars-staggered" style="color: var(--primary);"></i> Pengaturan Menu App</h3>
+        <button class="btn btn-sm btn-gold" style="width:auto;" onclick="app.openModal('modal-add-menu')"><i class="fa-solid fa-plus"></i> Tambah</button>
+      </div>
+      <div id="admin-menu-list">
+        <p class="text-muted" style="text-align:center;">Memuat data menu...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL POP-UP 2: PERSETUJUAN ANGGOTA BARU -->
+  <div class="modal-overlay" id="modal-admin-members">
+    <div class="modal-card">
+      <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-members')"><i class="fa-solid fa-xmark"></i></button>
+      <h3 style="margin-bottom: 12px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-user-check" style="color: var(--accent-gold);"></i> Persetujuan Anggota Baru</h3>
+      <div id="admin-pending-members-list">
+        <p class="text-muted" style="text-align:center;">Memuat pendaftaran anggota...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL POP-UP 3: VERIFIKASI IURAN ANGGOTA -->
+  <div class="modal-overlay" id="modal-admin-dues">
+    <div class="modal-card">
+      <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-dues')"><i class="fa-solid fa-xmark"></i></button>
+      <h3 style="margin-bottom: 12px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-check-to-slot" style="color: var(--primary);"></i> Verifikasi Iuran Anggota</h3>
+      <div id="admin-dues-list">
+        <p class="text-muted" style="text-align:center;">Memuat data iuran...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL POP-UP 4: PENGATURAN KAS POKOK & WHATSAPP -->
+  <div class="modal-overlay" id="modal-admin-settings">
+    <div class="modal-card">
+      <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-settings')"><i class="fa-solid fa-xmark"></i></button>
+      <h3 style="margin-bottom: 12px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-sliders" style="color: var(--primary);"></i> Pengaturan Kas & WhatsApp</h3>
+      
+      <div class="form-group">
+        <label>Nomor WA Penerima Konfirmasi (Format: 628xxxxxxxxxx)</label>
+        <input type="text" class="input-control" id="admin-wa-input" placeholder="6281234567890">
+        <button type="button" class="btn btn-gold btn-sm" style="margin-top:6px;" onclick="app.adminUpdateWANumber()"><i class="fa-solid fa-floppy-disk"></i> Simpan WA</button>
+      </div>
+
+      <hr style="border:0; border-top:1px solid var(--border-dark); margin: 16px 0;">
+
+      <div class="form-group">
+        <label>Saldo Kas Pokok Awal (Rp)</label>
+        <input type="number" class="input-control" id="admin-kas-input" placeholder="0">
+        <button type="button" class="btn btn-gold btn-sm" style="margin-top:6px;" onclick="app.adminUpdateBaseKas()"><i class="fa-solid fa-floppy-disk"></i> Simpan Kas Pokok</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL POP-UP 5: UPDATE JADWAL TOURING -->
+  <div class="modal-overlay" id="modal-admin-touring">
+    <div class="modal-card">
+      <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-touring')"><i class="fa-solid fa-xmark"></i></button>
+      <h3 style="margin-bottom: 12px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-route" style="color: var(--primary);"></i> Update Jadwal Touring</h3>
+      
+      <form onsubmit="app.adminUpdateTouring(event)">
+        <div class="form-group">
+          <label>Nama Destinasi / Judul Touring</label>
+          <input type="text" class="input-control" id="admin-touring-title" required>
+        </div>
+        <div class="form-group">
+          <label>Tanggal & Waktu</label>
+          <input type="text" class="input-control" id="admin-touring-date" required>
+        </div>
+        <div class="form-group">
+          <label>Titik Kumpul (Meeting Point)</label>
+          <input type="text" class="input-control" id="admin-touring-meeting" required>
+        </div>
+        <div class="form-group">
+          <label>Link Google Maps Rute</label>
+          <input type="text" class="input-control" id="admin-touring-maps" placeholder="https://maps.google.com/?q=..." required>
+        </div>
+        <button type="submit" class="btn btn-gold"><i class="fa-solid fa-floppy-disk"></i> Simpan Jadwal Touring</button>
+      </form>
+    </div>
+  </div>
+
   <!-- MODAL EDIT PROFIL -->
   <div class="modal-overlay" id="modal-edit-profile">
     <div class="modal-card">
@@ -1112,7 +1171,7 @@
     </div>
   </div>
 
-  <!-- MODAL ADD/EDIT MENU -->
+  <!-- MODAL ADD/EDIT MENU DINAMIS -->
   <div class="modal-overlay" id="modal-add-menu">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-add-menu')"><i class="fa-solid fa-xmark"></i></button>
@@ -1218,6 +1277,7 @@
     </div>
   </div>
 
+  <!-- JAVASCRIPT LOGIC LENGKAP UTUH TANPA SINGKATAN -->
   <script>
     const SUPABASE_URL = 'https://lfusrctizdydnsiopzfi.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxmdXNyY3RpemR5ZG5zaW9wemZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU2NjI0OTQsImV4cCI6MjEwMTIzODQ5NH0.vWd4l9zbRg3HxHVECN8I67h7gGUsZdaRJ9bD-gmEDUY';
@@ -1423,12 +1483,10 @@
         }
       }
 
-      /* ALUR VERIFIKASI USER TERPERBARUI */
       async validateUserFlow() {
         if (!this.currentUser) return;
         const email = this.currentUser.email;
 
-        // Super Admin langsung ke dashboard
         if (email === 'mastrisnobpb@gmail.com') {
           this.showDashboard();
           return;
@@ -1436,19 +1494,16 @@
 
         await this.loadUserProfileDetails();
 
-        // 1. Jika belum ada profil di database, atau nama belum lengkap / masih bawaan email
         if (!this.currentProfile || !this.currentProfile.full_name || this.currentProfile.full_name === email.split('@')[0]) {
           this.showCompleteDataScreen();
           return;
         }
 
-        // 2. Jika sudah isi data tapi statusnya Pending
         if (this.currentProfile.approval_status === 'Pending') {
           this.showPendingApprovalScreen();
           return;
         }
 
-        // 3. Jika sudah Approved
         this.showDashboard();
       }
 
@@ -1478,7 +1533,6 @@
         this.loadIuranHistory();
         this.calculateTotalKas();
 
-        // Panggil notifikasi & realtime listener
         this.checkRealtimeNotifications();
         this.subscribeToRealtimeChanges();
       }
@@ -1510,7 +1564,6 @@
         }
       }
 
-      /* HANDLE AUTH REGISTER & LOGIN LANGSUNG DIARAHKAN KE FORM DATA DIRI */
       async handleAuthSubmit(e) {
         e.preventDefault();
         const email = document.getElementById('auth-email').value.trim();
@@ -1552,6 +1605,7 @@
         }
       }
 
+      /* DISERTAI SUNTIKAN MEMBER_NUMBER AGAR TIDAK ERROR NOT-NULL CONSTRAINT */
       async handleSaveInitialData(e) {
         e.preventDefault();
         if (!this.currentUser || !this.supabase) return;
@@ -1564,6 +1618,9 @@
         const bike = document.getElementById('init-bike').value.trim();
         const plate = document.getElementById('init-plate').value.trim();
 
+        // SUNTIKAN NOMOR INDUK ANGGOTA OTOMATIS
+        const memberNumber = `ITORA-BSN-${this.currentUser.id.substring(0, 4).toUpperCase()}`;
+
         try {
           const { error } = await this.supabase.from('members').upsert([{
             id: this.currentUser.id,
@@ -1572,6 +1629,7 @@
             phone: phone,
             bike: bike,
             plate: plate,
+            member_number: memberNumber,
             role: 'Anggota Resmi',
             approval_status: 'Pending'
           }], { onConflict: 'id' });
@@ -1636,7 +1694,7 @@
           this.loadAdminDuesList();
         }
 
-        const niaCode = `ITORA-BSN-${this.currentUser.id ? this.currentUser.id.substring(0, 4).toUpperCase() : '0000'}`;
+        const niaCode = this.currentProfile?.member_number || `ITORA-BSN-${this.currentUser.id ? this.currentUser.id.substring(0, 4).toUpperCase() : '0000'}`;
         document.getElementById('profile-nia').innerText = niaCode;
         document.getElementById('profile-phone').innerText = this.currentProfile?.phone || '-';
         document.getElementById('profile-bike').innerText = this.currentProfile?.bike || 'Motor BSN';
@@ -1647,7 +1705,7 @@
         document.getElementById('edit-bike').value = this.currentProfile?.bike || '';
         document.getElementById('edit-plate').value = this.currentProfile?.plate || '';
 
-        this.generateQRCode(`ITORA-BSN-${this.currentUser.id ? this.currentUser.id.substring(0, 4).toUpperCase() : 'MEMBER'}`);
+        this.generateQRCode(niaCode);
       }
 
       async handleSaveProfile(e) {
@@ -1665,6 +1723,7 @@
             phone: document.getElementById('edit-phone').value.trim() || '-',
             bike: document.getElementById('edit-bike').value.trim() || 'Motor BSN',
             plate: document.getElementById('edit-plate').value.trim() || '-',
+            member_number: this.currentProfile?.member_number || `ITORA-BSN-${this.currentUser.id.substring(0, 4).toUpperCase()}`,
             role: (this.currentUser.email === 'mastrisnobpb@gmail.com') ? 'Super Admin' : 'Anggota Resmi',
             approval_status: 'Approved'
           }], { onConflict: 'id' });
@@ -2003,7 +2062,7 @@
         }
       }
 
-      /* LOGIKA NOTIFIKASI SISI SUPER ADMIN */
+      /* LOGIKA NOTIFIKASI SISI SUPER ADMIN DENGAN DOT BADGE POP-UP */
       async checkRealtimeNotifications() {
         if (!this.supabase || !this.currentUser) return;
         const isSuperAdmin = (this.currentUser.email === 'mastrisnobpb@gmail.com');
@@ -2020,6 +2079,12 @@
             .from('dues')
             .select('*', { count: 'exact', head: true })
             .eq('status', 'Pending');
+
+          const memberNotifDot = document.getElementById('admin-member-notif-dot');
+          if (memberNotifDot) memberNotifDot.style.display = (pendingMembersCount > 0) ? 'block' : 'none';
+
+          const dueNotifDot = document.getElementById('admin-due-notif-dot');
+          if (dueNotifDot) dueNotifDot.style.display = (pendingDuesCount > 0) ? 'block' : 'none';
 
           const totalNotif = (pendingMembersCount || 0) + (pendingDuesCount || 0);
 
