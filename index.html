@@ -395,7 +395,6 @@
       line-height: 1.2;
     }
 
-    /* GRID TOKO ONLINE (E-COMMERCE) */
     .shop-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -760,7 +759,7 @@
         <i class="fa-solid fa-id-card-clip auth-icon" style="color: var(--accent-gold);"></i>
         <h2>Lengkapi Data Anggota</h2>
         <p style="font-size: var(--font-xs); color:var(--text-muted-dark); margin-top:4px;">
-          Lengkapi data diri & kendaraan Anda untuk mengajukan persetujuan akun ke Super Admin.
+          Lengkapi data diri & kendaraan Anda untuk mengajukan persetujuan akun ke Admin/Super Admin.
         </p>
       </div>
 
@@ -805,13 +804,13 @@
       </div>
 
       <p style="font-size: var(--font-base); color: var(--text-muted-dark); line-height: 1.5; margin-bottom: 20px;">
-        Data diri Anda telah dikirim. Akun Anda sedang ditinjau oleh <strong>Super Admin ITORA BSN SURABAYA</strong>.
+        Data diri Anda telah dikirim. Akun Anda sedang ditinjau oleh <strong>Pengurus / Super Admin ITORA BSN SURABAYA</strong>.
         <br><br>
-        Silakan hubungi Super Admin untuk mempercepat proses persetujuan.
+        Silakan hubungi pengurus untuk mempercepat proses persetujuan.
       </p>
 
       <button type="button" class="btn btn-primary" onclick="app.contactAdminForApproval()">
-        <i class="fa-brands fa-whatsapp"></i> Hubungi Super Admin via WA
+        <i class="fa-brands fa-whatsapp"></i> Hubungi Pengurus via WA
       </button>
 
       <button type="button" class="btn btn-outline" onclick="app.checkSession()" style="margin-top:10px;">
@@ -883,10 +882,10 @@
         </div>
       </section>
 
-      <!-- 2. PANEL SUPER ADMIN -->
+      <!-- 2. PANEL SUPER ADMIN & ADMIN -->
       <section id="page-admin" class="page">
-        <h2 style="color: var(--primary); font-size: var(--font-lg); font-weight: var(--fw-bold);"><i class="fa-solid fa-user-shield"></i> Panel Super Admin</h2>
-        <p class="text-muted" style="margin-bottom: 15px;">Kontrol penuh sistem, menu dinamis, persetujuan anggota, kas, & toko produk</p>
+        <h2 style="color: var(--primary); font-size: var(--font-lg); font-weight: var(--fw-bold);"><i class="fa-solid fa-user-shield"></i> Panel Kelola Admin</h2>
+        <p class="text-muted" style="margin-bottom: 15px;">Kontrol penuh sistem, role pengurus, persetujuan anggota, kas, & merchandise</p>
 
         <div class="quick-menu" style="grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px;">
           
@@ -896,6 +895,15 @@
             </div>
             <strong style="font-size:var(--font-base); font-weight:var(--fw-bold);">Pengaturan Menu</strong>
             <span class="text-muted" style="display:block; font-size:var(--font-xs);">Atur Menu & Bottom Bar</span>
+          </div>
+
+          <!-- MENU MANAJEMEN ROLE BARU -->
+          <div class="card" style="margin:0; padding:16px; text-align:center; cursor:pointer;" onclick="app.openModal('modal-admin-roles')">
+            <div class="quick-icon" style="margin: 0 auto 8px; width:48px; height:48px; background:#FDE68A; color:#B45309;">
+              <i class="fa-solid fa-user-gear"></i>
+            </div>
+            <strong style="font-size:var(--font-base); font-weight:var(--fw-bold);">Manajemen Role</strong>
+            <span class="text-muted" style="display:block; font-size:var(--font-xs);">Ubah Jabatan Pengurus</span>
           </div>
 
           <div class="card" style="margin:0; padding:16px; text-align:center; cursor:pointer; position:relative;" onclick="app.openModal('modal-admin-members')">
@@ -929,7 +937,7 @@
             <div class="quick-icon" style="margin: 0 auto 8px; width:48px; height:48px; background:#ECFDF5; color:#10B981;">
               <i class="fa-solid fa-box-open"></i>
             </div>
-            <strong style="font-size:var(--font-base); font-weight:var(--fw-bold);">Kelola Katalog Toko</strong>
+            <strong style="font-size:var(--font-base); font-weight:var(--fw-bold);">Katalog Toko</strong>
             <span class="text-muted" style="display:block; font-size:var(--font-xs);">Tambah / Edit Produk Merch</span>
           </div>
 
@@ -941,7 +949,7 @@
             <span class="text-muted" style="display:block; font-size:var(--font-xs);">Kas Pokok & WhatsApp</span>
           </div>
 
-          <div class="card" style="margin:0; padding:16px; text-align:center; cursor:pointer; grid-column: span 2;" onclick="app.openModal('modal-admin-touring')">
+          <div class="card" style="margin:0; padding:16px; text-align:center; cursor:pointer;" onclick="app.openModal('modal-admin-touring')">
             <div class="quick-icon" style="margin: 0 auto 8px; width:48px; height:48px; background:#FEE2E2; color:#DC2626;">
               <i class="fa-solid fa-route"></i>
             </div>
@@ -1017,7 +1025,7 @@
         <div id="iuran-history-list"></div>
       </section>
 
-      <!-- 8. MERCHANDISE (TOKO ONLINE GRID E-COMMERCE) -->
+      <!-- 8. MERCHANDISE -->
       <section id="page-merchandise" class="page">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <div>
@@ -1133,6 +1141,18 @@
 
     <nav class="bottom-nav" id="dynamic-bottom-nav"></nav>
 
+  </div>
+
+  <!-- MODAL POP-UP ADMIN: MANAJEMEN ROLE PENGURUS -->
+  <div class="modal-overlay" id="modal-admin-roles">
+    <div class="modal-card">
+      <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-roles')"><i class="fa-solid fa-xmark"></i></button>
+      <h3 style="margin-bottom: 12px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-user-gear" style="color: var(--accent-gold);"></i> Kelola Role & Jabatan</h3>
+      <p class="text-muted" style="margin-bottom: 12px;">Ubah role anggota menjadi Admin, Ketua, Bendahara, Sekretaris, atau Anggota</p>
+      <div id="admin-roles-list">
+        <p class="text-muted" style="text-align:center;">Memuat daftar anggota...</p>
+      </div>
+    </div>
   </div>
 
   <!-- MODAL POP-UP PEMESANAN MERCHANDISE -->
@@ -1685,6 +1705,7 @@
         if (!this.currentUser) return;
         const email = this.currentUser.email;
 
+        // Super Admin langsung akses dashboard tanpa harus mengisi data diri sebagai anggota
         if (email === 'mastrisnobpb@gmail.com') {
           this.showDashboard();
           return;
@@ -1833,7 +1854,7 @@
 
           if (error) throw error;
 
-          this.showToast('Data berhasil dikirim! Menunggu persetujuan Super Admin.', 'success');
+          this.showToast('Data berhasil dikirim! Menunggu persetujuan Admin.', 'success');
           await this.loadUserProfileDetails();
           this.showPendingApprovalScreen();
         } catch(err) {
@@ -1847,7 +1868,7 @@
       contactAdminForApproval() {
         const targetWA = this.adminWANumber || "6281234567890";
         const myName = this.currentProfile?.full_name || this.currentUser.email;
-        const msg = `Halo Super Admin ITORA BSN SURABAYA,%0ASaya *${myName}* (${this.currentUser.email}) telah melengkapi data pendaftaran anggota.%0A%0AMohon bantuannya untuk verifikasi & persetujuan akun saya. Terima kasih!`;
+        const msg = `Halo Pengurus ITORA BSN SURABAYA,%0ASaya *${myName}* (${this.currentUser.email}) telah melengkapi data pendaftaran anggota.%0A%0AMohon bantuannya untuk verifikasi & persetujuan akun saya. Terima kasih!`;
         window.open(`https://wa.me/${targetWA}?text=${msg}`, '_blank');
       }
 
@@ -1875,22 +1896,27 @@
 
       updateUserUI() {
         if (!this.currentUser) return;
-        const displayName = this.currentProfile?.full_name || 'Sutrisno';
+        const isSuperAdmin = (this.currentUser.email === 'mastrisnobpb@gmail.com');
+        const userRole = isSuperAdmin ? 'Super Admin' : (this.currentProfile?.role || 'Anggota Resmi');
+        const canManageAdmin = (isSuperAdmin || userRole === 'Admin');
+
+        const displayName = isSuperAdmin ? 'Super Admin ITORA' : (this.currentProfile?.full_name || 'Sutrisno');
 
         document.getElementById('user-greeting').innerText = `Salam, ${displayName}!`;
         document.getElementById('profile-name').innerText = displayName;
         document.getElementById('profile-email').innerText = this.currentUser.email;
+        document.getElementById('profile-role').innerText = userRole;
         document.getElementById('profile-avatar').innerText = displayName.charAt(0).toUpperCase();
 
-        const isSuperAdmin = (this.currentUser.email === 'mastrisnobpb@gmail.com');
         const adminProfileBtn = document.getElementById('btn-admin-panel-profile');
-        if (adminProfileBtn) adminProfileBtn.style.display = isSuperAdmin ? 'flex' : 'none';
+        if (adminProfileBtn) adminProfileBtn.style.display = canManageAdmin ? 'flex' : 'none';
 
-        if (isSuperAdmin) {
+        if (canManageAdmin) {
           this.loadAdminPendingMembersList();
           this.loadAdminDuesList();
           this.loadAdminOrdersList();
           this.loadAdminProductsList();
+          this.loadAdminRolesList();
         }
 
         const niaCode = this.currentProfile?.member_number || `ITORA-BSN-${this.currentUser.id ? this.currentUser.id.substring(0, 4).toUpperCase() : '0000'}`;
@@ -1923,7 +1949,7 @@
             bike: document.getElementById('edit-bike').value.trim() || 'Motor BSN',
             plate: document.getElementById('edit-plate').value.trim() || '-',
             member_number: this.currentProfile?.member_number || `ITORA-BSN-${this.currentUser.id.substring(0, 4).toUpperCase()}`,
-            role: (this.currentUser.email === 'mastrisnobpb@gmail.com') ? 'Super Admin' : 'Anggota Resmi',
+            role: (this.currentUser.email === 'mastrisnobpb@gmail.com') ? 'Super Admin' : (this.currentProfile?.role || 'Anggota Resmi'),
             approval_status: 'Approved'
           }], { onConflict: 'id' });
 
@@ -1940,7 +1966,77 @@
         }
       }
 
-      /* FITUR KELOLA KATALOG TOKO ONLINE (E-COMMERCE) */
+      /* FITUR SUPER ADMIN MANAJEMEN ROLE PENGURUS */
+      async loadAdminRolesList() {
+        const container = document.getElementById('admin-roles-list');
+        if (!container || !this.supabase) return;
+
+        try {
+          const { data: approvedMembers, error } = await this.supabase
+            .from('members')
+            .select('*')
+            .neq('email', 'mastrisnobpb@gmail.com')
+            .eq('approval_status', 'Approved')
+            .order('created_at', { ascending: false });
+
+          if (!error && approvedMembers && approvedMembers.length > 0) {
+            container.innerHTML = approvedMembers.map(m => `
+              <div class="menu-admin-item" style="flex-direction:column; align-items:flex-start; gap:8px;">
+                <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
+                  <div>
+                    <strong style="font-size:var(--font-base); font-weight:var(--fw-bold);">${m.full_name || 'Anggota'}</strong>
+                    <span class="text-muted" style="display:block;">${m.email} (${m.phone || '-'})</span>
+                  </div>
+                  <span class="badge badge-primary">${m.role || 'Anggota Resmi'}</span>
+                </div>
+                
+                <div style="display:flex; gap:8px; width:100%; align-items:center; margin-top:4px;">
+                  <select class="input-control" style="padding:6px 10px; font-size:var(--font-xs);" id="role-select-${m.id}">
+                    <option value="Anggota Resmi" ${m.role === 'Anggota Resmi' ? 'selected' : ''}>Anggota Resmi</option>
+                    <option value="Admin" ${m.role === 'Admin' ? 'selected' : ''}>Admin</option>
+                    <option value="Ketua" ${m.role === 'Ketua' ? 'selected' : ''}>Ketua</option>
+                    <option value="Bendahara" ${m.role === 'Bendahara' ? 'selected' : ''}>Bendahara</option>
+                    <option value="Sekretaris" ${m.role === 'Sekretaris' ? 'selected' : ''}>Sekretaris</option>
+                    <option value="Super Admin" ${m.role === 'Super Admin' ? 'selected' : ''}>Super Admin</option>
+                  </select>
+                  <button type="button" class="btn btn-sm btn-gold" style="width:auto; white-space:nowrap;" onclick="app.adminUpdateMemberRole('${m.id}')">
+                    <i class="fa-solid fa-floppy-disk"></i> Simpan
+                  </button>
+                </div>
+              </div>
+            `).join('');
+          } else {
+            container.innerHTML = '<p class="text-muted" style="text-align:center;">Belum ada anggota terverifikasi.</p>';
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      async adminUpdateMemberRole(memberId) {
+        if (!this.supabase) return;
+        const roleSelect = document.getElementById(`role-select-${memberId}`);
+        if (!roleSelect) return;
+
+        const newRole = roleSelect.value;
+
+        try {
+          const { error } = await this.supabase
+            .from('members')
+            .update({ role: newRole })
+            .eq('id', memberId);
+
+          if (error) throw error;
+
+          this.showToast(`Jabatan / Role Berhasil Diubah Menjadi: ${newRole}!`, 'success');
+          this.loadAdminRolesList();
+          this.loadMembersFromSupabase();
+        } catch (e) {
+          this.showToast('Gagal mengubah role anggota.', 'error');
+        }
+      }
+
+      /* FITUR KELOLA KATALOG TOKO ONLINE */
       async loadProductsFromSupabase() {
         if (!this.supabase) return;
         try {
@@ -2120,7 +2216,7 @@
           if (!error && data) {
             this.menus = data;
             this.renderDynamicMenus();
-            if (this.currentUser && this.currentUser.email === 'mastrisnobpb@gmail.com') {
+            if (this.currentUser && (this.currentUser.email === 'mastrisnobpb@gmail.com' || this.currentProfile?.role === 'Admin')) {
               this.renderAdminMenuList();
             }
           }
@@ -2131,13 +2227,14 @@
 
       renderDynamicMenus() {
         const isSuperAdmin = (this.currentUser && this.currentUser.email === 'mastrisnobpb@gmail.com');
+        const isAdmin = (this.currentProfile?.role === 'Admin' || isSuperAdmin);
         const activeMenus = this.menus.filter(m => m.is_active);
 
         const quickMenuContainer = document.getElementById('dynamic-quick-menu');
         if (quickMenuContainer) {
           const quickItems = activeMenus.filter(m => m.show_in_quick_menu);
           quickMenuContainer.innerHTML = quickItems.map(m => {
-            if (m.menu_key === 'admin' && !isSuperAdmin) return '';
+            if (m.menu_key === 'admin' && !isAdmin) return '';
 
             let actionCall = `app.navigateTo('${m.menu_key}')`;
             if (m.menu_key === 'setor_iuran') actionCall = `app.openModal('modal-iuran')`;
@@ -2286,7 +2383,6 @@
         }
       }
 
-      /* FITUR PEMESANAN MERCHANDISE DIARAHKAN LANGSUNG KE WA ADMIN */
       async handleOrderMerchSubmit(e) {
         e.preventDefault();
         if (!this.currentUser) return;
@@ -2524,12 +2620,12 @@
         }
       }
 
-      /* LOGIKA NOTIFIKASI SISI SUPER ADMIN DENGAN DOT BADGE POP-UP */
       async checkRealtimeNotifications() {
         if (!this.supabase || !this.currentUser) return;
         const isSuperAdmin = (this.currentUser.email === 'mastrisnobpb@gmail.com');
+        const isAdmin = (this.currentProfile?.role === 'Admin' || isSuperAdmin);
 
-        if (!isSuperAdmin) return;
+        if (!isAdmin) return;
 
         try {
           const { count: pendingMembersCount } = await this.supabase
@@ -2570,8 +2666,9 @@
       subscribeToRealtimeChanges() {
         if (!this.supabase || !this.currentUser) return;
         const isSuperAdmin = (this.currentUser.email === 'mastrisnobpb@gmail.com');
+        const isAdmin = (this.currentProfile?.role === 'Admin' || isSuperAdmin);
 
-        if (!isSuperAdmin) return;
+        if (!isAdmin) return;
 
         this.supabase
           .channel('realtime-members-channel')
@@ -2678,20 +2775,28 @@
         }
       }
 
+      /* ANGGOTA: EXCLUDE EMAIL SUPER ADMIN (mastrisnobpb@gmail.com) DARIPADA DAFTAR MEMBER */
       async loadMembersFromSupabase() {
         if (!this.supabase) return;
         try {
-          const { data: members, error } = await this.supabase.from('members').select('*').or('approval_status.eq.Approved,email.eq.mastrisnobpb@gmail.com').order('created_at', { ascending: false });
+          const { data: members, error } = await this.supabase
+            .from('members')
+            .select('*')
+            .neq('email', 'mastrisnobpb@gmail.com') // Filter: Email Super Admin tidak dimasukkan
+            .eq('approval_status', 'Approved')
+            .order('created_at', { ascending: false });
 
           if (!error && members && members.length > 0) {
             this.members = members.map(m => ({
               id: m.id,
               name: m.full_name || m.email || 'Anggota',
               email: m.email || '',
-              role: (m.email === 'mastrisnobpb@gmail.com') ? 'Super Admin' : (m.role || 'Anggota Resmi'),
+              role: m.role || 'Anggota Resmi',
               bike: m.bike || 'Motor BSN',
               plate: m.plate || '-'
             }));
+          } else {
+            this.members = [];
           }
 
           this.renderMembers(this.members);
@@ -2710,21 +2815,22 @@
         }
 
         const isSuperAdmin = (this.currentUser && this.currentUser.email === 'mastrisnobpb@gmail.com');
+        const isAdmin = (this.currentProfile?.role === 'Admin' || isSuperAdmin);
 
         container.innerHTML = data.map(m => `
           <div class="card" style="display: flex; align-items: center; gap: 14px; padding: 14px; margin-bottom: 10px;">
-            <div class="avatar-placeholder" style="margin:0; width: 44px; height: 44px; font-size: 1.1rem; ${m.role === 'Super Admin' ? 'background: var(--accent-gold); color: #000;' : ''}">
+            <div class="avatar-placeholder" style="margin:0; width: 44px; height: 44px; font-size: 1.1rem; ${m.role === 'Admin' || m.role === 'Ketua' ? 'background: var(--accent-gold); color: #000;' : ''}">
               ${m.name.charAt(0).toUpperCase()}
             </div>
             <div style="flex: 1;">
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 <h4 style="font-size: var(--font-base); font-weight: var(--fw-bold);">${m.name}</h4>
-                <span class="badge ${m.role === 'Super Admin' ? 'badge-gold' : 'badge-primary'}">${m.role}</span>
+                <span class="badge ${m.role === 'Admin' || m.role === 'Ketua' ? 'badge-gold' : 'badge-primary'}">${m.role}</span>
               </div>
               <p class="text-muted" style="margin-top: 2px;">${m.email || m.bike}</p>
               <span class="badge badge-gold" style="margin-top: 4px;">Plat: ${m.plate}</span>
             </div>
-            ${isSuperAdmin && m.email !== 'mastrisnobpb@gmail.com' ? `
+            ${isAdmin ? `
               <button type="button" class="btn btn-sm btn-danger" style="width:auto;" onclick="app.adminDeleteMember('${m.id}')"><i class="fa-solid fa-trash"></i></button>
             ` : ''}
           </div>
