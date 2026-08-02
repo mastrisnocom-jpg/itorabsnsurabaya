@@ -89,49 +89,6 @@
       box-shadow: var(--shadow-glass);
     }
 
-    /* SPLASH SCREEN (Konfigurasi Ringan & Cepat Hilang) */
-    #splash-screen {
-      position: fixed;
-      inset: 0;
-      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
-      z-index: 9999;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      transition: opacity 0.4s ease, visibility 0.4s;
-    }
-
-    .splash-logo {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.15);
-      border: 2px solid var(--accent-gold);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.8rem;
-      color: var(--accent-gold);
-      margin-bottom: 16px;
-      box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
-    }
-
-    .spinner {
-      width: 28px;
-      height: 28px;
-      border: 3px solid rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      border-top-color: var(--accent-gold);
-      animation: spin 1s linear infinite;
-      margin-top: 20px;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
     /* HEADER & NAVIGATION */
     .app-header {
       position: sticky;
@@ -444,16 +401,6 @@
 </head>
 <body data-theme="dark">
 
-  <!-- SPLASH SCREEN -->
-  <div id="splash-screen">
-    <div class="splash-logo">
-      <i class="fa-solid fa-motorcycle"></i>
-    </div>
-    <h2 style="font-weight: 800; letter-spacing: 1px;">ITORA BSN</h2>
-    <p style="color: var(--accent-gold); font-size: 0.85rem; margin-top: 4px;">CABANG SURABAYA</p>
-    <div class="spinner"></div>
-  </div>
-
   <!-- TOAST CONTAINER -->
   <div id="toast-container"></div>
 
@@ -679,21 +626,7 @@
 
   <!-- JAVASCRIPT APP LOGIC -->
   <script>
-    /* 1. SPLASH SCREEN HIDE (TUTUP OTOMATIS) */
-    function forceDismissSplash() {
-      const splash = document.getElementById('splash-screen');
-      if (splash) {
-        splash.style.opacity = '0';
-        setTimeout(() => {
-          splash.style.display = 'none';
-        }, 400);
-      }
-    }
-
-    // Safety fallback: Maksimal 1 detik splash screen WAJIB hilang
-    setTimeout(forceDismissSplash, 1000);
-
-    /* 2. CONFIG SUPABASE & MOCK DATA */
+    /* 1. CONFIG SUPABASE & MOCK DATA */
     const SUPABASE_URL = 'https://lfusrctizdydnsiopzfi.supabase.co';
     const SUPABASE_ANON_KEY = 'Sb_publishable_AKKR_z1iI5-Bi9-pAQnGOw_1gG7jj-q';
     
@@ -718,7 +651,7 @@
       { title: 'Bakti Sosial & Santunan', date: '25 Agustus 2026', location: 'Panti Asuhan Surabaya' }
     ];
 
-    /* 3. INIT ENGINE ON LOAD */
+    /* 2. INIT ENGINE ON LOAD */
     document.addEventListener('DOMContentLoaded', () => {
       renderMembers(loadedMembers);
       renderEvents(mockEvents);
@@ -738,9 +671,6 @@
 
       // Load Supabase Data Background
       loadDataFromSupabase();
-      
-      // Force Hide Splash Screen
-      forceDismissSplash();
     });
 
     async function loadDataFromSupabase() {
@@ -774,7 +704,7 @@
       }
     }
 
-    /* 4. NAVIGATION & UI FUNCTIONS */
+    /* 3. NAVIGATION & UI FUNCTIONS */
     function navigateTo(pageId) {
       document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
       const targetPage = document.getElementById(`page-${pageId}`);
