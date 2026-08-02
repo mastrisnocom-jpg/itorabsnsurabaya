@@ -1547,6 +1547,51 @@
     </div>
   </div>
 
+  <!-- MODAL HASIL SCAN PROFIL MEMBER (VERIFIKASI REAL-TIME) -->
+  <div class="modal-overlay" id="modal-scanned-member">
+    <div class="modal-card" style="text-align: center;">
+      <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-scanned-member')"><i class="fa-solid fa-xmark"></i></button>
+      <i class="fa-solid fa-circle-check" style="font-size: 3rem; color: #10B981; margin-bottom: 10px;"></i>
+      <h3 style="font-size: var(--font-lg); font-weight: var(--fw-bold);">Hasil Verifikasi Anggota</h3>
+      <span class="badge badge-success" style="margin-top:6px;">Terverifikasi Resmi</span>
+
+      <div class="profile-info-list" style="margin-top: 15px;">
+        <div class="info-item">
+          <i class="fa-solid fa-user"></i>
+          <div>
+            <span>Nama Lengkap</span>
+            <strong id="scan-member-name">-</strong>
+          </div>
+        </div>
+        <div class="info-item">
+          <i class="fa-solid fa-id-card"></i>
+          <div>
+            <span>Nomor Induk Anggota (NIA)</span>
+            <strong id="scan-member-nia">-</strong>
+          </div>
+        </div>
+        <div class="info-item">
+          <i class="fa-solid fa-user-shield"></i>
+          <div>
+            <span>Jabatan / Role</span>
+            <strong id="scan-member-role">-</strong>
+          </div>
+        </div>
+        <div class="info-item">
+          <i class="fa-solid fa-motorcycle"></i>
+          <div>
+            <span>Kendaraan & Plat</span>
+            <strong id="scan-member-bike">-</strong>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-primary" style="margin-top: 20px;" onclick="app.closeModal('modal-scanned-member')">
+        Tutup
+      </button>
+    </div>
+  </div>
+
   <!-- MODAL POP-UP FORM SETOR IURAN -->
   <div class="modal-overlay" id="modal-iuran">
     <div class="modal-card">
@@ -1664,7 +1709,37 @@
           const splash = document.getElementById('splash-screen');
           if (splash) splash.style.display = 'none';
           this.checkSession();
+          this.checkScanUrl(); // Deteksi jika ada hasil scan QR Code
         }, 1000);
+      }
+
+      // FITUR BARU: Deteksi jika halaman dibuka via Scan QR Code
+      async checkScanUrl() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const verifyId = urlParams.get('verify');
+
+        if (verifyId && this.supabase) {
+          try {
+            const { data, error } = await this.supabase
+              .from('members')
+              .select('*')
+              .or(`id.eq.${verifyId},member_number.eq.${verifyId}`)
+              .single();
+
+            if (data && !error) {
+              document.getElementById('scan-member-name').innerText = data.full_name || 'Anggota ITORA';
+              document.getElementById('scan-member-nia').innerText = data.member_number || 'ITORA-BSN-0000';
+              document.getElementById('scan-member-role').innerText = data.role || 'Anggota Resmi';
+              document.getElementById('scan-member-bike').innerText = `${data.bike || 'Motor BSN'} (${data.plate || '-'})`;
+
+              this.openModal('modal-scanned-member');
+            } else {
+              this.showToast('Data Anggota Tidak Ditemukan!', 'error');
+            }
+          } catch (e) {
+            console.error('Scan error:', e);
+          }
+        }
       }
 
       updateWAUI() {
@@ -1676,15 +1751,12 @@
       }
 
       updateTouringUI() {
-        // Hitung total touring secara otomatis
         const isTouringActive = (this.touringData.title && this.touringData.title !== 'Belum Ada Agenda');
         const touringCount = isTouringActive ? 1 : 0;
 
-        // Update Angka Statistik Dashboard Beranda (Real-time)
         const statTouringEl = document.getElementById('stat-touring-count');
         if (statTouringEl) statTouringEl.innerText = touringCount;
 
-        // Update Home Dashboard Widget
         const homeTitle = document.getElementById('home-touring-title');
         const homeSchedule = document.getElementById('home-touring-schedule');
         const homeMeeting = document.getElementById('home-touring-meeting');
@@ -1692,7 +1764,6 @@
         if (homeSchedule) homeSchedule.innerText = this.touringData.schedule;
         if (homeMeeting) homeMeeting.innerText = this.touringData.meeting;
 
-        // Update Halaman Utama Touring
         const pageTitle = document.getElementById('touring-page-title');
         const pageSchedule = document.getElementById('touring-page-schedule');
         const pageMeeting = document.getElementById('touring-page-meeting');
@@ -1705,7 +1776,6 @@
         if (pageDistance) pageDistance.innerText = this.touringData.distance || '± 0 KM';
         if (pageMapsBtn) pageMapsBtn.setAttribute('onclick', `window.open('${this.touringData.maps}', '_blank')`);
 
-        // Update Form Modal Admin
         const adminTitle = document.getElementById('admin-touring-title');
         const adminDate = document.getElementById('admin-touring-date');
         const adminMeeting = document.getElementById('admin-touring-meeting');
@@ -2127,7 +2197,6 @@
         const adminProfileBtn = document.getElementById('btn-admin-panel-profile');
         if (adminProfileBtn) adminProfileBtn.style.display = canManageAdmin ? 'flex' : 'none';
 
-        // Tampilkan/Sembunyikan aksi Edit/Hapus khusus Super Admin/Admin pada Touring
         const touringAdminActions = document.getElementById('touring-admin-actions');
         const adminAddBtn = document.getElementById('admin-add-touring-btn');
         if (touringAdminActions) touringAdminActions.style.display = canManageAdmin ? 'flex' : 'none';
@@ -3120,13 +3189,23 @@
         if (modal) modal.classList.remove('active');
       }
 
-      generateQRCode(text) {
+      // GENERATE QR CODE BERISI TAUTAN VERIFIKASI MEMBER INTERAKTIF
+      generateQRCode(niaCode) {
         if (typeof QRCode !== 'undefined') {
           const container = document.getElementById("qrcode");
           if (!container) return;
           
           container.innerHTML = '';
-          new QRCode(container, { text, width: 180, height: 180, correctLevel: QRCode.CorrectLevel.H });
+
+          // URL Verifikasi Aktif yang dapat di-scan oleh HP mana saja
+          const profileUrl = `${window.location.origin}${window.location.pathname}?verify=${encodeURIComponent(this.currentUser ? this.currentUser.id : niaCode)}`;
+
+          new QRCode(container, { 
+            text: profileUrl, 
+            width: 180, 
+            height: 180, 
+            correctLevel: QRCode.CorrectLevel.H 
+          });
 
           setTimeout(() => {
             const qrCanvas = container.querySelector('canvas');
