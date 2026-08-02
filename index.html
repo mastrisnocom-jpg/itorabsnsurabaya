@@ -1003,12 +1003,12 @@
         } catch (err) {
           let msg = 'Terjadi kesalahan sistem.';
 
-          // PARSING MSG LEBIH AMAN AGAR TIDAK MENAMPILKAN OBJECT {}
-          if (typeof err === 'string') {
+          // AMAN DARI OBJECT {}
+          if (typeof err === 'string' && err.trim() !== '') {
             msg = err;
           } else if (err && typeof err.message === 'string' && err.message.trim() !== '') {
             msg = err.message;
-          } else if (err && err.error_description) {
+          } else if (err && typeof err.error_description === 'string') {
             msg = err.error_description;
           }
 
@@ -1281,6 +1281,7 @@
         
         let displayMsg = 'Terjadi kesalahan pada sistem.';
 
+        // PENANGANAN AMAN FORMAT STRING SUPAYA TIDAK MENJADI {}
         if (typeof message === 'string' && message.trim() !== '') {
           displayMsg = message;
         } else if (message && typeof message.message === 'string' && message.message.trim() !== '') {
