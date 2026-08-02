@@ -848,19 +848,17 @@
     </div>
   </div>
 
-  <!-- 3. SCREEN PENDING APPROVAL -->
+  <!-- 3. SCREEN STATUS PERSETUJUAN / PENOLAKAN -->
   <div id="pending-approval-screen" class="auth-overlay" style="display: none;">
     <div class="auth-card" style="text-align: center;">
       <div class="auth-header">
-        <i class="fa-solid fa-clock-rotate-left auth-icon" style="color: #F59E0B; font-size:3.5rem;"></i>
-        <h2 style="margin-top:10px;">Menunggu Persetujuan</h2>
-        <span class="badge badge-warning" style="margin-top:6px;">Status: Pending Approval</span>
+        <i class="fa-solid fa-clock-rotate-left auth-icon" id="approval-status-icon" style="color: #F59E0B; font-size:3.5rem;"></i>
+        <h2 style="margin-top:10px;" id="approval-status-title">Menunggu Persetujuan</h2>
+        <span class="badge badge-warning" style="margin-top:6px;" id="approval-status-badge">Status: Pending Approval</span>
       </div>
 
-      <p style="font-size: var(--font-base); color: var(--text-muted-dark); line-height: 1.5; margin-bottom: 20px;">
+      <p style="font-size: var(--font-base); color: var(--text-muted-dark); line-height: 1.5; margin-bottom: 20px;" id="approval-status-desc">
         Data diri Anda telah dikirim. Akun Anda sedang ditinjau oleh <strong>Pengurus / Super Admin ITORA BSN SURABAYA</strong>.
-        <br><br>
-        Silakan hubungi pengurus untuk mempercepat proses persetujuan.
       </p>
 
       <button type="button" class="btn btn-primary" onclick="app.contactAdminForApproval()">
@@ -877,7 +875,7 @@
     </div>
   </div>
 
-  <!-- 4. MAIN APP DASHBOARD -->
+  <!-- 4. MAIN APP DASHBOARD (KHUSUS ANGGOTA TERSETUJUI / APPROVED) -->
   <div id="app-dashboard" class="app-container" style="display: none;">
 
     <header class="app-header">
@@ -1765,10 +1763,12 @@
         }
       }
 
+      /* VALIDASI HANYA STATUS 'APPROVED' DAN SUPER ADMIN YANG BISA MASUK DASHBOARD */
       async validateUserFlow() {
         if (!this.currentUser) return;
         const email = this.currentUser.email;
 
+        // Super Admin selalu bisa akses dashboard
         if (email === 'mastrisnobpb@gmail.com') {
           this.showDashboard();
           return;
@@ -1776,17 +1776,19 @@
 
         await this.loadUserProfileDetails();
 
+        // 1. Jika belum mengisi data diri
         if (!this.currentProfile || !this.currentProfile.full_name || this.currentProfile.full_name === email.split('@')[0]) {
           this.showCompleteDataScreen();
           return;
         }
 
-        if (this.currentProfile.approval_status === 'Pending') {
+        // 2. Jika status 'Approved', izinkan masuk Dashboard
+        if (this.currentProfile.approval_status === 'Approved') {
+          this.showDashboard();
+        } else {
+          // 3. Jika 'Pending' atau 'Rejected' (Ditolak), BLOKIR dari Dashboard
           this.showPendingApprovalScreen();
-          return;
         }
-
-        this.showDashboard();
       }
 
       showCompleteDataScreen() {
@@ -1801,6 +1803,35 @@
         document.getElementById('complete-data-screen').style.display = 'none';
         document.getElementById('app-dashboard').style.display = 'none';
         document.getElementById('pending-approval-screen').style.display = 'flex';
+
+        const titleEl = document.getElementById('approval-status-title');
+        const badgeEl = document.getElementById('approval-status-badge');
+        const descEl = document.getElementById('approval-status-desc');
+        const iconEl = document.getElementById('approval-status-icon');
+
+        if (this.currentProfile && this.currentProfile.approval_status === 'Rejected') {
+          if (titleEl) titleEl.innerText = 'Pendaftaran Ditolak';
+          if (badgeEl) {
+            badgeEl.innerText = 'Status: Ditolak (Rejected)';
+            badgeEl.className = 'badge badge-danger';
+          }
+          if (descEl) descEl.innerHTML = 'Mohon maaf, pengajuan pendaftaran anggota Anda **ditolak** oleh pengurus/admin. Silakan hubungi pengurus untuk konfirmasi lebih lanjut.';
+          if (iconEl) {
+            iconEl.className = 'fa-solid fa-circle-xmark auth-icon';
+            iconEl.style.color = '#EF4444';
+          }
+        } else {
+          if (titleEl) titleEl.innerText = 'Menunggu Persetujuan';
+          if (badgeEl) {
+            badgeEl.innerText = 'Status: Pending Approval';
+            badgeEl.className = 'badge badge-warning';
+          }
+          if (descEl) descEl.innerHTML = 'Data diri Anda telah dikirim. Akun Anda sedang ditinjau oleh <strong>Pengurus / Super Admin ITORA BSN SURABAYA</strong>.';
+          if (iconEl) {
+            iconEl.className = 'fa-solid fa-clock-rotate-left auth-icon';
+            iconEl.style.color = '#F59E0B';
+          }
+        }
       }
 
       showDashboard() {
@@ -1958,7 +1989,6 @@
         }
       }
 
-      /* BREAKING NEWS TICKER: MEMUAT TERTULIS MEMBER RECENT, IURAN & MERCH */
       async loadBreakingNewsText() {
         const tickerEl = document.getElementById('breaking-news-text');
         if (!tickerEl || !this.supabase) return;
@@ -1966,7 +1996,6 @@
         try {
           let newsItems = [];
 
-          // 1. Ambil 2 Anggota Baru Terverifikasi
           const { data: recentMembers } = await this.supabase
             .from('members')
             .select('full_name')
@@ -1981,7 +2010,6 @@
             });
           }
 
-          // 2. Ambil 2 Setoran Iuran Terbaru
           const { data: recentDues } = await this.supabase
             .from('dues')
             .select('member_name, period_month')
@@ -1995,7 +2023,6 @@
             });
           }
 
-          // 3. Ambil 2 Pesanan Merchandise Terbaru
           const { data: recentOrders } = await this.supabase
             .from('orders')
             .select('member_name, item_name')
