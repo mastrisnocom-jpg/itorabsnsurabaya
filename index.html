@@ -8,7 +8,6 @@
   <meta name="theme-color" content="#00875A">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="manifest" href="manifest.json">
 
   <!-- CDNs (FontAwesome, Fonts, Supabase, QRCode) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -832,7 +831,6 @@
         }, 1000);
       }
 
-      /* FUNGSI UTAMA KOMPRESI FOTO MANFAATKAN CANVAS (MAX 200 KB) */
       compressImage(file, maxKB = 200) {
         return new Promise((resolve, reject) => {
           const reader = new FileReader();
@@ -845,7 +843,6 @@
               let width = img.width;
               let height = img.height;
 
-              // Resize dimensi jika melebihi HD standar agar ukuran berkurang drastis
               const maxDimension = 1200;
               if (width > height && width > maxDimension) {
                 height = Math.round((height * maxDimension) / width);
@@ -861,7 +858,6 @@
               const ctx = canvas.getContext('2d');
               ctx.drawImage(img, 0, 0, width, height);
 
-              // Kompresi kualitas bertahap hingga file <= maxKB (200KB)
               let quality = 0.85;
               let dataUrl = canvas.toDataURL('image/jpeg', quality);
 
@@ -870,7 +866,6 @@
                 dataUrl = canvas.toDataURL('image/jpeg', quality);
               }
 
-              // Konversi Data URL menjadi Blob / File Object
               fetch(dataUrl)
                 .then(res => res.blob())
                 .then(blob => {
@@ -889,37 +884,32 @@
       }
 
       async checkSession() {
-        const localUser = localStorage.getItem('itora_current_user');
-        if (localUser) {
-          try {
-            this.currentUser = JSON.parse(localUser);
-            this.showDashboard();
-          } catch(e){}
+        if (!this.supabase) {
+          this.hideDashboard();
+          return;
         }
-
-        if (!this.supabase) return;
 
         try {
           const { data: { session } } = await this.supabase.auth.getSession();
           if (session && session.user) {
             this.currentUser = session.user;
-            localStorage.setItem('itora_current_user', JSON.stringify(session.user));
             this.showDashboard();
+          } else {
+            this.hideDashboard();
           }
 
           this.supabase.auth.onAuthStateChange((event, session) => {
             if (session && session.user) {
               this.currentUser = session.user;
-              localStorage.setItem('itora_current_user', JSON.stringify(session.user));
               this.showDashboard();
             } else if (event === 'SIGNED_OUT') {
               this.currentUser = null;
-              localStorage.removeItem('itora_current_user');
               this.hideDashboard();
             }
           });
         } catch (err) {
           console.warn('Session check error:', err);
+          this.hideDashboard();
         }
       }
 
@@ -968,9 +958,14 @@
         const password = document.getElementById('auth-password').value;
         const fullname = document.getElementById('auth-fullname').value.trim();
 
+        if (!this.supabase) {
+          this.showToast('Koneksi Supabase tidak tersedia!', 'error');
+          return;
+        }
+
         const submitBtn = document.getElementById('auth-submit-btn');
         submitBtn.disabled = true;
-        submitBtn.innerText = 'Memproses...';
+        submitBtn.innerText = 'Memproses ke Supabase...';
 
         try {
           if (this.isRegisterMode) {
@@ -980,77 +975,50 @@
               return;
             }
 
-            let registerSuccess = false;
+            // PENDAFTARAN MURNI HARUS TEMBUS SUPABASE
+            const { data, error } = await this.supabase.auth.signUp({
+              email: email,
+              password: password,
+              options: { data: { full_name: fullname } }
+            });
 
-            if (this.supabase) {
-              const { data, error } = await this.supabase.auth.signUp({
-                email: email,
-                password: password,
-                options: { data: { full_name: fullname } }
-              });
-
-              if (!error && data) {
-                const userObj = data.user || { email, user_metadata: { full_name: fullname } };
-                this.currentUser = userObj;
-                localStorage.setItem('itora_current_user', JSON.stringify(userObj));
-                registerSuccess = true;
-              } else if (error) {
-                if (error.message && error.message.includes('User already registered')) {
-                  this.showToast('Email ini sudah terdaftar. Silakan klik "Sudah Memiliki Akun" untuk Login!', 'error');
-                  submitBtn.disabled = false;
-                  submitBtn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Daftar Sekarang';
-                  return;
-                }
-              }
+            if (error) {
+              throw error;
             }
 
-            if (!registerSuccess) {
-              const fallbackUser = { email, user_metadata: { full_name: fullname } };
-              this.currentUser = fallbackUser;
-              localStorage.setItem('itora_current_user', JSON.stringify(fallbackUser));
-            }
-
-            this.showToast('Pendaftaran Berhasil! Selamat datang.', 'success');
-            this.showDashboard();
+            this.showToast('Pendaftaran Berhasil di Supabase! Silakan Login.', 'success');
+            this.toggleAuthMode();
 
           } else {
-            let loginSuccess = false;
+            // LOGIN MURNI SUPABASE
+            const { data, error } = await this.supabase.auth.signInWithPassword({
+              email: email,
+              password: password
+            });
 
-            if (this.supabase) {
-              const { data, error } = await this.supabase.auth.signInWithPassword({
-                email: email,
-                password: password
-              });
-
-              if (!error && data && data.user) {
-                this.currentUser = data.user;
-                localStorage.setItem('itora_current_user', JSON.stringify(data.user));
-                loginSuccess = true;
-              } else if (error) {
-                if (error.message && error.message.includes('Invalid login credentials')) {
-                  this.showToast('Email atau Kata Sandi salah!', 'error');
-                  submitBtn.disabled = false;
-                  submitBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Masuk Sekarang';
-                  return;
-                }
-              }
-            }
-
-            if (!loginSuccess) {
-              const fallbackUser = { email, user_metadata: { full_name: email.split('@')[0] } };
-              this.currentUser = fallbackUser;
-              localStorage.setItem('itora_current_user', JSON.stringify(fallbackUser));
+            if (error) {
+              throw error;
             }
 
             this.showToast('Login Berhasil!', 'success');
+            this.currentUser = data.user;
             this.showDashboard();
           }
         } catch (err) {
-          this.showToast('Terjadi kendala pada jaringan. Menghubungkan secara lokal...', 'info');
-          const fallbackUser = { email, user_metadata: { full_name: fullname || email.split('@')[0] } };
-          this.currentUser = fallbackUser;
-          localStorage.setItem('itora_current_user', JSON.stringify(fallbackUser));
-          this.showDashboard();
+          let msg = 'Terjadi kesalahan sistem.';
+          if (typeof err === 'string') {
+            msg = err;
+          } else if (err && typeof err.message === 'string') {
+            msg = err.message;
+          }
+
+          if (msg.includes('Invalid login credentials')) {
+            msg = 'Email atau Kata Sandi salah.';
+          } else if (msg.includes('User already registered')) {
+            msg = 'Email ini sudah terdaftar. Silakan langsung Login.';
+          }
+
+          this.showToast(msg, 'error');
         } finally {
           submitBtn.disabled = false;
           submitBtn.innerHTML = this.isRegisterMode 
@@ -1064,7 +1032,6 @@
           await this.supabase.auth.signOut().catch(()=>{});
         }
         this.currentUser = null;
-        localStorage.removeItem('itora_current_user');
         this.hideDashboard();
         this.showToast('Anda telah keluar dari akun.', 'info');
       }
@@ -1112,40 +1079,27 @@
         try {
           let compressedFile = null;
           if (rawFile) {
-            // Kompres foto hingga < 200 KB
             compressedFile = await this.compressImage(rawFile, 200);
-            console.log(`Foto asli: ${(rawFile.size / 1024).toFixed(1)} KB -> Kompresi: ${(compressedFile.size / 1024).toFixed(1)} KB`);
+            console.log(`Foto dikompres: ${(compressedFile.size / 1024).toFixed(1)} KB`);
           }
 
           let receiptUrl = '';
           if (this.supabase && compressedFile) {
             const fileName = `bukti_${Date.now()}_${compressedFile.name}`;
-            const { data: uploadData } = await this.supabase.storage
+            const { data: uploadData, error: uploadErr } = await this.supabase.storage
               .from('receipts')
-              .upload(fileName, compressedFile).catch(()=>({}));
+              .upload(fileName, compressedFile);
 
-            if (uploadData) {
+            if (uploadErr) {
+              console.warn('Gagal upload storage Supabase:', uploadErr);
+            } else if (uploadData) {
               const { data: urlData } = this.supabase.storage.from('receipts').getPublicUrl(fileName);
               receiptUrl = urlData ? urlData.publicUrl : '';
             }
           }
 
-          const newIuranItem = {
-            id: Date.now(),
-            period_month: periode,
-            amount: parseFloat(jumlah),
-            payment_date: tanggal ? new Date(tanggal).toLocaleString('id-ID') : new Date().toLocaleString('id-ID'),
-            payment_method: metode,
-            note: catatan,
-            status: 'Pending'
-          };
-
-          let localHistory = JSON.parse(localStorage.getItem('itora_iuran_history') || '[]');
-          localHistory.unshift(newIuranItem);
-          localStorage.setItem('itora_iuran_history', JSON.stringify(localHistory));
-
           if (this.supabase) {
-            await this.supabase.from('dues').insert([
+            const { error: dbError } = await this.supabase.from('dues').insert([
               {
                 user_id: this.currentUser.id || null,
                 member_name: userName,
@@ -1157,10 +1111,12 @@
                 note: catatan,
                 status: 'Pending'
               }
-            ]).catch(err => console.log('Simpan dues supabase:', err));
+            ]);
+
+            if (dbError) throw dbError;
           }
 
-          this.showToast('Bukti iuran berhasil dikompres (<200KB) & dikirim!', 'success');
+          this.showToast('Bukti iuran dikompres (<200KB) & tersimpan di Supabase!', 'success');
           this.closeModal('modal-iuran');
           document.getElementById('form-iuran').reset();
           this.loadIuranHistory();
@@ -1173,36 +1129,49 @@
 
         } catch (err) {
           console.error(err);
-          this.showToast('Gagal memproses gambar/iuran. Coba gambar lain.', 'error');
+          this.showToast('Gagal memproses/menyimpan iuran ke Supabase.', 'error');
         } finally {
           btnSubmit.disabled = false;
           btnSubmit.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Kirim Bukti Pembayaran';
         }
       }
 
-      loadIuranHistory() {
+      async loadIuranHistory() {
         const historyContainer = document.getElementById('iuran-history-list');
         if (!historyContainer) return;
 
-        let history = JSON.parse(localStorage.getItem('itora_iuran_history') || '[]');
-        
-        if (history.length === 0) {
+        if (!this.supabase || !this.currentUser) {
           historyContainer.innerHTML = '<p class="text-muted" style="text-align:center;">Belum ada riwayat setoran iuran.</p>';
           return;
         }
 
-        historyContainer.innerHTML = history.map(item => `
-          <div class="card glass" style="padding: 14px; margin-bottom: 10px;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <h4>${item.period_month}</h4>
-              <span class="badge ${item.status === 'Verified' ? 'badge-success' : 'badge-warning'}">${item.status}</span>
-            </div>
-            <p style="color: var(--accent-gold); font-weight: 700; margin-top: 4px;">Rp ${item.amount.toLocaleString('id-ID')}</p>
-            <p class="text-muted" style="font-size: 0.75rem; margin-top: 4px;">
-              <i class="fa-regular fa-clock"></i> ${item.payment_date} • ${item.payment_method}
-            </p>
-          </div>
-        `).join('');
+        try {
+          const { data: dues, error } = await this.supabase
+            .from('dues')
+            .select('*')
+            .eq('user_id', this.currentUser.id)
+            .order('created_at', { ascending: false });
+
+          if (!error && dues && dues.length > 0) {
+            historyContainer.innerHTML = dues.map(item => `
+              <div class="card glass" style="padding: 14px; margin-bottom: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <h4>${item.period_month}</h4>
+                  <span class="badge ${item.status === 'Verified' ? 'badge-success' : 'badge-warning'}">${item.status}</span>
+                </div>
+                <p style="color: var(--accent-gold); font-weight: 700; margin-top: 4px;">Rp ${parseFloat(item.amount).toLocaleString('id-ID')}</p>
+                <p class="text-muted" style="font-size: 0.75rem; margin-top: 4px;">
+                  <i class="fa-regular fa-clock"></i> ${new Date(item.payment_date).toLocaleDateString('id-ID')} • ${item.payment_method}
+                </p>
+                ${item.receipt_url ? `<a href="${item.receipt_url}" target="_blank" class="text-muted" style="font-size:0.7rem; color:var(--primary); margin-top:4px; display:inline-block;"><i class="fa-solid fa-image"></i> Lihat Bukti Foto</a>` : ''}
+              </div>
+            `).join('');
+          } else {
+            historyContainer.innerHTML = '<p class="text-muted" style="text-align:center;">Belum ada riwayat setoran iuran di Supabase.</p>';
+          }
+        } catch(e) {
+          console.error(e);
+        }
       }
 
       async loadMembersFromSupabase() {
