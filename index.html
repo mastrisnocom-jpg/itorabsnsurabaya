@@ -563,7 +563,7 @@
           </div>
           <div class="card glass stat-card" onclick="app.navigateTo('kas')">
             <i class="fa-solid fa-wallet" style="color: #10B981;"></i>
-            <h3 id="stat-kas-amount">12.5M</h3>
+            <h3 id="stat-kas-amount">Rp 0</h3>
             <span>Kas (IDR)</span>
           </div>
         </div>
@@ -591,19 +591,20 @@
         </div>
       </section>
 
-      <!-- 2. PANELS SUPER ADMIN (PENGATURAN PENUH) -->
+      <!-- 2. PANEL SUPER ADMIN -->
       <section id="page-admin" class="page">
         <h2 style="color: var(--accent-gold);"><i class="fa-solid fa-user-shield"></i> Panel Super Admin</h2>
         <p class="text-muted" style="margin-bottom: 15px;">Kontrol penuh verifikasi iuran, anggota, dan saldo kas</p>
 
-        <!-- PENGATURAN KAS -->
+        <!-- PENGATURAN KAS POKOK/BASE -->
         <div class="card glass">
-          <h3 style="margin-bottom: 10px;"><i class="fa-solid fa-wallet" style="color: #10B981;"></i> Update Kas Komunitas</h3>
+          <h3 style="margin-bottom: 6px;"><i class="fa-solid fa-wallet" style="color: #10B981;"></i> Pengaturan Kas Utama</h3>
+          <p class="text-muted" style="font-size: 0.75rem; margin-bottom: 10px;">Saldo Kas Awal/Sisa + Otomatis Penambahan Iuran yang Disetujui</p>
           <div class="form-group">
-            <label>Jumlah Saldo Kas Baru (Rp)</label>
-            <input type="number" class="input-control" id="admin-kas-input" placeholder="12500000" value="12500000">
+            <label>Saldo Kas Pokok Awal (Rp)</label>
+            <input type="number" class="input-control" id="admin-kas-input" placeholder="0" value="0">
           </div>
-          <button type="button" class="btn btn-gold" onclick="app.adminUpdateKas()"><i class="fa-solid fa-floppy-disk"></i> Simpan Saldo Kas</button>
+          <button type="button" class="btn btn-gold" onclick="app.adminUpdateBaseKas()"><i class="fa-solid fa-floppy-disk"></i> Simpan Kas Pokok</button>
         </div>
 
         <!-- VERIFIKASI IURAN ANGGOTA -->
@@ -662,8 +663,8 @@
       <section id="page-kas" class="page">
         <h2>Kas & Iuran Komunitas</h2>
         <div class="card glass" style="margin-top: 12px; text-align: center;">
-          <span class="text-muted">Total Saldo Kas</span>
-          <h1 style="color: var(--primary); font-size: 2.2rem; margin: 8px 0;" id="kas-page-amount">Rp 12.500.000</h1>
+          <span class="text-muted">Total Saldo Kas Terkumpul</span>
+          <h1 style="color: var(--primary); font-size: 2.2rem; margin: 8px 0;" id="kas-page-amount">Rp 0</h1>
           
           <button type="button" class="btn btn-gold" style="margin-top: 10px;" onclick="app.openModal('modal-iuran')">
             <i class="fa-solid fa-receipt"></i> Setor Bukti Iuran Baru
@@ -834,7 +835,8 @@
         this.currentUser = null;
         this.members = [];
         this.iuranHistory = [];
-        this.kasAmount = 12500000;
+        this.baseKas = 0; // Kas dasar/pokok
+        this.approvedKasTotal = 0; // Total dari iuran yang di-approve
         this.initSupabase();
       }
 
@@ -860,10 +862,9 @@
         const dateInput = document.getElementById('iuran-tanggal');
         if (dateInput) dateInput.value = now.toISOString().slice(0,16);
 
-        // Load Saldo Kas
-        const savedKas = localStorage.getItem('itora_kas_amount');
-        if (savedKas) this.kasAmount = parseFloat(savedKas);
-        this.updateKasUI();
+        // Load Saldo Kas Pokok
+        const savedKas = localStorage.getItem('itora_base_kas');
+        if (savedKas) this.baseKas = parseFloat(savedKas);
 
         setTimeout(() => {
           const splash = document.getElementById('splash-screen');
@@ -960,6 +961,7 @@
         this.updateUserUI();
         this.loadMembersFromSupabase();
         this.loadIuranHistory();
+        this.calculateTotalKas(); // Otomatis kalkulasi kas
       }
 
       hideDashboard() {
@@ -1095,7 +1097,6 @@
         document.getElementById('profile-role').innerText = roleTitle;
         document.getElementById('profile-avatar').innerText = name.charAt(0).toUpperCase();
 
-        // TAMPILKAN FITUR ADMIN KHUSUS SUPER ADMIN
         const adminMenuItem = document.getElementById('menu-admin-item');
         const adminProfileBtn = document.getElementById('btn-admin-panel-profile');
 
@@ -1113,24 +1114,49 @@
         this.generateQRCode(memberCode);
       }
 
+      /* AUTOMATISASI KALKULASI SALDO KAS */
+      async calculateTotalKas() {
+        if (!this.supabase) return;
+        try {
+          // Ambil semua iuran yang statusnya 'Verified'
+          const { data: approvedDues, error } = await this.supabase
+            .from('dues')
+            .select('amount')
+            .eq('status', 'Verified');
+
+          if (!error && approvedDues) {
+            this.approvedKasTotal = approvedDues.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+          } else {
+            this.approvedKasTotal = 0;
+          }
+
+          this.updateKasUI();
+        } catch (e) {
+          console.error('Kalkulasi Kas Error:', e);
+        }
+      }
+
       updateKasUI() {
-        const textFormatted = `Rp ${this.kasAmount.toLocaleString('id-ID')}`;
+        const grandTotal = this.baseKas + this.approvedKasTotal;
+        const textFormatted = `Rp ${grandTotal.toLocaleString('id-ID')}`;
+        
         const statEl = document.getElementById('stat-kas-amount');
         const kasPageEl = document.getElementById('kas-page-amount');
-        if (statEl) statEl.innerText = (this.kasAmount / 1000000).toFixed(1) + 'M';
+        
+        if (statEl) statEl.innerText = grandTotal >= 1000000 ? (grandTotal / 1000000).toFixed(2) + 'M' : textFormatted;
         if (kasPageEl) kasPageEl.innerText = textFormatted;
         
         const adminInput = document.getElementById('admin-kas-input');
-        if (adminInput) adminInput.value = this.kasAmount;
+        if (adminInput) adminInput.value = this.baseKas;
       }
 
-      adminUpdateKas() {
+      adminUpdateBaseKas() {
         const val = parseFloat(document.getElementById('admin-kas-input').value);
         if (isNaN(val)) return;
-        this.kasAmount = val;
-        localStorage.setItem('itora_kas_amount', val);
+        this.baseKas = val;
+        localStorage.setItem('itora_base_kas', val);
         this.updateKasUI();
-        this.showToast('Saldo Kas Komunitas Berhasil Diperbarui!', 'success');
+        this.showToast('Saldo Kas Pokok Berhasil Diperbarui!', 'success');
       }
 
       async handleSubmitIuran(e) {
@@ -1289,6 +1315,7 @@
         }
       }
 
+      /* VERIFIKASI IURAN BISA MERUBAH SALDO KAS AUTOMATIS */
       async adminVerifyDue(dueId, status) {
         if (!this.supabase) return;
         try {
@@ -1299,9 +1326,13 @@
 
           if (error) throw error;
 
-          this.showToast(`Status Iuran Berhasil Diubah Menjadi ${status}!`, 'success');
+          this.showToast(`Iuran Berhasil Diubah Statusnya Menjadi: ${status}!`, 'success');
+          
+          // Re-kalkulasi Kas Otomatis & Reload Tampilan
+          await this.calculateTotalKas();
           this.loadAdminDuesList();
           this.loadIuranHistory();
+
         } catch (e) {
           this.showToast('Gagal memverifikasi iuran.', 'error');
         }
