@@ -22,7 +22,7 @@
     :root {
       --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       
-      /* SKALA UKURAN FONT PRESISI */
+      /* SKALA UKURAN FONT PRESISI UI MOBILE */
       --font-xs: 0.68rem;    /* 11px */
       --font-sm: 0.75rem;    /* 12px */
       --font-base: 0.85rem;  /* 13.6px */
@@ -227,11 +227,12 @@
 
     .notification-badge {
       position: absolute;
-      top: 6px;
-      right: 6px;
-      width: 9px;
-      height: 9px;
+      top: 4px;
+      right: 4px;
+      width: 10px;
+      height: 10px;
       background: #EF4444;
+      border: 2px solid #FFFFFF;
       border-radius: 50%;
       display: none;
     }
@@ -300,7 +301,7 @@
       box-shadow: 0 4px 15px rgba(0,0,0,0.03);
     }
 
-    /* DESAIN BANNER DENGAN GRADASI EMERALD & AKSEN GEOMETRY */
+    /* BANNER GRADASI EMERALD WAVE & GEOMETRY */
     .banner-card {
       background: linear-gradient(135deg, #009968 0%, #005E3E 100%);
       color: white;
@@ -310,7 +311,6 @@
       box-shadow: 0 8px 25px rgba(0, 135, 90, 0.22);
     }
 
-    /* Lingkaran abstrak pemanis di latar belakang banner */
     .banner-card::before {
       content: '';
       position: absolute;
@@ -361,7 +361,7 @@
       font-weight: var(--fw-medium);
     }
 
-    /* QUICK MENU GRID LINGKARAN PRESISI UI MOBILE */
+    /* QUICK MENU GRID LINGKARAN PRESISI MOBILE */
     .quick-menu {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -389,6 +389,7 @@
       color: var(--primary);
       border: 1px solid var(--border-dark);
       box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      position: relative;
     }
 
     .quick-item span {
@@ -624,7 +625,6 @@
       object-fit: cover;
     }
 
-    /* MENU ADMIN STYLES */
     .menu-admin-item {
       display: flex;
       align-items: center;
@@ -929,7 +929,6 @@
           <h3 style="margin-top: 6px; font-size: var(--font-base); font-weight: var(--fw-bold);" id="touring-page-title">Bromo Sunrise Ride</h3>
           <p class="text-muted" style="margin-top: 4px;"><i class="fa-regular fa-calendar"></i> <span id="touring-page-schedule">17 Agustus 2026 | 05:00 WIB</span></p>
           <p class="text-muted"><i class="fa-solid fa-location-dot"></i> Meeting Point: <span id="touring-page-meeting">Alun-Alun Surabaya</span></p>
-          
           <button type="button" class="btn btn-primary" style="margin-top: 16px;" id="touring-maps-btn" onclick="window.open('https://maps.google.com/?q=Bromo', '_blank')">
             <i class="fa-solid fa-map-location-dot"></i> Buka Rute Google Maps
           </button>
@@ -1474,7 +1473,10 @@
         this.loadMembersFromSupabase();
         this.loadIuranHistory();
         this.calculateTotalKas();
+
+        // CEK NOTIFIKASI & REALTIME SUBSCRIPTION KHUSUS SUPER ADMIN
         this.checkRealtimeNotifications();
+        this.subscribeToRealtimeChanges();
       }
 
       hideDashboard() {
@@ -1988,22 +1990,68 @@
         }
       }
 
+      /* LOGIKA PENGECEKAN NOTIFIKASI DOT UNTUK SUPER ADMIN */
       async checkRealtimeNotifications() {
         if (!this.supabase || !this.currentUser) return;
         const isSuperAdmin = (this.currentUser.email === 'mastrisnobpb@gmail.com');
 
-        try {
-          if (isSuperAdmin) {
-            const { count: pendingDuesCount } = await this.supabase.from('dues').select('*', { count: 'exact', head: true }).eq('status', 'Pending');
-            const { count: pendingMembersCount } = await this.supabase.from('members').select('*', { count: 'exact', head: true }).eq('approval_status', 'Pending');
-            const totalNotif = (pendingDuesCount || 0) + (pendingMembersCount || 0);
+        if (!isSuperAdmin) return;
 
-            const adminNotifDot = document.getElementById('admin-notif-dot');
-            const headerNotifDot = document.getElementById('header-notif-dot');
-            if (adminNotifDot) adminNotifDot.style.display = totalNotif > 0 ? 'block' : 'none';
-            if (headerNotifDot) headerNotifDot.style.display = totalNotif > 0 ? 'block' : 'none';
-          }
-        } catch(e) {}
+        try {
+          // 1. Cek anggota Pending
+          const { count: pendingMembersCount } = await this.supabase
+            .from('members')
+            .select('*', { count: 'exact', head: true })
+            .eq('approval_status', 'Pending');
+
+          // 2. Cek iuran Pending
+          const { count: pendingDuesCount } = await this.supabase
+            .from('dues')
+            .select('*', { count: 'exact', head: true })
+            .eq('status', 'Pending');
+
+          const totalNotif = (pendingMembersCount || 0) + (pendingDuesCount || 0);
+
+          const adminNotifDot = document.getElementById('admin-notif-dot');
+          const headerNotifDot = document.getElementById('header-notif-dot');
+          if (adminNotifDot) adminNotifDot.style.display = totalNotif > 0 ? 'block' : 'none';
+          if (headerNotifDot) headerNotifDot.style.display = totalNotif > 0 ? 'block' : 'none';
+        } catch(e) {
+          console.error('Notif check error:', e);
+        }
+      }
+
+      /* FITUR SUPABASE REALTIME SUBSCRIPTION */
+      subscribeToRealtimeChanges() {
+        if (!this.supabase || !this.currentUser) return;
+        const isSuperAdmin = (this.currentUser.email === 'mastrisnobpb@gmail.com');
+
+        if (!isSuperAdmin) return;
+
+        // Listener Anggota Baru
+        this.supabase
+          .channel('realtime-members-channel')
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'members' }, (payload) => {
+            this.checkRealtimeNotifications();
+            this.loadAdminPendingMembersList();
+            this.loadMembersFromSupabase();
+            if (payload.eventType === 'INSERT') {
+              this.showToast('Pendaftaran anggota baru masuk!', 'info');
+            }
+          })
+          .subscribe();
+
+        // Listener Iuran Baru
+        this.supabase
+          .channel('realtime-dues-channel')
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'dues' }, (payload) => {
+            this.checkRealtimeNotifications();
+            this.loadAdminDuesList();
+            if (payload.eventType === 'INSERT') {
+              this.showToast('Setoran iuran baru masuk!', 'info');
+            }
+          })
+          .subscribe();
       }
 
       async loadIuranHistory() {
