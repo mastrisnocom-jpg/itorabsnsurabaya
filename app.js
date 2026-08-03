@@ -1790,10 +1790,10 @@ class App {
 
       if (!error && orders && orders.length > 0) {
         container.innerHTML = orders.map(o => `
-          <div class="card" style="padding: 14px; margin-bottom: 12px; border-left: 4px solid ${o.status === 'Completed' ? '#10B981' : '#9333EA'}; border-radius:14px;">
+          <div class="card" style="padding: 14px; margin-bottom: 12px; border-left: 4px solid ${o.status === 'Completed' ? '#10B981' : o.status === 'Cancelled' ? '#EF4444' : '#9333EA'}; border-radius:14px;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <h4 style="font-size:var(--font-base); font-weight:700;">${o.member_name}</h4>
-              <span class="badge ${o.status === 'Completed' ? 'badge-success' : 'badge-warning'}">${o.status}</span>
+              <span class="badge ${o.status === 'Completed' ? 'badge-success' : o.status === 'Cancelled' ? 'badge-danger' : 'badge-warning'}">${o.status}</span>
             </div>
             <p style="font-weight:700; color:var(--primary); margin-top:4px;">${o.item_name} - Rp ${parseFloat(o.price).toLocaleString('id-ID')}</p>
             <p class="text-muted" style="margin-top:2px;">${new Date(o.created_at).toLocaleDateString('id-ID')}</p>
@@ -1810,25 +1810,42 @@ class App {
     } catch (e) {}
   }
 
+  // INTEGRASI APPROVAL MERCHANDISE & NOTIFIKASI
   async adminVerifyOrder(orderId, status, userId, itemName) {
     if (!this.supabase) return;
     try {
-      await this.supabase.from('orders').update({ status }).eq('id', orderId);
+      const { error } = await this.supabase
+        .from('orders')
+        .update({ status })
+        .eq('id', orderId);
+
+      if (error) throw error;
+
       this.showToast(`Status Pesanan Diubah: ${status}!`, 'success');
 
+      // KIRIM NOTIFIKASI OTOMATIS KE USER PEMESAN MERCHANDISE
       if (status === 'Completed') {
-        // TRIGGER NOTIFIKASI MERCHANDISE SELESAI
         await this.createNotification(
           userId,
           "Pembelian Merchandise Disetujui! 🛍️",
-          `Pesanan merchandise Anda (${itemName}) telah disetujui & diverifikasi oleh Admin.`,
+          `Pesanan merchandise Anda (${itemName}) telah disetujui & diverifikasi oleh Admin. Silakan ambil pesanan Anda!`,
+          "merch"
+        );
+      } else if (status === 'Cancelled') {
+        await this.createNotification(
+          userId,
+          "Pesanan Merchandise Dibatalkan ❌",
+          `Mohon maaf, pesanan merchandise Anda (${itemName}) telah dibatalkan oleh Admin.`,
           "merch"
         );
       }
 
       this.loadAdminOrdersList();
       this.checkRealtimeNotifications();
+      this.updateUnreadCountBadge();
+
     } catch(e) {
+      console.error('Error adminVerifyOrder:', e);
       this.showToast('Gagal memverifikasi pesanan.', 'error');
     }
   }
@@ -2411,18 +2428,22 @@ class App {
 
     try {
       if (!this.supabase) {
-        notifList.innerHTML = '<div class="notif-empty">Koneksi database tidak tersedia.</div>';
+        notifList.innerHTML = '<div class="notif-empty">Database Supabase tidak terhubung.</div>';
         return;
       }
 
-      // Ambil 20 notifikasi terbaru secara global (langsung mengambil seluruh notifikasi yang ada)
+      // Memuat notifikasi terbaru dari tabel notifications
       const { data, error } = await this.supabase
         .from('notifications')
         .select('*')
         .order('created_at', { ascending: false })
         .limit(20);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase Notification Query Error:', error);
+        notifList.innerHTML = `<div class="notif-empty" style="color:#EF4444;">Error: ${error.message}</div>`;
+        return;
+      }
 
       if (!data || data.length === 0) {
         notifList.innerHTML = '<div class="notif-empty">Belum ada notifikasi.</div>';
@@ -2452,8 +2473,8 @@ class App {
       this.updateUnreadCountBadge();
 
     } catch (err) {
-      console.error('Error loadNotifications:', err);
-      notifList.innerHTML = '<div class="notif-empty">Gagal memuat data notifikasi.</div>';
+      console.error('Catch Error loadNotifications:', err);
+      notifList.innerHTML = `<div class="notif-empty" style="color:#EF4444;">Terjadi kesalahan sistem.</div>`;
     }
   }
 
@@ -2507,9 +2528,11 @@ class App {
     }
   }
 
+  // FUNGSI UTAMA MEMBUAT NOTIFIKASI BARU KE DATABASE
   async createNotification(userId, title, message, type = 'info') {
     try {
       if (!this.supabase) return;
+
       const { error } = await this.supabase.from('notifications').insert([
         {
           user_id: userId,
@@ -2519,8 +2542,12 @@ class App {
           is_read: false
         }
       ]);
-      if (error) console.error('Gagal membuat notifikasi:', error);
-      else this.updateUnreadCountBadge();
+
+      if (error) {
+        console.error('Gagal membuat notifikasi:', error);
+      } else {
+        this.updateUnreadCountBadge();
+      }
     } catch (e) {
       console.error('Error createNotification:', e);
     }
