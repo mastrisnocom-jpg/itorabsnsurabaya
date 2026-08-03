@@ -349,7 +349,10 @@
         </div>
 
         <div class="form-group">
-          <label><i class="fa-solid fa-lock"></i> Kata Sandi</label>
+          <div class="flex justify-between items-center mb-1">
+            <label class="!mb-0"><i class="fa-solid fa-lock"></i> Kata Sandi</label>
+            <a href="javascript:void(0)" onclick="app.showForgotPasswordModal()" class="text-xs text-emerald-600 font-bold hover:underline">Lupa Kata Sandi?</a>
+          </div>
           <input type="password" class="input-control" id="auth-password" placeholder="••••••••" required minlength="6">
         </div>
 
@@ -361,6 +364,58 @@
       <button type="button" style="width:100%; border:1.5px solid #00875A; color:#00875A; background:transparent; padding:12px; border-radius:16px; margin-top:10px; font-weight:700;" id="auth-toggle-btn" onclick="app.toggleAuthMode()">
         Belum Memiliki Akun? Daftar Disini
       </button>
+    </div>
+  </div>
+
+  <!-- MODAL LUPA PASSWORD (RESET PASSWORD) -->
+  <div id="forgot-modal" class="auth-overlay" style="display: none; z-index: 10002;">
+    <div class="auth-card">
+      <button type="button" onclick="app.hideForgotPasswordModal()" style="position:absolute; top:16px; right:18px; border:none; background:#F1F5F9; color:#64748B; width:32px; height:32px; border-radius:50%; cursor:pointer;">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div style="text-align:center; margin-bottom:20px;">
+        <i class="fa-solid fa-key text-amber-500" style="font-size:3rem; margin-bottom:8px;"></i>
+        <h2 style="font-size:1.3rem; font-weight:800; color:#0F172A;">Reset Kata Sandi</h2>
+        <p style="font-size:0.78rem; color:#64748B; margin-top:4px;">Masukkan email resmi Anda untuk menerima instruksi pemulihan kata sandi.</p>
+      </div>
+
+      <form onsubmit="app.handleForgotPasswordSubmit(event)">
+        <div class="form-group">
+          <label><i class="fa-solid fa-envelope"></i> Email Terdaftar</label>
+          <input type="email" class="input-control" id="forgot-email" placeholder="nama@bsn.co.id" required>
+        </div>
+
+        <button type="submit" class="btn-primary" id="btn-forgot-submit" style="background:#00875A;">
+          <i class="fa-solid fa-paper-plane"></i> Kirim Link Reset Password
+        </button>
+      </form>
+
+      <button type="button" style="width:100%; border:none; color:#64748B; background:transparent; padding:10px; margin-top:8px; font-weight:700; font-size:0.8rem;" onclick="app.hideForgotPasswordModal(); app.showAuthModal();">
+        <i class="fa-solid fa-arrow-left"></i> Kembali ke Form Login
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL SET KATA SANDI BARU (SETELAH KLIK LINK DI EMAIL) -->
+  <div id="reset-password-modal" class="auth-overlay" style="display: none; z-index: 10003;">
+    <div class="auth-card">
+      <div style="text-align:center; margin-bottom:20px;">
+        <i class="fa-solid fa-lock text-emerald-600" style="font-size:3rem; margin-bottom:8px;"></i>
+        <h2 style="font-size:1.3rem; font-weight:800; color:#0F172A;">Buat Kata Sandi Baru</h2>
+        <p style="font-size:0.78rem; color:#64748B; margin-top:4px;">Silakan masukkan kata sandi baru untuk akun ITORA Anda.</p>
+      </div>
+
+      <form onsubmit="app.handleUpdateNewPassword(event)">
+        <div class="form-group">
+          <label><i class="fa-solid fa-key"></i> Kata Sandi Baru</label>
+          <input type="password" class="input-control" id="new-password" placeholder="••••••••" required minlength="6">
+        </div>
+
+        <button type="submit" class="btn-primary" id="btn-reset-password-submit">
+          <i class="fa-solid fa-floppy-disk"></i> Simpan Kata Sandi Baru
+        </button>
+      </form>
     </div>
   </div>
 
@@ -491,6 +546,15 @@
       async init() {
         await this.loadBoardFromSupabase();
 
+        // DETEKSI EVENT RECOVERY / RESET PASSWORD DARI EMAIL
+        if (this.supabase) {
+          this.supabase.auth.onAuthStateChange((event) => {
+            if (event === 'PASSWORD_RECOVERY') {
+              document.getElementById('reset-password-modal').style.display = 'flex';
+            }
+          });
+        }
+
         setTimeout(() => {
           const splash = document.getElementById('splash-screen');
           if (splash) splash.style.display = 'none';
@@ -516,7 +580,6 @@
       async validateUserFlow() {
         if (!this.currentUser) return;
 
-        // BILA USER TERDETEKSI LOGIN: TAMPILKAN TOMBOL DASHBOARD & LOGOUT, TAMPILKAN SLIDE FOTO
         const btnDashboard = document.getElementById('btn-go-dashboard');
         const btnLogout = document.getElementById('btn-logout-main');
         const btnLogin = document.getElementById('btn-login-main');
@@ -526,12 +589,10 @@
         if (btnLogout) btnLogout.style.display = 'flex';
         if (btnLogin) btnLogin.style.display = 'none';
 
-        // BILA SUPER ADMIN LOGIN: TAMPILKAN TOMBOL PENGATURAN LANDING
         if (this.currentUser.email === 'mastrisnobpb@gmail.com') {
           if (btnSetting) btnSetting.style.display = 'flex';
         }
 
-        // TUKAR REGISTRASI MENJADI CAROUSEL FOTO DOKUMENTASI
         const registerSection = document.getElementById('section-landing-register');
         const gallerySection = document.getElementById('section-landing-gallery');
 
@@ -540,16 +601,12 @@
           gallerySection.style.display = 'block';
           this.startSliderAutoplay();
         }
-
-        // CATATAN: PENGGUNA TIDAK DI-REDIRECT DENGAN PAKSA KE DASHBOARD.HTML
-        // Pengguna tetap berada di index.html dan bebas klik tombol "Dashboard App"
       }
 
       showLandingPage() {
         document.getElementById('pending-approval-screen').style.display = 'none';
         document.getElementById('landing-screen').style.display = 'block';
 
-        // BILA GUEST (BELUM LOGIN), TAMPILKAN TOMBOL LOGIN & REGISTRASI CEPAT
         const btnDashboard = document.getElementById('btn-go-dashboard');
         const btnLogout = document.getElementById('btn-logout-main');
         const btnLogin = document.getElementById('btn-login-main');
@@ -607,6 +664,56 @@
 
       showAuthModal() { document.getElementById('auth-screen').style.display = 'flex'; }
       hideAuthModal() { document.getElementById('auth-screen').style.display = 'none'; }
+
+      showForgotPasswordModal() {
+        this.hideAuthModal();
+        document.getElementById('forgot-modal').style.display = 'flex';
+      }
+      hideForgotPasswordModal() {
+        document.getElementById('forgot-modal').style.display = 'none';
+      }
+
+      async handleForgotPasswordSubmit(e) {
+        e.preventDefault();
+        const email = document.getElementById('forgot-email').value.trim();
+        const btn = document.getElementById('btn-forgot-submit');
+        btn.disabled = true;
+
+        try {
+          const { error } = await this.supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: window.location.href
+          });
+
+          if (error) throw error;
+
+          this.showToast('Instruksi reset kata sandi telah dikirim ke email Anda!', 'success');
+          this.hideForgotPasswordModal();
+        } catch (err) {
+          this.showToast('Gagal mengirim reset password: ' + err.message, 'error');
+        } finally {
+          btn.disabled = false;
+        }
+      }
+
+      async handleUpdateNewPassword(e) {
+        e.preventDefault();
+        const newPassword = document.getElementById('new-password').value;
+        const btn = document.getElementById('btn-reset-password-submit');
+        btn.disabled = true;
+
+        try {
+          const { error } = await this.supabase.auth.updateUser({ password: newPassword });
+          if (error) throw error;
+
+          this.showToast('Kata sandi berhasil diperbarui! Silakan login kembali.', 'success');
+          document.getElementById('reset-password-modal').style.display = 'none';
+          this.showAuthModal();
+        } catch (err) {
+          this.showToast('Gagal memperbarui kata sandi: ' + err.message, 'error');
+        } finally {
+          btn.disabled = false;
+        }
+      }
 
       showAdminBoardModal() {
         this.loadAdminBoardList();
