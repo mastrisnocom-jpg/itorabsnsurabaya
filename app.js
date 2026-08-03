@@ -2410,22 +2410,18 @@ class App {
     notifList.innerHTML = '<div class="notif-empty">Memuat notifikasi...</div>';
 
     try {
-      if (!this.supabase) return;
-      const currentUserId = this.currentUser ? this.currentUser.id : null;
+      if (!this.supabase) {
+        notifList.innerHTML = '<div class="notif-empty">Koneksi database tidak tersedia.</div>';
+        return;
+      }
 
-      let query = this.supabase
+      // Ambil 20 notifikasi terbaru secara global (langsung mengambil seluruh notifikasi yang ada)
+      const { data, error } = await this.supabase
         .from('notifications')
         .select('*')
         .order('created_at', { ascending: false })
         .limit(20);
 
-      if (currentUserId) {
-        query = query.or(`user_id.eq.${currentUserId},user_id.is.null`);
-      } else {
-        query = query.is('user_id', null);
-      }
-
-      const { data, error } = await query;
       if (error) throw error;
 
       if (!data || data.length === 0) {
@@ -2457,7 +2453,7 @@ class App {
 
     } catch (err) {
       console.error('Error loadNotifications:', err);
-      notifList.innerHTML = '<div class="notif-empty">Gagal memuat notifikasi.</div>';
+      notifList.innerHTML = '<div class="notif-empty">Gagal memuat data notifikasi.</div>';
     }
   }
 
@@ -2468,20 +2464,12 @@ class App {
   async updateUnreadCountBadge() {
     try {
       if (!this.supabase) return;
-      const currentUserId = this.currentUser ? this.currentUser.id : null;
 
-      let query = this.supabase
+      const { count, error } = await this.supabase
         .from('notifications')
         .select('id', { count: 'exact', head: true })
         .eq('is_read', false);
 
-      if (currentUserId) {
-        query = query.or(`user_id.eq.${currentUserId},user_id.is.null`);
-      } else {
-        query = query.is('user_id', null);
-      }
-
-      const { count, error } = await query;
       if (error) throw error;
 
       const badge = document.getElementById('notifBadge');
@@ -2511,17 +2499,8 @@ class App {
   async markAllNotificationsAsRead() {
     try {
       if (!this.supabase) return;
-      const currentUserId = this.currentUser ? this.currentUser.id : null;
 
-      let query = this.supabase.from('notifications').update({ is_read: true }).eq('is_read', false);
-
-      if (currentUserId) {
-        query = query.or(`user_id.eq.${currentUserId},user_id.is.null`);
-      } else {
-        query = query.is('user_id', null);
-      }
-
-      await query;
+      await this.supabase.from('notifications').update({ is_read: true }).eq('is_read', false);
       this.loadNotifications();
     } catch (err) {
       console.error('Error markAllNotificationsAsRead:', err);
