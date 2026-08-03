@@ -767,7 +767,7 @@
               <i class="fa-solid fa-compass"></i> Detail & Rute
             </button>
             <span style="font-size:0.7rem; font-weight:700; background:rgba(0,0,0,0.4); padding:4px 10px; border-radius:12px;" id="home-touring-joined-badge">
-              <i class="fa-solid fa-users"></i> 0 Member Join
+              <i class="fa-solid fa-users"></i> <span id="home-joined-count">0</span> Member Join
             </span>
           </div>
         </div>
@@ -2035,16 +2035,21 @@
         const homeTitle = document.getElementById('home-touring-title');
         const homeSchedule = document.getElementById('home-touring-schedule');
         const homeMeeting = document.getElementById('home-touring-meeting');
+        const homeJoinedCount = document.getElementById('home-joined-count');
 
         if (upcomingList.length > 0) {
           const mainEvent = upcomingList[0];
           if (homeTitle) homeTitle.innerText = mainEvent.title;
           if (homeSchedule) homeSchedule.innerText = mainEvent.schedule_text;
           if (homeMeeting) homeMeeting.innerText = mainEvent.meeting_point;
+
+          const mainEventParticipants = this.touringParticipants.filter(p => p.touring_id === mainEvent.id && p.status === 'Ikut');
+          if (homeJoinedCount) homeJoinedCount.innerText = mainEventParticipants.length;
         } else {
           if (homeTitle) homeTitle.innerText = "Belum Ada Agenda Mendatang";
           if (homeSchedule) homeSchedule.innerText = "-";
           if (homeMeeting) homeMeeting.innerText = "-";
+          if (homeJoinedCount) homeJoinedCount.innerText = "0";
         }
 
         const isSuperAdmin = (this.currentUser && this.currentUser.email === 'mastrisnobpb@gmail.com');
@@ -3544,8 +3549,9 @@
               }
             })
             .on('postgres_changes', { event: '*', schema: 'public', table: 'touring_participants' }, () => {
-              this.loadTouringParticipants();
-              this.renderTouringsUI();
+              this.loadTouringParticipants().then(() => {
+                this.renderTouringsUI();
+              });
             })
             .subscribe();
         } catch (e) {
