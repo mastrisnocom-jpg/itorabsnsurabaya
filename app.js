@@ -1264,6 +1264,7 @@ class App {
     }
   }
 
+  /* RENDERING MERCHANDISE & FITUR ZOOM GAMBAR */
   renderShopGrid() {
     const container = document.getElementById('public-products-grid');
     if (!container) return;
@@ -1273,23 +1274,28 @@ class App {
       return;
     }
 
-    container.innerHTML = this.products.map(p => `
-      <div class="product-card">
-        <div class="product-img-wrapper">
-          <img src="${p.image_url || 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500'}" alt="${p.title}">
-          <span class="product-badge ${p.stock_status === 'Ready Stock' ? 'badge-success' : 'badge-warning'}">${p.stock_status || 'Ready'}</span>
-        </div>
-        <div class="product-info">
-          <div>
-            <div class="product-title">${p.title}</div>
-            <div class="product-price">Rp ${parseFloat(p.price).toLocaleString('id-ID')}</div>
+    container.innerHTML = this.products.map(p => {
+      const imgUrl = p.image_url || 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500';
+      const formattedPrice = `Rp ${parseFloat(p.price).toLocaleString('id-ID')}`;
+
+      return `
+        <div class="product-card">
+          <div class="product-img-wrapper" onclick="app.openZoomPhoto('${imgUrl}', '${p.title} - ${formattedPrice}', 'Merchandise ITORA')">
+            <img src="${imgUrl}" alt="${p.title}">
+            <span class="product-badge ${p.stock_status === 'Ready Stock' ? 'badge-success' : 'badge-warning'}">${p.stock_status || 'Ready'}</span>
           </div>
-          <button type="button" class="btn btn-sm btn-primary" onclick="app.openOrderMerchModal('${p.id}')">
-            <i class="fa-solid fa-cart-plus"></i> Pesan
-          </button>
+          <div class="product-info">
+            <div>
+              <div class="product-title">${p.title}</div>
+              <div class="product-price">${formattedPrice}</div>
+            </div>
+            <button type="button" class="btn btn-sm btn-primary" onclick="app.openOrderMerchModal('${p.id}')">
+              <i class="fa-solid fa-cart-plus"></i> Pesan
+            </button>
+          </div>
         </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
   }
 
   openOrderMerchModal(productId) {
@@ -2290,6 +2296,5 @@ class App {
   }
 }
 
-// Inisialisasi Aplikasi ketika DOM Siap
 const app = new App();
 document.addEventListener('DOMContentLoaded', () => app.init());
