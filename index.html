@@ -253,73 +253,17 @@
     .touring-info-item span { font-size: 0.65rem; font-weight: var(--fw-bold); color: var(--text-main-dark); line-height: 1.2; word-break: break-word; }
     .touring-info-item small { font-size: 0.58rem; color: var(--text-muted-dark); display: block; margin-top: 2px; }
 
-    /* REDESAIN DOKUMENTASI & GALERI RINGKAS CANGGIH */
-    .gallery-group {
-      margin-bottom: 22px;
-      background: #FFFFFF;
-      border: 1px solid var(--border-dark);
-      border-radius: var(--radius-md);
-      padding: 14px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.02);
-    }
+    .gallery-group { margin-bottom: 22px; background: #FFFFFF; border: 1px solid var(--border-dark); border-radius: var(--radius-md); padding: 14px; box-shadow: 0 4px 14px rgba(0,0,0,0.02); }
+    .gallery-group-title { font-size: var(--font-sm); font-weight: var(--fw-extrabold); color: var(--primary); display: flex; align-items: center; gap: 8px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border-dark); }
+    .gallery-compact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .gallery-photo-item { position: relative; height: 100px; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border-dark); cursor: pointer; background: #F1F5F9; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
+    .gallery-photo-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
+    .gallery-photo-item:hover img { transform: scale(1.08); }
 
-    .gallery-group-title {
-      font-size: var(--font-sm);
-      font-weight: var(--fw-extrabold);
-      color: var(--primary);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 12px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--border-dark);
-    }
-
-    .gallery-compact-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-    }
-
-    .gallery-photo-item {
-      position: relative;
-      height: 100px;
-      border-radius: var(--radius-sm);
-      overflow: hidden;
-      border: 1px solid var(--border-dark);
-      cursor: pointer;
-      background: #F1F5F9;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-    }
-
-    .gallery-photo-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.3s ease;
-    }
-
-    .gallery-photo-item:hover img {
-      transform: scale(1.08);
-    }
-
-    /* WATERMARK OTOMATIS PADA GAMBAR */
     .gallery-watermark {
-      position: absolute;
-      bottom: 4px;
-      right: 4px;
-      background: rgba(0, 0, 0, 0.55);
-      backdrop-filter: blur(4px);
-      color: #FFFFFF;
-      font-size: 0.48rem;
-      font-weight: 800;
-      padding: 2px 5px;
-      border-radius: 4px;
-      letter-spacing: 0.5px;
-      pointer-events: none;
-      display: flex;
-      align-items: center;
-      gap: 3px;
+      position: absolute; bottom: 4px; right: 4px; background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(4px);
+      color: #FFFFFF; font-size: 0.48rem; font-weight: 800; padding: 2px 5px; border-radius: 4px; letter-spacing: 0.5px;
+      pointer-events: none; display: flex; align-items: center; gap: 3px;
     }
 
     .shop-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 14px; }
@@ -336,11 +280,6 @@
     .info-item i { font-size: 1.2rem; color: var(--primary); width: 24px; text-align: center; }
     .info-item div span { display: block; font-size: var(--font-xs); color: var(--text-muted-dark); font-weight: var(--fw-medium); }
     .info-item div strong { font-size: var(--font-base); color: var(--text-main-dark); font-weight: var(--fw-bold); }
-
-    .form-group { margin-bottom: 16px; }
-    .form-group label { display: block; font-size: var(--font-xs); font-weight: var(--fw-bold); margin-bottom: 6px; color: var(--text-muted-dark); }
-    .input-control { width: 100%; padding: 12px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-dark); background: #F8FAFC; color: var(--text-main-dark); outline: none; font-size: var(--font-base); }
-    .input-control:focus { border-color: var(--primary); background: #FFFFFF; }
 
     .btn { width: 100%; padding: 12px 14px; border-radius: var(--radius-md); border: none; font-weight: var(--fw-bold); font-size: var(--font-base); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
     .btn-sm { padding: 6px 12px; font-size: var(--font-xs); border-radius: var(--radius-sm); }
@@ -731,7 +670,7 @@
         </div>
       </section>
 
-      <!-- 6. GALERI / DOKUMENTASI (DENGAN PENGELOMPOKAN JADWAL TOURING, WATERMARK, & ZOOM PREVIEW) -->
+      <!-- 6. GALERI / DOKUMENTASI -->
       <section id="page-galeri" class="page">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
           <div>
@@ -904,7 +843,7 @@
     </div>
   </div>
 
-  <!-- MODAL TAMBAH FOTO GALERI (KHUSUS ADMIN / SUPER ADMIN) -->
+  <!-- MODAL TAMBAH FOTO GALERI -->
   <div class="modal-overlay" id="modal-add-photo">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-add-photo')"><i class="fa-solid fa-xmark"></i></button>
@@ -1400,7 +1339,7 @@
   <!-- JAVASCRIPT LOGIC LENGKAP UTUH -->
   <script>
     const SUPABASE_URL = 'https://lfusrctizdydnsiopzfi.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxmdXNyY3RizdydbnNpb3B6ZmkiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc4NTY2MjQ5NCwiZXhwIjoyMTAxMjM4NDk0fQ.vWd4l9zbRg3HxHVECN8I67h7gGUsZdaRJ9bD-gmEDUY';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxmdXNyY3RpemR5ZG5zaW9wemZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU2NjI0OTQsImV4cCI6MjEwMTIzODQ5NH0.vWd4l9zbRg3HxHVECN8I67h7gGUsZdaRJ9bD-gmEDUY';
 
     class App {
       constructor() {
@@ -1506,7 +1445,6 @@
         if (displayWA) displayWA.innerText = `+${this.adminWANumber}`;
       }
 
-      // LOAD & RENDER DOKUMENTASI GALERI DENGAN WATERMARK & PENGELOMPOKAN LOKASI
       async loadGalleryFromSupabase() {
         if (!this.supabase) return;
         try {
@@ -1531,7 +1469,6 @@
         if (!container) return;
 
         if (this.galleryPhotos.length === 0) {
-          // Dummy sampel jika database belum terisi
           this.galleryPhotos = [
             { id: '1', touring_name: 'Touring Bromo Sunrise', image_url: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=800', caption: 'Kuda besi di lautan pasir Bromo' },
             { id: '2', touring_name: 'Touring Bromo Sunrise', image_url: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800', caption: 'Kebersamaan rombongan ITORA' },
@@ -1539,7 +1476,6 @@
           ];
         }
 
-        // Pengelompokan foto berdasarkan nama touring / lokasi
         const grouped = {};
         this.galleryPhotos.forEach(p => {
           const groupName = p.touring_name || 'Kegiatan Umum';
@@ -1561,7 +1497,6 @@
                 <div class="gallery-photo-item" onclick="app.openZoomPhoto('${img.image_url}', '${img.caption || ''}', '${img.touring_name}')">
                   <img src="${img.image_url}" alt="${img.caption || 'Foto ITORA'}">
                   
-                  <!-- WATERMARK OTOMATIS -->
                   <div class="gallery-watermark">
                     <i class="fa-solid fa-shield"></i> ITORA BSN
                   </div>
