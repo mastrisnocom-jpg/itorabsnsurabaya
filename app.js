@@ -14,7 +14,7 @@ class App {
     this.galleryPhotos = [];
     this.baseKas = 0;
     this.approvedKasTotal = 0;
-    this.adminWANumber = "6281234567890";
+    this.adminWANumber = "6282146511484";
     this.selectedTouringId = null;
     this.initSupabase();
   }
