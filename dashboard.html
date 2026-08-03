@@ -179,7 +179,7 @@
     }
 
     .bottom-nav {
-      position: fixed; bottom: 0; left: 0; right: 0; height: 70px; z-index: 8999; display: flex; justify-content: space-around;
+      position: fixed; bottom: 0; left: 0; right: 0; height: 70px; z-index: 8999; display: flex; justify-around: space-around;
       align-items: center; background: #FFFFFF; border-top: 1px solid var(--border-dark); border-top-left-radius: var(--radius-lg);
       border-top-right-radius: var(--radius-lg); box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08); padding-bottom: env(safe-area-inset-bottom, 0px);
     }
@@ -779,6 +779,15 @@
 
         <div class="quick-menu" style="grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px;">
           
+          <!-- KELOLA PENGURUS LANDING PAGE -->
+          <div class="card" style="margin:0; padding:16px; text-align:center; cursor:pointer;" onclick="app.openModal('modal-admin-board')">
+            <div class="quick-icon" style="margin: 0 auto 8px; width:48px; height:48px; background:#D1FAE5; color:#047857;">
+              <i class="fa-solid fa-sitemap"></i>
+            </div>
+            <strong style="font-size:var(--font-base); font-weight:var(--fw-bold);">Kelola Pengurus</strong>
+            <span class="text-muted" style="display:block; font-size:var(--font-xs);">Ubah Foto/Nama Landing</span>
+          </div>
+
           <div class="card" style="margin:0; padding:16px; text-align:center; cursor:pointer;" onclick="app.openModal('modal-admin-menu')">
             <div class="quick-icon" style="margin: 0 auto 8px; width:48px; height:48px; background:#E0F2FE; color:#0284C7;">
               <i class="fa-solid fa-bars-staggered"></i>
@@ -905,7 +914,6 @@
             <h2 style="font-size: var(--font-lg); font-weight: var(--fw-bold);">Dokumentasi Kegiatan</h2>
             <p class="text-muted">Foto kenangan touring & kopdar ITORA BSN</p>
           </div>
-          <!-- DIPERBAIKI: Mengakses app.openAddPhotoModal() -->
           <button type="button" class="btn btn-sm btn-gold" id="admin-add-photo-btn" style="display:none; width:auto;" onclick="app.openAddPhotoModal()">
             <i class="fa-solid fa-upload"></i> Tambah Foto
           </button>
@@ -1057,6 +1065,83 @@
 
   <!-- ALL MODALS -->
 
+  <!-- MODAL ADMIN: KELOLA PENGURUS LANDING PAGE -->
+  <div class="modal-overlay" id="modal-admin-board">
+    <div class="modal-card">
+      <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-board')"><i class="fa-solid fa-xmark"></i></button>
+
+      <div class="pro-modal-header">
+        <div class="title-wrap">
+          <i class="fa-solid fa-sitemap" style="color:var(--primary);"></i>
+          <h3>Kelola Pengurus Landing</h3>
+        </div>
+        <button class="btn btn-sm btn-gold" style="width:auto;" onclick="app.openAddBoardModal()"><i class="fa-solid fa-plus"></i> Tambah</button>
+      </div>
+
+      <div class="pro-modal-body">
+        <div id="admin-board-list">
+          <p class="text-muted" style="text-align:center;">Memuat data pengurus...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL FORM TAMBAH / EDIT PENGURUS -->
+  <div class="modal-overlay" id="modal-add-board" style="z-index:90005;">
+    <div class="modal-card">
+      <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-add-board')"><i class="fa-solid fa-xmark"></i></button>
+
+      <div class="pro-modal-header">
+        <div class="title-wrap">
+          <i class="fa-solid fa-user-pen" style="color:var(--primary);"></i>
+          <h3>Form Data Pengurus</h3>
+        </div>
+      </div>
+
+      <div class="pro-modal-body">
+        <form id="form-board" onsubmit="app.handleSaveBoardMember(event)">
+          <input type="hidden" id="board-id">
+
+          <div class="pro-form-group">
+            <input type="text" id="board-name" placeholder=" " required>
+            <label for="board-name">Nama Pengurus</label>
+          </div>
+
+          <div class="pro-form-group">
+            <input type="text" id="board-title" placeholder=" " required>
+            <label for="board-title">Jabatan (e.g. Ketua Chapter 1)</label>
+          </div>
+
+          <div class="pro-form-group always-float">
+            <select id="board-role-category" required>
+              <option value="pembina">Pembina / Penasihat</option>
+              <option value="ketua">Ketua Chapter</option>
+              <option value="wakil">Wakil Ketua</option>
+              <option value="sekretaris">Sekretaris</option>
+              <option value="bendahara">Bendahara</option>
+              <option value="divisi">Koordinator Divisi</option>
+            </select>
+            <label for="board-role-category">Kategori Struktur</label>
+          </div>
+
+          <div class="pro-form-group always-float">
+            <input type="file" id="board-photo-file" accept="image/*">
+            <label for="board-photo-file">Foto Profil Diri (Opsional)</label>
+          </div>
+
+          <div class="pro-form-group">
+            <input type="number" id="board-sort-order" value="1" required placeholder=" ">
+            <label for="board-sort-order">Urutan Tampil (Sort Order)</label>
+          </div>
+
+          <button type="submit" class="pro-btn-gold" id="btn-save-board" style="margin-top:10px;">
+            <i class="fa-solid fa-floppy-disk"></i> Simpan Data Pengurus
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL ZOOM LIGHTBOX PREVIEW DOKUMENTASI FOTO -->
   <div class="modal-overlay" id="modal-zoom-photo">
     <div class="modal-card" style="max-width: 500px; background:#0F172A; border:none;">
@@ -1091,9 +1176,7 @@
       <div class="pro-modal-body">
         <form onsubmit="app.handleSaveGalleryPhoto(event)">
           <div class="pro-form-group always-float">
-            <!-- DIPERBAIKI: Diisi secara dinamis melalui app.openAddPhotoModal() -->
-            <select id="photo-touring-name" required>
-            </select>
+            <select id="photo-touring-name" required></select>
             <label for="photo-touring-name">Kategori Agenda / Lokasi</label>
           </div>
 
@@ -1753,6 +1836,7 @@
         this.iuranHistory = [];
         this.touringParticipants = [];
         this.tourings = [];
+        this.boardMembers = [];
         this.galleryPhotos = [];
         this.baseKas = 0;
         this.approvedKasTotal = 0;
@@ -1935,14 +2019,11 @@
         this.openModal('modal-zoom-photo');
       }
 
-      /* DIPERBAIKI: Mengisi <select> modal upload foto secara DINAMIS berdasarkan tanggal touring */
       openAddPhotoModal() {
         const selectEl = document.getElementById('photo-touring-name');
         if (!selectEl) return;
 
         const now = new Date();
-        
-        // Filter HANYA touring yang TANGGAL ACARANYA SUDAH LEWAT (< hari ini)
         const pastTourings = this.tourings.filter(t => new Date(t.event_date) < now);
 
         let optionsHTML = '';
@@ -1951,7 +2032,6 @@
           optionsHTML += pastTourings.map(t => `<option value="${t.title}">${t.title}</option>`).join('');
         }
 
-        // Pilihan bawaan permanen untuk agenda selain touring
         optionsHTML += `
           <option value="Kopdar & Doa Bersama">Kopdar & Doa Bersama</option>
           <option value="Kegiatan Umum">Kegiatan Umum</option>
@@ -2048,19 +2128,30 @@
         const statTouringEl = document.getElementById('stat-touring-count');
         if (statTouringEl) statTouringEl.innerText = upcomingList.length;
 
+        // BINDING HERO WIDGET AGENDA UTAMA BERANDA
         const homeTitle = document.getElementById('home-touring-title');
         const homeSchedule = document.getElementById('home-touring-schedule');
         const homeMeeting = document.getElementById('home-touring-meeting');
+        const homeJoinedBadge = document.getElementById('home-touring-joined-badge');
 
         if (upcomingList.length > 0) {
           const mainEvent = upcomingList[0];
           if (homeTitle) homeTitle.innerText = mainEvent.title;
-          if (homeSchedule) homeSchedule.innerText = mainEvent.schedule_text;
-          if (homeMeeting) homeMeeting.innerText = mainEvent.meeting_point;
+          if (homeSchedule) homeSchedule.innerText = mainEvent.schedule_text || mainEvent.event_date;
+          if (homeMeeting) homeMeeting.innerText = mainEvent.meeting_point || 'Surabaya';
+
+          // Dapatkan hitungan riil member yang join untuk event utama
+          if (homeJoinedBadge) {
+            const joinedCount = this.touringParticipants.filter(
+              p => p.touring_id === mainEvent.id && (p.status === 'Ikut' || p.status === '✓ Ikut')
+            ).length;
+            homeJoinedBadge.innerHTML = `<i class="fa-solid fa-users"></i> ${joinedCount} Member Join`;
+          }
         } else {
           if (homeTitle) homeTitle.innerText = "Belum Ada Agenda Mendatang";
           if (homeSchedule) homeSchedule.innerText = "-";
           if (homeMeeting) homeMeeting.innerText = "-";
+          if (homeJoinedBadge) homeJoinedBadge.innerHTML = `<i class="fa-solid fa-users"></i> 0 Member Join`;
         }
 
         const isSuperAdmin = (this.currentUser && this.currentUser.email === 'mastrisnobpb@gmail.com');
@@ -2075,7 +2166,7 @@
               const participants = this.touringParticipants.filter(p => p.touring_id === t.id);
               const myParticipant = this.currentUser ? participants.find(p => p.user_id === this.currentUser.id) : null;
               const myStatus = myParticipant ? myParticipant.status : 'Belum Konfirmasi';
-              const ikutCount = participants.filter(p => p.status === 'Ikut').length;
+              const ikutCount = participants.filter(p => p.status === 'Ikut' || p.status === '✓ Ikut').length;
 
               return `
                 <div class="touring-card">
@@ -2115,7 +2206,7 @@
 
                   <div class="touring-actions">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                      <span class="text-muted" style="font-size:0.75rem;">Status Anda: <strong style="color:${myStatus === 'Ikut' ? '#059669' : myStatus === 'Absen' ? '#DC2626' : '#D97706'}">${myStatus}</strong></span>
+                      <span class="text-muted" style="font-size:0.75rem;">Status Anda: <strong style="color:${myStatus.includes('Ikut') ? '#059669' : myStatus === 'Absen' ? '#DC2626' : '#D97706'}">${myStatus}</strong></span>
                       <span class="badge badge-primary" style="font-size:0.65rem;">${ikutCount} Member Join</span>
                     </div>
                     <button type="button" class="btn btn-gold btn-sm" onclick="app.openAgendaRSVPModal('${t.id}')">
@@ -2164,6 +2255,126 @@
               </div>
             `).join('');
           }
+        }
+      }
+
+      /* KELOLA PENGURUS LANDING PAGE LOGIC */
+      async loadAdminBoardList() {
+        const container = document.getElementById('admin-board-list');
+        if (!container || !this.supabase) return;
+
+        try {
+          const { data, error } = await this.supabase
+            .from('board_members')
+            .select('*')
+            .order('sort_order', { ascending: true });
+
+          if (!error && data) {
+            this.boardMembers = data;
+            if (data.length === 0) {
+              container.innerHTML = '<p class="text-muted" style="text-align:center;">Belum ada data pengurus. Klik tombol "Tambah" di atas.</p>';
+              return;
+            }
+
+            container.innerHTML = data.map(m => `
+              <div class="menu-admin-item" style="padding:12px; border-radius:12px;">
+                <div class="menu-admin-info">
+                  ${m.photo_url ? `<img src="${m.photo_url}" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">` : `<i class="fa-solid fa-user-circle" style="font-size:32px; color:var(--primary);"></i>`}
+                  <div>
+                    <strong style="font-size:var(--font-base); font-weight:700;">${m.name}</strong>
+                    <span class="text-muted" style="display:block;">${m.title} (${m.role_category})</span>
+                  </div>
+                </div>
+                <div style="display:flex; gap:6px;">
+                  <button class="btn btn-sm btn-gold" style="width:auto;" onclick="app.editBoardModal('${m.id}')"><i class="fa-solid fa-pen"></i></button>
+                  <button class="btn btn-sm btn-danger" style="width:auto;" onclick="app.deleteBoardMember('${m.id}')"><i class="fa-solid fa-trash"></i></button>
+                </div>
+              </div>
+            `).join('');
+          }
+        } catch(e) {
+          container.innerHTML = '<p class="text-muted" style="text-align:center; color:#EF4444;">Gagal memuat data pengurus.</p>';
+        }
+      }
+
+      openAddBoardModal() {
+        document.getElementById('form-board').reset();
+        document.getElementById('board-id').value = '';
+        this.openModal('modal-add-board');
+      }
+
+      editBoardModal(id) {
+        const item = this.boardMembers.find(m => m.id === id);
+        if (!item) return;
+
+        document.getElementById('board-id').value = item.id;
+        document.getElementById('board-name').value = item.name;
+        document.getElementById('board-title').value = item.title;
+        document.getElementById('board-role-category').value = item.role_category;
+        document.getElementById('board-sort-order').value = item.sort_order || 1;
+
+        this.openModal('modal-add-board');
+      }
+
+      async handleSaveBoardMember(e) {
+        e.preventDefault();
+        const btn = document.getElementById('btn-save-board');
+        btn.disabled = true;
+
+        const id = document.getElementById('board-id').value;
+        const file = document.getElementById('board-photo-file').files[0];
+        let photoUrl = '';
+
+        try {
+          if (file) {
+            const compressed = await this.compressImage(file, 200);
+            const fileName = `board_${Date.now()}_${compressed.name}`;
+            const { error: uploadErr } = await this.supabase.storage.from('gallery-images').upload(fileName, compressed, { upsert: true });
+            
+            if (!uploadErr) {
+              const { data: urlData } = this.supabase.storage.from('gallery-images').getPublicUrl(fileName);
+              photoUrl = urlData ? urlData.publicUrl : '';
+            }
+          }
+
+          const payload = {
+            name: document.getElementById('board-name').value.trim(),
+            title: document.getElementById('board-title').value.trim(),
+            role_category: document.getElementById('board-role-category').value,
+            sort_order: parseInt(document.getElementById('board-sort-order').value) || 1
+          };
+
+          if (photoUrl) payload.photo_url = photoUrl;
+
+          let err;
+          if (id) {
+            ({ error: err } = await this.supabase.from('board_members').update(payload).eq('id', id));
+          } else {
+            ({ error: err } = await this.supabase.from('board_members').insert([payload]));
+          }
+
+          if (err) throw err;
+
+          this.showToast('Data Pengurus Berhasil Disimpan!', 'success');
+          this.closeModal('modal-add-board');
+          document.getElementById('form-board').reset();
+          this.loadAdminBoardList();
+
+        } catch (error) {
+          this.showToast('Gagal menyimpan pengurus: ' + error.message, 'error');
+        } finally {
+          btn.disabled = false;
+        }
+      }
+
+      async deleteBoardMember(id) {
+        if (!confirm('Apakah Anda yakin ingin menghapus data pengurus ini?')) return;
+        try {
+          await this.supabase.from('board_members').delete().eq('id', id);
+          this.showToast('Pengurus berhasil dihapus!', 'success');
+          this.loadAdminBoardList();
+        } catch (e) {
+          this.showToast('Gagal menghapus pengurus.', 'error');
         }
       }
 
@@ -2288,7 +2499,7 @@
         if (!container) return;
 
         const filtered = this.touringParticipants.filter(p => p.touring_id === this.selectedTouringId);
-        const ikutCount = filtered.filter(d => d.status === 'Ikut').length;
+        const ikutCount = filtered.filter(d => d.status === 'Ikut' || d.status === '✓ Ikut').length;
         
         if (countBadge) countBadge.innerText = `${ikutCount} Anggota Ikut`;
 
@@ -2303,8 +2514,8 @@
               <strong style="font-size: var(--font-base);">${item.member_name}</strong>
               <span class="text-muted" style="display:block; font-size: var(--font-xs);">${item.plate || '-'}</span>
             </div>
-            <span class="badge ${item.status === 'Ikut' ? 'badge-success' : 'badge-danger'}">
-              ${item.status === 'Ikut' ? '✓ Ikut' : '✕ Tidak Ikut'}
+            <span class="badge ${item.status.includes('Ikut') ? 'badge-success' : 'badge-danger'}">
+              ${item.status.includes('Ikut') ? '✓ Ikut' : '✕ Tidak Ikut'}
             </span>
           </div>
         `).join('');
@@ -2745,6 +2956,7 @@
           this.loadAdminOrdersList();
           this.loadAdminProductsList();
           this.loadAdminRolesList();
+          this.loadAdminBoardList();
         }
 
         const niaCode = this.currentProfile?.member_number || `ITORA-BSN-${this.currentUser.id ? this.currentUser.id.substring(0, 4).toUpperCase() : '0000'}`;
