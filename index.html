@@ -315,7 +315,7 @@
     }
 
     .card {
-      border-radius: var(--radius-md); padding: 18px; margin-bottom: 14px;
+      border-radius: var(--radius-md); padding: 20px; margin-bottom: 16px;
       background: #FFFFFF; border: 1px solid var(--border-dark);
       box-shadow: 0 4px 15px rgba(0,0,0,0.03);
     }
@@ -380,7 +380,6 @@
       line-height: 1.2; 
     }
 
-    /* KARTU TOURING COMPACT BORDER & GRID ICON */
     .touring-card {
       background: #FFFFFF;
       border: 1px solid var(--border-dark);
@@ -792,16 +791,16 @@
         </div>
       </section>
 
-      <!-- 5. TOURING (REDESAIN LEBIH COMPACT DENGAN GRID IKON RINGKAS) -->
+      <!-- 5. TOURING (DESAIN ULTRA-COMPACT DENGAN POP-UP PENDATAAN) -->
       <section id="page-touring" class="page">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <h2 style="font-size: var(--font-lg); font-weight: var(--fw-bold);">Jadwal & Rute Touring</h2>
           <button type="button" class="btn btn-sm btn-gold" id="admin-add-touring-btn" style="display:none; width:auto;" onclick="app.openAddTouringModal()">
-            <i class="fa-solid fa-plus"></i> Tambah Touring
+            <i class="fa-solid fa-plus"></i> Tambah
           </button>
         </div>
 
-        <!-- DAFTAR TOURING MENDATANG COMPACT -->
+        <!-- DAFTAR TOURING MENDATANG -->
         <div style="margin-top:12px;">
           <h3 style="font-size: var(--font-sm); font-weight: var(--fw-bold); color: var(--text-muted-dark); text-transform: uppercase; margin-bottom: 8px;">
             <i class="fa-solid fa-compass" style="color: var(--accent-gold);"></i> Agenda Mendatang
@@ -811,57 +810,18 @@
           </div>
         </div>
 
-        <!-- STATISTIK RINGKASAN PARTICIPATION MEMBER -->
-        <div class="card" style="background: #F8FAFC; border: 1px dashed var(--border-dark); margin-top: 10px; padding: 14px;">
-          <h3 style="font-size: var(--font-xs); font-weight: var(--fw-bold); color: var(--text-muted-dark); text-transform: uppercase;">
-            <i class="fa-solid fa-chart-pie"></i> Partisipasi Saya
-          </h3>
-          <div style="display: flex; gap: 10px; margin-top: 8px;">
-            <div style="flex:1; background: #D1FAE5; padding: 8px; border-radius: 8px; text-align: center;">
-              <strong style="color: #059669; font-size: 1.1rem; display: block;" id="my-ikut-count">0</strong>
-              <span style="font-size: 0.65rem; color: #065F46; font-weight: 600;">Kali Ikut</span>
-            </div>
-            <div style="flex:1; background: #FEE2E2; padding: 8px; border-radius: 8px; text-align: center;">
-              <strong style="color: #DC2626; font-size: 1.1rem; display: block;" id="my-absen-count">0</strong>
-              <span style="font-size: 0.65rem; color: #991B1B; font-weight: 600;">Kali Absen</span>
+        <!-- KARTU RINGKAS KEHADIRAN (ULTRA-COMPACT RSVP STRIP) -->
+        <div class="card" style="display:flex; align-items:center; justify-content:space-between; padding: 12px 16px;">
+          <div style="display:flex; align-items:center; gap: 10px;">
+            <i class="fa-solid fa-clipboard-user" style="font-size: 1.5rem; color: var(--primary);"></i>
+            <div>
+              <strong style="font-size: var(--font-sm); display:block;">Partisipasi Anda</strong>
+              <span class="text-muted" style="font-size: 0.7rem;"><span id="my-ikut-count" style="color:#059669; font-weight:bold;">0</span> Ikut • <span id="my-absen-count" style="color:#DC2626; font-weight:bold;">0</span> Absen</span>
             </div>
           </div>
-        </div>
-
-        <!-- FORM KONFIRMASI (RSVP) -->
-        <div class="card" id="touring-rsvp-card" style="padding: 14px;">
-          <h3 style="font-size: var(--font-base); font-weight: var(--fw-bold); margin-bottom: 4px;">
-            <i class="fa-solid fa-clipboard-check" style="color: var(--primary);"></i> Konfirmasi Kehadiran Anda
-          </h3>
-          <p class="text-muted" style="margin-bottom: 10px;">Pilih status partisipasi Anda untuk mendata rombongan.</p>
-          
-          <div style="display: flex; gap: 10px;">
-            <button type="button" class="btn btn-primary btn-sm" style="flex:1;" onclick="app.submitTouringRSVP('Ikut')">
-              <i class="fa-solid fa-circle-check"></i> Saya Ikut
-            </button>
-            <button type="button" class="btn btn-danger btn-sm" style="flex:1;" onclick="app.submitTouringRSVP('Absen')">
-              <i class="fa-solid fa-circle-xmark"></i> Tidak Ikut
-            </button>
-          </div>
-        </div>
-
-        <!-- DAFTAR PENDATAAN ANGGOTA & TOMBOL EXPORT -->
-        <div class="card" style="padding: 14px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
-            <h3 style="font-size: var(--font-base); font-weight: var(--fw-bold);">
-              <i class="fa-solid fa-users-viewfinder" style="color: var(--accent-gold);"></i> Pendataan Anggota
-            </h3>
-            <span class="badge badge-primary" id="touring-count-badge">0 Ikut</span>
-          </div>
-
-          <div id="touring-participants-list">
-            <p class="text-muted" style="text-align:center;">Memuat data partisipasi...</p>
-          </div>
-
-          <div style="display: flex; gap: 8px; margin-top: 12px;">
-            <button type="button" class="btn btn-primary btn-sm" style="flex:1;" onclick="app.exportData('Touring', 'PDF')"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
-            <button type="button" class="btn btn-primary btn-sm" style="flex:1;" onclick="app.exportData('Touring', 'Excel')"><i class="fa-solid fa-file-excel"></i> Export Excel</button>
-          </div>
+          <button type="button" class="btn btn-sm btn-gold" style="width:auto;" onclick="app.openModal('modal-touring-rsvp')">
+            <i class="fa-solid fa-users-gear"></i> Kelola Kehadiran
+          </button>
         </div>
 
         <!-- DAFTAR RIWAYAT TOURING YANG SUDAH LEWAT -->
@@ -1021,6 +981,48 @@
 
     <nav class="bottom-nav" id="dynamic-bottom-nav"></nav>
 
+  </div>
+
+  <!-- MODAL POP-UP PENDATAAN & KEHADIRAN TOURING (POP-UP LENGKAP & ELEGAN) -->
+  <div class="modal-overlay" id="modal-touring-rsvp">
+    <div class="modal-card">
+      <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-touring-rsvp')"><i class="fa-solid fa-xmark"></i></button>
+      
+      <div style="text-align:center; margin-bottom: 15px;">
+        <i class="fa-solid fa-clipboard-check" style="font-size: 2.2rem; color: var(--primary);"></i>
+        <h3 style="font-size: var(--font-md); font-weight: var(--fw-bold); margin-top: 6px;">Pendataan & Kehadiran Touring</h3>
+        <p class="text-muted">Konfirmasi pilihan Anda & cek rombongan anggota</p>
+      </div>
+
+      <!-- FORM RSVP PILIHAN SAYA -->
+      <div style="background: #F8FAFC; border: 1px solid var(--border-dark); border-radius: 12px; padding: 12px; margin-bottom: 16px;">
+        <strong style="font-size: var(--font-xs); color: var(--text-muted-dark); display: block; margin-bottom: 8px;">PILIH STATUS ANDA:</strong>
+        <div style="display: flex; gap: 8px;">
+          <button type="button" class="btn btn-primary btn-sm" style="flex:1;" onclick="app.submitTouringRSVP('Ikut')">
+            <i class="fa-solid fa-circle-check"></i> Saya Ikut
+          </button>
+          <button type="button" class="btn btn-danger btn-sm" style="flex:1;" onclick="app.submitTouringRSVP('Absen')">
+            <i class="fa-solid fa-circle-xmark"></i> Tidak Ikut
+          </button>
+        </div>
+      </div>
+
+      <!-- DAFTAR NOMINATIF ANGGOTA -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
+        <strong style="font-size: var(--font-sm);"><i class="fa-solid fa-users"></i> Daftar Rombongan</strong>
+        <span class="badge badge-primary" id="touring-count-badge">0 Ikut</span>
+      </div>
+
+      <div id="touring-participants-list" style="max-height: 220px; overflow-y: auto; padding-right: 4px;">
+        <p class="text-muted" style="text-align:center;">Memuat data partisipasi...</p>
+      </div>
+
+      <!-- TOMBOL EXPORT -->
+      <div style="display: flex; gap: 8px; margin-top: 16px;">
+        <button type="button" class="btn btn-primary btn-sm" style="flex:1;" onclick="app.exportData('Touring', 'PDF')"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+        <button type="button" class="btn btn-primary btn-sm" style="flex:1;" onclick="app.exportData('Touring', 'Excel')"><i class="fa-solid fa-file-excel"></i> Excel</button>
+      </div>
+    </div>
   </div>
 
   <!-- MODAL POP-UP ADMIN: MANAJEMEN ROLE PENGURUS -->
@@ -1467,6 +1469,13 @@
         this.baseKas = 0;
         this.approvedKasTotal = 0;
         this.adminWANumber = "6281234567890";
+        this.touringData = {
+          title: "Touring Kemerdekaan 2",
+          schedule: "17 Maret 2026 | 09:00 WIB",
+          meeting: "Parkir BSN KC Surabaya",
+          distance: "± 70 KM",
+          maps: "https://maps.google.com/?q=Bromo"
+        };
         this.initSupabase();
       }
 
