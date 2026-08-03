@@ -63,6 +63,7 @@ class App {
       if (splash) splash.style.display = 'none';
       this.checkSession();
       this.checkScanUrl();
+      this.updateUnreadCountBadge();
     }, 1000);
   }
 
@@ -621,6 +622,17 @@ class App {
 
       this.showToast('Agenda Touring Berhasil Disimpan!', 'success');
       this.closeModal('modal-admin-touring');
+      
+      // BROADCAST NOTIFIKASI TOURING BARU
+      if (!id) {
+        await this.createNotification(
+          null,
+          "Jadwal Touring Baru! 📍",
+          `Agenda Baru: ${title} (${scheduleText}) telah ditambahkan. Cek detail & rutenya sekarang!`,
+          "touring"
+        );
+      }
+
       this.loadTouringsFromSupabase();
 
     } catch (error) {
@@ -722,6 +734,15 @@ class App {
       if (error) throw error;
 
       this.showToast(`Konfirmasi berhasil untuk agenda ${agendaTitle}: Anda memilih "${status}"`, 'success');
+      
+      // TRIGGER NOTIFIKASI TOURING PERSONAL
+      await this.createNotification(
+        this.currentUser.id,
+        `Konfirmasi Touring ${agendaTitle} 🏍️`,
+        `Status kehadiran Anda telah berhasil dicatat sebagai: ${status.toUpperCase()}.`,
+        "touring"
+      );
+
       await this.loadTouringParticipants();
       this.renderTouringParticipantsList();
       this.renderTouringsUI();
@@ -1165,8 +1186,18 @@ class App {
       }], { onConflict: 'id' });
 
       if (error) throw error;
+      
       this.showToast('Profil Berhasil Diperbarui!', 'success');
       this.closeModal('modal-edit-profile');
+
+      // TRIGGER NOTIFIKASI PERSONAL PROFILE
+      await this.createNotification(
+        this.currentUser.id,
+        "Profil Berhasil Diperbarui 👤",
+        "Data diri dan kendaraan Anda telah berhasil diperbarui di sistem ITORA BSN.",
+        "auth"
+      );
+
       await this.loadUserProfileDetails();
       this.updateUserUI();
       this.loadMembersFromSupabase();
@@ -1239,6 +1270,15 @@ class App {
       if (error) throw error;
 
       this.showToast(`Jabatan / Role Berhasil Diubah Menjadi: ${newRole}!`, 'success');
+      
+      // TRIGGER NOTIFIKASI PERUBAHAN ROLE
+      await this.createNotification(
+        memberId,
+        "Pembaruan Jabatan Komunitas 🎖️",
+        `Jabatan / Role Anda di komunitas ITORA BSN telah diperbarui menjadi: ${newRole}.`,
+        "member"
+      );
+
       this.loadAdminRolesList();
       this.loadMembersFromSupabase();
     } catch (e) {
@@ -1264,7 +1304,6 @@ class App {
     }
   }
 
-  /* RENDERING MERCHANDISE & FITUR ZOOM GAMBAR */
   renderShopGrid() {
     const container = document.getElementById('public-products-grid');
     if (!container) return;
@@ -1692,8 +1731,8 @@ class App {
             <p class="text-muted"><i class="fa-solid fa-motorcycle"></i> ${m.bike || '-'} (${m.plate || '-'})</p>
 
             <div style="display: flex; gap: 8px; margin-top: 12px;">
-              <button type="button" class="btn btn-sm btn-primary" style="border-radius:10px;" onclick="app.adminApproveMember('${m.id}', 'Approved')"><i class="fa-solid fa-check"></i> Setujui</button>
-              <button type="button" class="btn btn-sm btn-danger" style="border-radius:10px;" onclick="app.adminApproveMember('${m.id}', 'Rejected')"><i class="fa-solid fa-xmark"></i> Tolak</button>
+              <button type="button" class="btn btn-sm btn-primary" style="border-radius:10px;" onclick="app.adminApproveMember('${m.id}', 'Approved', '${m.full_name || 'Anggota'}')"><i class="fa-solid fa-check"></i> Setujui</button>
+              <button type="button" class="btn btn-sm btn-danger" style="border-radius:10px;" onclick="app.adminApproveMember('${m.id}', 'Rejected', '${m.full_name || 'Anggota'}')"><i class="fa-solid fa-xmark"></i> Tolak</button>
             </div>
           </div>
         `).join('');
@@ -1703,12 +1742,32 @@ class App {
     } catch (e) {}
   }
 
-  async adminApproveMember(memberId, status) {
+  async adminApproveMember(memberId, status, memberName) {
     if (!this.supabase) return;
     try {
       const { error } = await this.supabase.from('members').update({ approval_status: status }).eq('id', memberId);
       if (error) throw error;
+      
       this.showToast(`Pendaftaran Anggota Berhasil di-${status}!`, 'success');
+
+      if (status === 'Approved') {
+        // NOTIFIKASI PERSONAL KE USER BARU
+        await this.createNotification(
+          memberId,
+          "Pendaftaran Akun Disetujui! 🎉",
+          "Selamat! Pengajuan pendaftaran anggota ITORA BSN Anda telah disetujui Admin. Nikmati seluruh fitur aplikasi!",
+          "member"
+        );
+
+        // BROADCAST KE SELURUH MEMBER
+        await this.createNotification(
+          null,
+          "Anggota Baru Bergabung! 🎉",
+          `${memberName} telah resmi bergabung dengan komunitas ITORA BSN Surabaya. Selamat bergabung!`,
+          "member"
+        );
+      }
+
       this.loadAdminPendingMembersList();
       this.loadMembersFromSupabase();
       this.loadBreakingNewsText();
@@ -1739,8 +1798,8 @@ class App {
             <p class="text-muted" style="margin-top:2px;">${new Date(o.created_at).toLocaleDateString('id-ID')}</p>
 
             <div style="display: flex; gap: 8px; margin-top: 12px;">
-              <button type="button" class="btn btn-sm btn-primary" style="border-radius:10px;" onclick="app.adminVerifyOrder('${o.id}', 'Completed')"><i class="fa-solid fa-check"></i> Selesai</button>
-              <button type="button" class="btn btn-sm btn-danger" style="border-radius:10px;" onclick="app.adminVerifyOrder('${o.id}', 'Cancelled')"><i class="fa-solid fa-xmark"></i> Batal</button>
+              <button type="button" class="btn btn-sm btn-primary" style="border-radius:10px;" onclick="app.adminVerifyOrder('${o.id}', 'Completed', '${o.user_id}', '${o.item_name}')"><i class="fa-solid fa-check"></i> Selesai</button>
+              <button type="button" class="btn btn-sm btn-danger" style="border-radius:10px;" onclick="app.adminVerifyOrder('${o.id}', 'Cancelled', '${o.user_id}', '${o.item_name}')"><i class="fa-solid fa-xmark"></i> Batal</button>
             </div>
           </div>
         `).join('');
@@ -1750,11 +1809,22 @@ class App {
     } catch (e) {}
   }
 
-  async adminVerifyOrder(orderId, status) {
+  async adminVerifyOrder(orderId, status, userId, itemName) {
     if (!this.supabase) return;
     try {
       await this.supabase.from('orders').update({ status }).eq('id', orderId);
       this.showToast(`Status Pesanan Diubah: ${status}!`, 'success');
+
+      if (status === 'Completed') {
+        // TRIGGER NOTIFIKASI MERCHANDISE SELESAI
+        await this.createNotification(
+          userId,
+          "Pembelian Merchandise Disetujui! 🛍️",
+          `Pesanan merchandise Anda (${itemName}) telah disetujui & diverifikasi oleh Admin.`,
+          "merch"
+        );
+      }
+
       this.loadAdminOrdersList();
       this.checkRealtimeNotifications();
     } catch(e) {
@@ -1946,6 +2016,9 @@ class App {
             this.showToast('Pesanan Merchandise baru masuk!', 'info');
           }
         })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'notifications' }, () => {
+          this.updateUnreadCountBadge();
+        })
         .on('postgres_changes', { event: '*', schema: 'public', table: 'touring_participants' }, () => {
           this.loadTouringParticipants();
           this.renderTouringsUI();
@@ -2001,8 +2074,8 @@ class App {
             ${item.receipt_url ? `<p style="margin-top:4px;"><a href="${item.receipt_url}" target="_blank" style="color:var(--primary); font-weight:600;"><i class="fa-solid fa-image"></i> Cek Foto Bukti Transfer</a></p>` : ''}
             
             <div style="display: flex; gap: 8px; margin-top: 12px;">
-              <button type="button" class="btn btn-sm btn-primary" style="border-radius:10px;" onclick="app.adminVerifyDue('${item.id}', 'Verified')"><i class="fa-solid fa-check"></i> Setujui</button>
-              <button type="button" class="btn btn-sm btn-danger" style="border-radius:10px;" onclick="app.adminVerifyDue('${item.id}', 'Rejected')"><i class="fa-solid fa-xmark"></i> Tolak</button>
+              <button type="button" class="btn btn-sm btn-primary" style="border-radius:10px;" onclick="app.adminVerifyDue('${item.id}', 'Verified', '${item.user_id}', '${item.period_month}', '${item.member_name}')"><i class="fa-solid fa-check"></i> Setujui</button>
+              <button type="button" class="btn btn-sm btn-danger" style="border-radius:10px;" onclick="app.adminVerifyDue('${item.id}', 'Rejected', '${item.user_id}', '${item.period_month}', '${item.member_name}')"><i class="fa-solid fa-xmark"></i> Tolak</button>
             </div>
           </div>
         `).join('');
@@ -2012,12 +2085,31 @@ class App {
     } catch (e) {}
   }
 
-  async adminVerifyDue(dueId, status) {
+  async adminVerifyDue(dueId, status, userId, periodMonth, memberName) {
     if (!this.supabase) return;
     try {
       const { error } = await this.supabase.from('dues').update({ status }).eq('id', dueId);
       if (error) throw error;
       this.showToast(`Iuran Berhasil Diubah: ${status}!`, 'success');
+
+      if (status === 'Verified') {
+        // NOTIFIKASI PERSONAL KE PEMBAYAR IURAN
+        await this.createNotification(
+          userId,
+          "Setor Iuran Disetujui 💳",
+          `Setoran iuran bulanan Anda untuk periode ${periodMonth} telah terverifikasi LUNAS. Terima kasih!`,
+          "iuran"
+        );
+
+        // BROADCAST NOTIFIKASI KAS KE SEMUA MEMBER
+        await this.createNotification(
+          null,
+          "Update Setor Iuran 💸",
+          `${memberName} baru saja melunasi iuran bulanan (${periodMonth}). Kas komunitas bertambah!`,
+          "iuran"
+        );
+      }
+
       await this.calculateTotalKas();
       this.loadAdminDuesList();
       this.loadIuranHistory();
@@ -2294,11 +2386,186 @@ class App {
       setTimeout(() => toast.remove(), 3500);
     }, 3500);
   }
+
+  // ==========================================
+  // MODUL SYSTEM NOTIFIKASI
+  // ==========================================
+
+  async loadNotifications() {
+    const notifList = document.getElementById('notifList');
+    if (!notifList) return;
+    
+    notifList.innerHTML = '<div class="notif-empty">Memuat notifikasi...</div>';
+
+    try {
+      if (!this.supabase) return;
+      const currentUserId = this.currentUser ? this.currentUser.id : null;
+
+      let query = this.supabase
+        .from('notifications')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(20);
+
+      if (currentUserId) {
+        query = query.or(`user_id.eq.${currentUserId},user_id.is.null`);
+      } else {
+        query = query.is('user_id', null);
+      }
+
+      const { data, error } = await query;
+      if (error) throw error;
+
+      if (!data || data.length === 0) {
+        notifList.innerHTML = '<div class="notif-empty">Belum ada notifikasi.</div>';
+        return;
+      }
+
+      let html = '';
+      data.forEach(item => {
+        const isUnread = !item.is_read ? 'unread' : '';
+        const dateFormatted = new Date(item.created_at).toLocaleString('id-ID', {
+          day: 'numeric',
+          month: 'short',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+
+        html += `
+          <div class="notif-item ${isUnread}" onclick="app.markAsRead('${item.id}')">
+            <div class="notif-item-title">${this.escapeHtml(item.title)}</div>
+            <div class="notif-item-msg">${this.escapeHtml(item.message)}</div>
+            <div class="notif-item-time">${dateFormatted}</div>
+          </div>
+        `;
+      });
+
+      notifList.innerHTML = html;
+      this.updateUnreadCountBadge();
+
+    } catch (err) {
+      console.error('Error loadNotifications:', err);
+      notifList.innerHTML = '<div class="notif-empty">Gagal memuat notifikasi.</div>';
+    }
+  }
+
+  escapeHtml(str) {
+    return str ? str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") : '';
+  }
+
+  async updateUnreadCountBadge() {
+    try {
+      if (!this.supabase) return;
+      const currentUserId = this.currentUser ? this.currentUser.id : null;
+
+      let query = this.supabase
+        .from('notifications')
+        .select('id', { count: 'exact', head: true })
+        .eq('is_read', false);
+
+      if (currentUserId) {
+        query = query.or(`user_id.eq.${currentUserId},user_id.is.null`);
+      } else {
+        query = query.is('user_id', null);
+      }
+
+      const { count, error } = await query;
+      if (error) throw error;
+
+      const badge = document.getElementById('notifBadge');
+      if (badge) {
+        if (count > 0) {
+          badge.textContent = count > 99 ? '99+' : count;
+          badge.style.display = 'flex';
+        } else {
+          badge.style.display = 'none';
+        }
+      }
+    } catch (err) {
+      console.error('Error updateUnreadCountBadge:', err);
+    }
+  }
+
+  async markAsRead(id) {
+    try {
+      if (!this.supabase) return;
+      await this.supabase.from('notifications').update({ is_read: true }).eq('id', id);
+      this.loadNotifications();
+    } catch (err) {
+      console.error('Error markAsRead:', err);
+    }
+  }
+
+  async markAllNotificationsAsRead() {
+    try {
+      if (!this.supabase) return;
+      const currentUserId = this.currentUser ? this.currentUser.id : null;
+
+      let query = this.supabase.from('notifications').update({ is_read: true }).eq('is_read', false);
+
+      if (currentUserId) {
+        query = query.or(`user_id.eq.${currentUserId},user_id.is.null`);
+      } else {
+        query = query.is('user_id', null);
+      }
+
+      await query;
+      this.loadNotifications();
+    } catch (err) {
+      console.error('Error markAllNotificationsAsRead:', err);
+    }
+  }
+
+  async createNotification(userId, title, message, type = 'info') {
+    try {
+      if (!this.supabase) return;
+      const { error } = await this.supabase.from('notifications').insert([
+        {
+          user_id: userId,
+          title: title,
+          message: message,
+          type: type,
+          is_read: false
+        }
+      ]);
+      if (error) console.error('Gagal membuat notifikasi:', error);
+      else this.updateUnreadCountBadge();
+    } catch (e) {
+      console.error('Error createNotification:', e);
+    }
+  }
 }
 
+// ------------------------------------------
+// GLOBAL HELPER FUNCTIONS UNTUK HTML
+// ------------------------------------------
+
+function toggleNotificationModal() {
+  const modal = document.getElementById('notificationModal');
+  if (!modal) return;
+  if (modal.style.display === 'flex') {
+    modal.style.setProperty('display', 'none', 'important');
+  } else {
+    modal.style.setProperty('display', 'flex', 'important');
+    app.loadNotifications();
+  }
+}
+
+function closeNotifModalOuter(event) {
+  if (event.target.id === 'notificationModal') {
+    document.getElementById('notificationModal').style.setProperty('display', 'none', 'important');
+  }
+}
+
+function markAllNotificationsAsRead() {
+  app.markAllNotificationsAsRead();
+}
+
+// INISIALISASI APLIKASI
 const app = new App();
 document.addEventListener('DOMContentLoaded', () => app.init());
-// Daftarkan Service Worker untuk PWA / APK
+
+// REGISTER SERVICE WORKER (PWA)
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
@@ -2306,225 +2573,3 @@ if ('serviceWorker' in navigator) {
       .catch((err) => console.error('Service Worker registration failed:', err));
   });
 }
-// ==========================================
-// MODUL NOTIFIKASI COMMUNITY ITORA BSN
-// ==========================================
-
-// 1. Fungsi Toggle Modal Notifikasi
-function toggleNotificationModal() {
-  const modal = document.getElementById('notificationModal');
-  if (modal.style.display === 'flex') {
-    modal.style.display = 'none';
-  } else {
-    modal.style.display = 'flex';
-    loadNotifications();
-  }
-}
-
-function closeNotifModalOuter(event) {
-  if (event.target.id === 'notificationModal') {
-    document.getElementById('notificationModal').style.display = 'none';
-  }
-}
-
-// 2. Load Data Notifikasi dari Supabase
-async function loadNotifications() {
-  const notifList = document.getElementById('notifList');
-  notifList.innerHTML = '<div class="notif-empty">Memuat notifikasi...</div>';
-
-  try {
-    const user = supabase.auth.user();
-    const currentUserId = user ? user.id : null;
-
-    // Ambil notifikasi milik user ATAU notifikasi umum (user_id IS NULL)
-    let query = supabase
-      .from('notifications')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(20);
-
-    if (currentUserId) {
-      query = query.or(`user_id.eq.${currentUserId},user_id.is.null`);
-    } else {
-      query = query.is('user_id', null);
-    }
-
-    const { data, error } = await query;
-
-    if (error) throw error;
-
-    if (!data || data.length === 0) {
-      notifList.innerHTML = '<div class="notif-empty">Belum ada notifikasi.</div>';
-      return;
-    }
-
-    let html = '';
-    data.forEach(item => {
-      const isUnread = !item.is_read ? 'unread' : '';
-      const dateFormatted = new Date(item.created_at).toLocaleString('id-ID', {
-        day: 'numeric',
-        month: 'short',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-
-      html += `
-        <div class="notif-item ${isUnread}" onclick="markAsRead(${item.id})">
-          <div class="notif-item-title">${escapeHtml(item.title)}</div>
-          <div class="notif-item-msg">${escapeHtml(item.message)}</div>
-          <div class="notif-item-time">${dateFormatted}</div>
-        </div>
-      `;
-    });
-
-    notifList.innerHTML = html;
-    updateUnreadCountBadge();
-
-  } catch (err) {
-    console.error('Error loadNotifications:', err);
-    notifList.innerHTML = '<div class="notif-empty">Gagal memuat notifikasi.</div>';
-  }
-}
-
-// Helper Sanitasi HTML
-function escapeHtml(str) {
-  return str ? str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") : '';
-}
-
-// 3. Hitung Jumlah Unread untuk Badge Merah
-async function updateUnreadCountBadge() {
-  try {
-    const user = supabase.auth.user();
-    const currentUserId = user ? user.id : null;
-
-    let query = supabase
-      .from('notifications')
-      .select('id', { count: 'exact', head: true })
-      .eq('is_read', false);
-
-    if (currentUserId) {
-      query = query.or(`user_id.eq.${currentUserId},user_id.is.null`);
-    } else {
-      query = query.is('user_id', null);
-    }
-
-    const { count, error } = await query;
-
-    if (error) throw error;
-
-    const badge = document.getElementById('notifBadge');
-    if (count > 0) {
-      badge.textContent = count > 99 ? '99+' : count;
-      badge.style.display = 'flex';
-    } else {
-      badge.style.display = 'none';
-    }
-  } catch (err) {
-    console.error('Error updateUnreadCountBadge:', err);
-  }
-}
-
-// 4. Tandai Satu Notifikasi Dibaca
-async function markAsRead(id) {
-  try {
-    await supabase.from('notifications').update({ is_read: true }).eq('id', id);
-    loadNotifications();
-  } catch (err) {
-    console.error('Error markAsRead:', err);
-  }
-}
-
-// 5. Tandai Semua Notifikasi Dibaca
-async function markAllNotificationsAsRead() {
-  try {
-    const user = supabase.auth.user();
-    const currentUserId = user ? user.id : null;
-
-    let query = supabase.from('notifications').update({ is_read: true }).eq('is_read', false);
-
-    if (currentUserId) {
-      query = query.or(`user_id.eq.${currentUserId},user_id.is.null`);
-    } else {
-      query = query.is('user_id', null);
-    }
-
-    await query;
-    loadNotifications();
-  } catch (err) {
-    console.error('Error markAllNotificationsAsRead:', err);
-  }
-}
-
-// 6. FUNGSI HELPER: BISA DIPANGGIL DI MANA SAJA UNTUK TRIGER NOTIFIKASI
-async function createNotification(userId, title, message, type = 'info') {
-  try {
-    const { error } = await supabase.from('notifications').insert([
-      {
-        user_id: userId, // Pass null jika untuk SEMUA member
-        title: title,
-        message: message,
-        type: type,
-        is_read: false
-      }
-    ]);
-    if (error) console.error('Gagal membuat notifikasi:', error);
-    else updateUnreadCountBadge();
-  } catch (e) {
-    console.error('Error createNotification:', e);
-  }
-}
-
-// Jalankan update badge saat aplikasi dimuat
-document.addEventListener('DOMContentLoaded', () => {
-  updateUnreadCountBadge();
-});
-// Panggil ketika Admin Approve Merch
-createNotification(
-  memberUserId, 
-  "Pembelian Merchandise Disetujui! 🛍️", 
-  "Pesanan Kaos Official ITORA BSN Anda telah disetujui admin dan siap diproses.", 
-  "merch"
-);
-// Panggil setelah fungsi ganti password sukses
-createNotification(
-  currentUserId, 
-  "Ganti Password Berhasil 🔒", 
-  "Kata sandi akun ITORA BSN Anda telah berhasil diperbarui.", 
-  "auth"
-);
-// Panggil saat member submit konfirmasi kehadiran touring
-createNotification(
-  currentUserId, 
-  "Konfirmasi Touring BATU MALANG 🏍️", 
-  `Anda telah memilih status: ${statusKehadiran === 'ikut' ? 'IKUT' : 'TIDAK IKUT'}.`, 
-  "touring"
-);
-// Panggil saat Admin menyetujui setoran iuran
-createNotification(
-  memberUserId, 
-  "Setor Iuran Disetujui 💳", 
-  "Setoran iuran bulanan Anda (Agustus 2026) telah terverifikasi LUNAS.", 
-  "iuran"
-);
-// userId = null (Broadcast ke semua member)
-createNotification(
-  null, 
-  "Anggota Baru Bergabung! 🎉", 
-  `${namaMemberBaru} telah resmi bergabung dengan komunitas ITORA BSN Surabaya.`, 
-  "member"
-);
-// userId = null (Broadcast ke semua member)
-createNotification(
-  null, 
-  "Jadwal Touring Baru! 📍", 
-  "Agenda Utama Touring Batu Malang telah ditambahkan. Cek detail & rutenya sekarang!", 
-  "touring"
-);
-// Broadcast update kas komunitas
-createNotification(
-  null, 
-  "Update Setor Iuran 💸", 
-  `${namaMember} baru saja melunasi iuran bulanan. Kas komunitas bertambah!`, 
-  "iuran"
-);
-
