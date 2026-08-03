@@ -245,14 +245,19 @@
 
     .touring-card {
       background: #FFFFFF; border: 1px solid var(--border-dark); border-radius: var(--radius-md);
-      padding: 16px; margin-bottom: 14px; box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+      padding: 16px; margin-bottom: 16px; box-shadow: 0 4px 14px rgba(0,0,0,0.03);
     }
     .touring-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-    .touring-grid-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+    .touring-title { font-size: 1.15rem; font-weight: 800; color: var(--text-main-dark); margin-bottom: 10px; }
+    .touring-grid-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
     .touring-info-item { background: #F8FAFC; border: 1px solid var(--border-dark); border-radius: 10px; padding: 8px 6px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     .touring-info-item i { font-size: 1rem; color: var(--primary); margin-bottom: 4px; }
     .touring-info-item span { font-size: 0.65rem; font-weight: var(--fw-bold); color: var(--text-main-dark); line-height: 1.2; word-break: break-word; }
     .touring-info-item small { font-size: 0.58rem; color: var(--text-muted-dark); display: block; margin-top: 2px; }
+
+    .touring-actions {
+      display: flex; flex-direction: column; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border-dark);
+    }
 
     .gallery-group { margin-bottom: 22px; background: #FFFFFF; border: 1px solid var(--border-dark); border-radius: var(--radius-md); padding: 14px; box-shadow: 0 4px 14px rgba(0,0,0,0.02); }
     .gallery-group-title { font-size: var(--font-sm); font-weight: var(--fw-extrabold); color: var(--primary); display: flex; align-items: center; gap: 8px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border-dark); }
@@ -310,7 +315,7 @@
     .menu-admin-info { display: flex; align-items: center; gap: 12px; }
     .menu-admin-info i, .menu-admin-info img { width: 24px; height: 24px; object-fit: contain; text-align: center; }
 
-    /* --- SISTEM DESAIN MODAL POP-UP UTAMA (PRO & MODERN) --- */
+    /* --- SISTEM DESAIN MODAL POP-UP UTAMA --- */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -413,7 +418,6 @@
       flex: 1;
     }
 
-    /* Floating / Outlined Input Group Standard Modals */
     .pro-form-group {
       position: relative;
       margin-bottom: 20px;
@@ -502,7 +506,6 @@
       margin-left: 4px;
     }
 
-    /* Tombol Aksi Gradien Emas Premium */
     .pro-btn-gold {
       width: 100%;
       padding: 14px;
@@ -574,8 +577,8 @@
   <div id="splash-screen">
     <div class="splash-logo">
       <i class="fa-solid fa-motorcycle"></i>
-      <h1>ITORA</h1>
-      <span>BSN SURABAYA</span>
+      <h1>ITORA BSN</h1>
+      <span>SURABAYA CLUB</span>
     </div>
     <div class="spinner"></div>
   </div>
@@ -868,16 +871,16 @@
         </div>
       </section>
 
-      <!-- 5. TOURING (DESAIN ULTRA-COMPACT DENGAN POP-UP PENDATAAN) -->
+      <!-- 5. TOURING (MENGGUNAKAN RSVP MASING-MASING AGENDA) -->
       <section id="page-touring" class="page">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <h2 style="font-size: var(--font-lg); font-weight: var(--fw-bold);">Jadwal & Rute Touring</h2>
           <button type="button" class="btn btn-sm btn-gold" id="admin-add-touring-btn" style="display:none; width:auto;" onclick="app.openAddTouringModal()">
-            <i class="fa-solid fa-plus"></i> Tambah
+            <i class="fa-solid fa-plus"></i> Tambah Agenda
           </button>
         </div>
 
-        <!-- DAFTAR TOURING MENDATANG COMPACT -->
+        <!-- DAFTAR TOURING MENDATANG -->
         <div style="margin-top:12px;">
           <h3 style="font-size: var(--font-sm); font-weight: var(--fw-bold); color: var(--text-muted-dark); text-transform: uppercase; margin-bottom: 8px;">
             <i class="fa-solid fa-compass" style="color: var(--accent-gold);"></i> Agenda Mendatang
@@ -885,20 +888,6 @@
           <div id="touring-upcoming-list">
             <p class="text-muted" style="text-align:center; padding: 15px; background: #fff; border-radius: 12px; border: 1px solid var(--border-dark);">Memuat agenda touring mendatang...</p>
           </div>
-        </div>
-
-        <!-- KARTU RINGKAS KEHADIRAN (ULTRA-COMPACT RSVP STRIP) -->
-        <div class="card" style="display:flex; align-items:center; justify-content:space-between; padding: 12px 16px;">
-          <div style="display:flex; align-items:center; gap: 10px;">
-            <i class="fa-solid fa-clipboard-user" style="font-size: 1.5rem; color: var(--primary);"></i>
-            <div>
-              <strong style="font-size: var(--font-sm); display:block;">Partisipasi Anda</strong>
-              <span class="text-muted" style="font-size: 0.7rem;"><span id="my-ikut-count" style="color:#059669; font-weight:bold;">0</span> Ikut • <span id="my-absen-count" style="color:#DC2626; font-weight:bold;">0</span> Absen</span>
-            </div>
-          </div>
-          <button type="button" class="btn btn-sm btn-gold" style="width:auto;" onclick="app.openModal('modal-touring-rsvp')">
-            <i class="fa-solid fa-users-gear"></i> Konfirmasi Kehadiran / Lihat Peserta
-          </button>
         </div>
 
         <!-- DAFTAR RIWAYAT TOURING YANG SUDAH LEWAT -->
@@ -1132,7 +1121,7 @@
     </div>
   </div>
 
-  <!-- MODAL POP-UP PENDATAAN & KEHADIRAN TOURING -->
+  <!-- MODAL POP-UP PENDATAAN & KEHADIRAN TOURING (SPESIFIK AGENDA) -->
   <div class="modal-overlay" id="modal-touring-rsvp">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-touring-rsvp')"><i class="fa-solid fa-xmark"></i></button>
@@ -1140,7 +1129,10 @@
       <div class="pro-modal-header">
         <div class="title-wrap">
           <i class="fa-solid fa-clipboard-check" style="color:var(--primary);"></i>
-          <h3>Pendataan Kehadiran</h3>
+          <div>
+            <h3>Kehadiran Agenda</h3>
+            <span id="rsvp-modal-agenda-title" style="font-size:0.75rem; color:var(--accent-gold); font-weight:700; display:block; margin-top:2px;">-</span>
+          </div>
         </div>
       </div>
 
@@ -1772,6 +1764,7 @@
         this.baseKas = 0;
         this.approvedKasTotal = 0;
         this.adminWANumber = "6281234567890";
+        this.selectedTouringId = null;
         this.initSupabase();
       }
 
@@ -2022,6 +2015,7 @@
           } else {
             this.tourings = [];
           }
+          await this.loadTouringParticipants();
           this.renderTouringsUI();
         } catch (e) {
           console.error("Load tourings error:", e);
@@ -2056,49 +2050,66 @@
         const isSuperAdmin = (this.currentUser && this.currentUser.email === 'mastrisnobpb@gmail.com');
         const isAdmin = (this.currentProfile?.role === 'Admin' || isSuperAdmin);
 
-        // Render Agenda Touring Mendatang
+        // Render Agenda Touring Mendatang dengan Tombol RSVP Masing-Masing Agenda
         const upcomingContainer = document.getElementById('touring-upcoming-list');
         if (upcomingContainer) {
           if (upcomingList.length === 0) {
             upcomingContainer.innerHTML = '<p class="text-muted" style="text-align:center; padding: 15px; background: #fff; border-radius: 12px; border: 1px solid var(--border-dark);">Belum ada agenda touring mendatang.</p>';
           } else {
-            upcomingContainer.innerHTML = upcomingList.map(t => `
-              <div class="touring-card">
-                <div class="touring-card-header">
-                  <span class="badge badge-gold">Destinasi Utama</span>
-                  ${isAdmin ? `
-                    <div style="display: flex; gap: 6px;">
-                      <button type="button" class="btn btn-sm btn-gold" style="padding: 4px 8px;" onclick="app.openEditTouringModal('${t.id}')"><i class="fa-solid fa-pen-to-square"></i></button>
-                      <button type="button" class="btn btn-sm btn-danger" style="padding: 4px 8px;" onclick="app.adminDeleteTouring('${t.id}')"><i class="fa-solid fa-trash"></i></button>
+            upcomingContainer.innerHTML = upcomingList.map(t => {
+              const participants = this.touringParticipants.filter(p => p.touring_id === t.id);
+              const myParticipant = this.currentUser ? participants.find(p => p.user_id === this.currentUser.id) : null;
+              const myStatus = myParticipant ? myParticipant.status : 'Belum Konfirmasi';
+              const ikutCount = participants.filter(p => p.status === 'Ikut').length;
+
+              return `
+                <div class="touring-card">
+                  <div class="touring-card-header">
+                    <span class="badge badge-gold">Destinasi Utama</span>
+                    ${isAdmin ? `
+                      <div style="display: flex; gap: 6px;">
+                        <button type="button" class="btn btn-sm btn-gold" style="padding: 4px 8px;" onclick="app.openEditTouringModal('${t.id}')"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button type="button" class="btn btn-sm btn-danger" style="padding: 4px 8px;" onclick="app.adminDeleteTouring('${t.id}')"><i class="fa-solid fa-trash"></i></button>
+                      </div>
+                    ` : ''}
+                  </div>
+
+                  <div class="touring-title">${t.title}</div>
+
+                  <div class="touring-grid-info">
+                    <div class="touring-info-item">
+                      <i class="fa-regular fa-calendar-check"></i>
+                      <span>${t.schedule_text}</span>
+                      <small>Jadwal</small>
                     </div>
-                  ` : ''}
+                    <div class="touring-info-item">
+                      <i class="fa-solid fa-location-dot"></i>
+                      <span>${t.meeting_point}</span>
+                      <small>Titik Kumpul</small>
+                    </div>
+                    <div class="touring-info-item">
+                      <i class="fa-solid fa-gauge-high"></i>
+                      <span>${t.distance}</span>
+                      <small>Jarak</small>
+                    </div>
+                  </div>
+
+                  <button type="button" class="btn btn-primary btn-sm" onclick="window.open('${t.maps_url}', '_blank')">
+                    <i class="fa-solid fa-map-location-dot"></i> Buka Rute Google Maps
+                  </button>
+
+                  <div class="touring-actions">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                      <span class="text-muted" style="font-size:0.75rem;">Status Anda: <strong style="color:${myStatus === 'Ikut' ? '#059669' : myStatus === 'Absen' ? '#DC2626' : '#D97706'}">${myStatus}</strong></span>
+                      <span class="badge badge-primary" style="font-size:0.65rem;">${ikutCount} Member Join</span>
+                    </div>
+                    <button type="button" class="btn btn-gold btn-sm" onclick="app.openAgendaRSVPModal('${t.id}')">
+                      <i class="fa-solid fa-users-gear"></i> Konfirmasi Kehadiran / Lihat Peserta
+                    </button>
+                  </div>
                 </div>
-
-                <div class="touring-title">${t.title}</div>
-
-                <div class="touring-grid-info">
-                  <div class="touring-info-item">
-                    <i class="fa-regular fa-calendar-check"></i>
-                    <span>${t.schedule_text}</span>
-                    <small>Jadwal</small>
-                  </div>
-                  <div class="touring-info-item">
-                    <i class="fa-solid fa-location-dot"></i>
-                    <span>${t.meeting_point}</span>
-                    <small>Titik Kumpul</small>
-                  </div>
-                  <div class="touring-info-item">
-                    <i class="fa-solid fa-gauge-high"></i>
-                    <span>${t.distance}</span>
-                    <small>Jarak</small>
-                  </div>
-                </div>
-
-                <button type="button" class="btn btn-primary btn-sm" onclick="window.open('${t.maps_url}', '_blank')">
-                  <i class="fa-solid fa-map-location-dot"></i> Buka Rute Google Maps
-                </button>
-              </div>
-            `).join('');
+              `;
+            }).join('');
           }
         }
 
@@ -2140,8 +2151,16 @@
             `).join('');
           }
         }
+      }
 
-        this.loadTouringParticipants();
+      openAgendaRSVPModal(touringId) {
+        this.selectedTouringId = touringId;
+        const agenda = this.tourings.find(t => t.id === touringId);
+        const titleEl = document.getElementById('rsvp-modal-agenda-title');
+        if (titleEl) titleEl.innerText = agenda ? agenda.title : '-';
+
+        this.renderTouringParticipantsList();
+        this.openModal('modal-touring-rsvp');
       }
 
       openAddTouringModal() {
@@ -2230,11 +2249,7 @@
       }
 
       async loadTouringParticipants() {
-        const container = document.getElementById('touring-participants-list');
-        const countBadge = document.getElementById('touring-count-badge');
-        const homeJoinedBadge = document.getElementById('home-touring-joined-badge');
-
-        if (!container || !this.supabase) return;
+        if (!this.supabase) return;
 
         try {
           const { data, error } = await this.supabase
@@ -2244,44 +2259,41 @@
 
           if (!error && data) {
             this.touringParticipants = data;
-            const ikutCount = data.filter(d => d.status === 'Ikut').length;
-            
-            if (countBadge) countBadge.innerText = `${ikutCount} Anggota Ikut`;
-            if (homeJoinedBadge) homeJoinedBadge.innerHTML = `<i class="fa-solid fa-users"></i> ${ikutCount} Member Join`;
-
-            if (this.currentUser) {
-              const myHistory = data.filter(d => d.user_id === this.currentUser.id);
-              const myIkut = myHistory.filter(d => d.status === 'Ikut').length;
-              const myAbsen = myHistory.filter(d => d.status === 'Absen').length;
-
-              const ikutEl = document.getElementById('my-ikut-count');
-              const absenEl = document.getElementById('my-absen-count');
-              if (ikutEl) ikutEl.innerText = myIkut;
-              if (absenEl) absenEl.innerText = myAbsen;
-            }
-
-            if (data.length === 0) {
-              container.innerHTML = '<p class="text-muted" style="text-align:center;">Belum ada konfirmasi kehadiran dari anggota.</p>';
-              return;
-            }
-
-            container.innerHTML = data.map(item => `
-              <div style="display:flex; justify-content:space-between; align-items:center; padding: 10px 0; border-bottom: 1px solid var(--border-dark);">
-                <div>
-                  <strong style="font-size: var(--font-base);">${item.member_name}</strong>
-                  <span class="text-muted" style="display:block; font-size: var(--font-xs);">${item.plate || '-'}</span>
-                </div>
-                <span class="badge ${item.status === 'Ikut' ? 'badge-success' : 'badge-danger'}">
-                  ${item.status === 'Ikut' ? '✓ Ikut' : '✕ Tidak Ikut'}
-                </span>
-              </div>
-            `).join('');
           } else {
-            container.innerHTML = '<p class="text-muted" style="text-align:center;">Belum ada data partisipasi.</p>';
+            this.touringParticipants = [];
           }
         } catch (e) {
           console.error('Error load participants:', e);
         }
+      }
+
+      renderTouringParticipantsList() {
+        const container = document.getElementById('touring-participants-list');
+        const countBadge = document.getElementById('touring-count-badge');
+
+        if (!container) return;
+
+        const filtered = this.touringParticipants.filter(p => p.touring_id === this.selectedTouringId);
+        const ikutCount = filtered.filter(d => d.status === 'Ikut').length;
+        
+        if (countBadge) countBadge.innerText = `${ikutCount} Anggota Ikut`;
+
+        if (filtered.length === 0) {
+          container.innerHTML = '<p class="text-muted" style="text-align:center;">Belum ada konfirmasi kehadiran dari anggota untuk agenda ini.</p>';
+          return;
+        }
+
+        container.innerHTML = filtered.map(item => `
+          <div style="display:flex; justify-content:space-between; align-items:center; padding: 10px 0; border-bottom: 1px solid var(--border-dark);">
+            <div>
+              <strong style="font-size: var(--font-base);">${item.member_name}</strong>
+              <span class="text-muted" style="display:block; font-size: var(--font-xs);">${item.plate || '-'}</span>
+            </div>
+            <span class="badge ${item.status === 'Ikut' ? 'badge-success' : 'badge-danger'}">
+              ${item.status === 'Ikut' ? '✓ Ikut' : '✕ Tidak Ikut'}
+            </span>
+          </div>
+        `).join('');
       }
 
       async submitTouringRSVP(status) {
@@ -2290,27 +2302,37 @@
           return;
         }
 
+        if (!this.selectedTouringId) {
+          this.showToast('Agenda touring belum dipilih!', 'error');
+          return;
+        }
+
         const name = this.currentProfile?.full_name || 'Anggota ITORA';
         const plate = this.currentProfile?.plate || '-';
+        const agenda = this.tourings.find(t => t.id === this.selectedTouringId);
+        const agendaTitle = agenda ? agenda.title : 'Touring';
 
         try {
           const { error } = await this.supabase
             .from('touring_participants')
             .upsert([{
               user_id: this.currentUser.id,
+              touring_id: this.selectedTouringId,
               member_name: name,
               plate: plate,
               status: status
-            }], { onConflict: 'user_id' });
+            }], { onConflict: 'user_id,touring_id' });
 
           if (error) throw error;
 
-          this.showToast(`Konfirmasi berhasil: Anda memilih "${status}"`, 'success');
-          this.loadTouringParticipants();
+          this.showToast(`Konfirmasi berhasil untuk agenda ${agendaTitle}: Anda memilih "${status}"`, 'success');
+          await this.loadTouringParticipants();
+          this.renderTouringParticipantsList();
+          this.renderTouringsUI();
 
           if (status === 'Ikut') {
             const targetWA = this.adminWANumber || "6281234567890";
-            const msg = `Halo Admin ITORA,%0ASaya *${name}* (${plate}) mengonfirmasi *IKUT* pada kegiatan Touring.`;
+            const msg = `Halo Admin ITORA,%0ASaya *${name}* (${plate}) mengonfirmasi *IKUT* pada kegiatan Touring: *${agendaTitle}*.`;
             setTimeout(() => window.open(`https://wa.me/${targetWA}?text=${msg}`, '_blank'), 1000);
           }
 
@@ -3523,6 +3545,7 @@
             })
             .on('postgres_changes', { event: '*', schema: 'public', table: 'touring_participants' }, () => {
               this.loadTouringParticipants();
+              this.renderTouringsUI();
             })
             .subscribe();
         } catch (e) {
@@ -3807,17 +3830,21 @@
           }
 
         } else if (type === 'Touring') {
-          if (!this.touringParticipants || this.touringParticipants.length === 0) {
-            this.showToast('Belum ada data partisipasi touring untuk diexport!', 'error');
+          const filtered = this.touringParticipants.filter(p => p.touring_id === this.selectedTouringId);
+          if (!filtered || filtered.length === 0) {
+            this.showToast('Belum ada data partisipasi touring ini untuk diexport!', 'error');
             return;
           }
+
+          const agenda = this.tourings.find(t => t.id === this.selectedTouringId);
+          const agendaTitle = agenda ? agenda.title : 'Agenda Touring';
 
           if (format === 'PDF') {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            doc.text(`Daftar Peserta Touring`, 14, 15);
+            doc.text(`Daftar Peserta Touring - ${agendaTitle}`, 14, 15);
 
-            const tableData = this.touringParticipants.map((item, index) => [
+            const tableData = filtered.map((item, index) => [
               index + 1,
               item.member_name,
               item.plate || '-',
@@ -3830,11 +3857,11 @@
               startY: 22
             });
 
-            doc.save(`Peserta_Touring_ITORA_${Date.now()}.pdf`);
+            doc.save(`Peserta_Touring_${agendaTitle.replace(/\s+/g, '_')}_${Date.now()}.pdf`);
             this.showToast('File PDF Peserta Touring berhasil diunduh!', 'success');
 
           } else if (format === 'Excel') {
-            const excelData = this.touringParticipants.map((item, index) => ({
+            const excelData = filtered.map((item, index) => ({
               No: index + 1,
               Nama: item.member_name,
               PlatNomor: item.plate || '-',
@@ -3844,7 +3871,7 @@
             const worksheet = XLSX.utils.json_to_sheet(excelData);
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, 'Peserta Touring');
-            XLSX.writeFile(workbook, `Peserta_Touring_ITORA_${Date.now()}.xlsx`);
+            XLSX.writeFile(workbook, `Peserta_Touring_${agendaTitle.replace(/\s+/g, '_')}_${Date.now()}.xlsx`);
             this.showToast('File Excel Peserta Touring berhasil diunduh!', 'success');
           }
         }
