@@ -16,7 +16,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-  <!-- LIBRARY UNTUK EXPORT PDF & EXCEL SUNGGUHAN -->
+  <!-- LIBRARY UNTUK EXPORT PDF & EXCEL -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -743,12 +743,11 @@
           </div>
         </div>
 
-        <!-- QUICK MENU DALAM 1 BORDER KOTAK BERSAMA -->
         <div class="quick-menu-card">
           <div class="quick-menu" id="dynamic-quick-menu"></div>
         </div>
 
-        <!-- REDESAIN WIDGET TOURING TERDEKAT BERANDA (HERO HOOK) -->
+        <!-- WIDGET TOURING TERDEKAT BERANDA (HERO HOOK) -->
         <div class="home-touring-hero">
           <div class="home-touring-header">
             <div class="home-touring-hook"><i class="fa-solid fa-fire"></i> Agenda Utama</div>
@@ -767,7 +766,7 @@
               <i class="fa-solid fa-compass"></i> Detail & Rute
             </button>
             <span style="font-size:0.7rem; font-weight:700; background:rgba(0,0,0,0.4); padding:4px 10px; border-radius:12px;" id="home-touring-joined-badge">
-              <i class="fa-solid fa-users"></i> <span id="home-joined-count">0</span> Member Join
+              <i class="fa-solid fa-users"></i> 0 Member Join
             </span>
           </div>
         </div>
@@ -871,7 +870,7 @@
         </div>
       </section>
 
-      <!-- 5. TOURING (MENGGUNAKAN RSVP MASING-MASING AGENDA) -->
+      <!-- 5. TOURING -->
       <section id="page-touring" class="page">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <h2 style="font-size: var(--font-lg); font-weight: var(--fw-bold);">Jadwal & Rute Touring</h2>
@@ -880,7 +879,6 @@
           </button>
         </div>
 
-        <!-- DAFTAR TOURING MENDATANG -->
         <div style="margin-top:12px;">
           <h3 style="font-size: var(--font-sm); font-weight: var(--fw-bold); color: var(--text-muted-dark); text-transform: uppercase; margin-bottom: 8px;">
             <i class="fa-solid fa-compass" style="color: var(--accent-gold);"></i> Agenda Mendatang
@@ -890,7 +888,6 @@
           </div>
         </div>
 
-        <!-- DAFTAR RIWAYAT TOURING YANG SUDAH LEWAT -->
         <div style="margin-top: 20px;">
           <h3 style="font-size: var(--font-sm); font-weight: var(--fw-bold); color: var(--text-muted-dark); text-transform: uppercase; margin-bottom: 8px;">
             <i class="fa-solid fa-clock-rotate-left" style="color: var(--primary);"></i> Riwayat Touring Selesai
@@ -908,7 +905,8 @@
             <h2 style="font-size: var(--font-lg); font-weight: var(--fw-bold);">Dokumentasi Kegiatan</h2>
             <p class="text-muted">Foto kenangan touring & kopdar ITORA BSN</p>
           </div>
-          <button type="button" class="btn btn-sm btn-gold" id="admin-add-photo-btn" style="display:none; width:auto;" onclick="app.openModal('modal-add-photo')">
+          <!-- DIPERBAIKI: Mengakses app.openAddPhotoModal() -->
+          <button type="button" class="btn btn-sm btn-gold" id="admin-add-photo-btn" style="display:none; width:auto;" onclick="app.openAddPhotoModal()">
             <i class="fa-solid fa-upload"></i> Tambah Foto
           </button>
         </div>
@@ -1057,7 +1055,7 @@
 
   </div>
 
-  <!-- ALL MODALS REDESIGNED WITH MODERN GLASSMORPHISM & MATERIAL FLOATING INPUTS -->
+  <!-- ALL MODALS -->
 
   <!-- MODAL ZOOM LIGHTBOX PREVIEW DOKUMENTASI FOTO -->
   <div class="modal-overlay" id="modal-zoom-photo">
@@ -1093,11 +1091,8 @@
       <div class="pro-modal-body">
         <form onsubmit="app.handleSaveGalleryPhoto(event)">
           <div class="pro-form-group always-float">
+            <!-- DIPERBAIKI: Diisi secara dinamis melalui app.openAddPhotoModal() -->
             <select id="photo-touring-name" required>
-              <option value="Touring Bromo Sunrise">Touring Bromo Sunrise</option>
-              <option value="Touring Batu Malang">Touring Batu Malang</option>
-              <option value="Kopdar & Doa Bersama">Kopdar & Doa Bersama</option>
-              <option value="Kegiatan Umum">Kegiatan Umum</option>
             </select>
             <label for="photo-touring-name">Kategori Agenda / Lokasi</label>
           </div>
@@ -1121,7 +1116,7 @@
     </div>
   </div>
 
-  <!-- MODAL POP-UP PENDATAAN & KEHADIRAN TOURING (SPESIFIK AGENDA) -->
+  <!-- MODAL POP-UP PENDATAAN & KEHADIRAN TOURING -->
   <div class="modal-overlay" id="modal-touring-rsvp">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-touring-rsvp')"><i class="fa-solid fa-xmark"></i></button>
@@ -1166,7 +1161,7 @@
     </div>
   </div>
 
-  <!-- MODAL POP-UP ADMIN: MANAJEMEN ROLE PENGURUS -->
+  <!-- MODAL ADMIN: MANAJEMEN ROLE PENGURUS -->
   <div class="modal-overlay" id="modal-admin-roles">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-roles')"><i class="fa-solid fa-xmark"></i></button>
@@ -1187,7 +1182,7 @@
     </div>
   </div>
 
-  <!-- MODAL POP-UP PEMESANAN MERCHANDISE -->
+  <!-- MODAL PEMESANAN MERCHANDISE -->
   <div class="modal-overlay" id="modal-order-merch">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-order-merch')"><i class="fa-solid fa-xmark"></i></button>
@@ -1240,7 +1235,7 @@
     </div>
   </div>
 
-  <!-- MODAL POP-UP ADMIN: KELOLA PRODUK KATALOG TOKO -->
+  <!-- MODAL ADMIN: KELOLA PRODUK KATALOG TOKO -->
   <div class="modal-overlay" id="modal-admin-products">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-products')"><i class="fa-solid fa-xmark"></i></button>
@@ -1316,7 +1311,7 @@
     </div>
   </div>
 
-  <!-- MODAL POP-UP ADMIN 1: PENGATURAN MENU APP -->
+  <!-- MODAL ADMIN: PENGATURAN MENU APP -->
   <div class="modal-overlay" id="modal-admin-menu">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-menu')"><i class="fa-solid fa-xmark"></i></button>
@@ -1337,7 +1332,7 @@
     </div>
   </div>
 
-  <!-- MODAL POP-UP ADMIN 2: PERSETUJUAN ANGGOTA BARU -->
+  <!-- MODAL ADMIN: PERSETUJUAN ANGGOTA BARU -->
   <div class="modal-overlay" id="modal-admin-members">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-members')"><i class="fa-solid fa-xmark"></i></button>
@@ -1357,7 +1352,7 @@
     </div>
   </div>
 
-  <!-- MODAL POP-UP ADMIN 3: VERIFIKASI IURAN ANGGOTA -->
+  <!-- MODAL ADMIN: VERIFIKASI IURAN ANGGOTA -->
   <div class="modal-overlay" id="modal-admin-dues">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-dues')"><i class="fa-solid fa-xmark"></i></button>
@@ -1377,7 +1372,7 @@
     </div>
   </div>
 
-  <!-- MODAL POP-UP ADMIN 4: VERIFIKASI PESANAN MERCHANDISE -->
+  <!-- MODAL ADMIN: VERIFIKASI PESANAN MERCHANDISE -->
   <div class="modal-overlay" id="modal-admin-orders">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-orders')"><i class="fa-solid fa-xmark"></i></button>
@@ -1397,7 +1392,7 @@
     </div>
   </div>
 
-  <!-- MODAL POP-UP ADMIN 5: PENGATURAN KAS POKOK & WHATSAPP -->
+  <!-- MODAL ADMIN: PENGATURAN KAS POKOK & WHATSAPP -->
   <div class="modal-overlay" id="modal-admin-settings">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-settings')"><i class="fa-solid fa-xmark"></i></button>
@@ -1410,7 +1405,6 @@
       </div>
 
       <div class="pro-modal-body">
-        <!-- SECTION 1: WHATSAPP -->
         <div style="margin-bottom: 24px;">
           <div class="pro-form-group">
             <input type="text" id="admin-wa-input" placeholder=" " value="6281234567890">
@@ -1425,7 +1419,6 @@
 
         <hr style="border:0; border-top:1px solid #F1F5F9; margin: 20px 0;">
 
-        <!-- SECTION 2: KAS POKOK -->
         <div>
           <div class="pro-form-group has-prefix">
             <input type="number" id="admin-kas-input" placeholder=" " value="0">
@@ -1441,7 +1434,7 @@
     </div>
   </div>
 
-  <!-- MODAL POP-UP ADMIN 6: UPDATE / TAMBAH JADWAL TOURING -->
+  <!-- MODAL ADMIN: UPDATE / TAMBAH JADWAL TOURING -->
   <div class="modal-overlay" id="modal-admin-touring">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-touring')"><i class="fa-solid fa-xmark"></i></button>
@@ -1743,7 +1736,7 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT LOGIC LENGKAP UTUH -->
+  <!-- JAVASCRIPT LOGIC LENGKAP -->
   <script>
     const SUPABASE_URL = 'https://lfusrctizdydnsiopzfi.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxmdXNyY3RpemR5ZG5zaW9wemZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU2NjI0OTQsImV4cCI6MjEwMTIzODQ5NH0.vWd4l9zbRg3HxHVECN8I67h7gGUsZdaRJ9bD-gmEDUY';
@@ -1793,7 +1786,6 @@
         if (savedWA) this.adminWANumber = savedWA;
         this.updateWAUI();
 
-        // Sync warna background
         const colorInput = document.getElementById('menu-bg-color');
         const colorText = document.getElementById('menu-bg-color-text');
         if (colorInput && colorText) {
@@ -1801,7 +1793,6 @@
           colorText.addEventListener('input', (e) => colorInput.value = e.target.value);
         }
 
-        // Sync warna ikon
         const iconColorInput = document.getElementById('menu-icon-color');
         const iconColorText = document.getElementById('menu-icon-color-text');
         if (iconColorInput && iconColorText) {
@@ -1944,6 +1935,32 @@
         this.openModal('modal-zoom-photo');
       }
 
+      /* DIPERBAIKI: Mengisi <select> modal upload foto secara DINAMIS berdasarkan tanggal touring */
+      openAddPhotoModal() {
+        const selectEl = document.getElementById('photo-touring-name');
+        if (!selectEl) return;
+
+        const now = new Date();
+        
+        // Filter HANYA touring yang TANGGAL ACARANYA SUDAH LEWAT (< hari ini)
+        const pastTourings = this.tourings.filter(t => new Date(t.event_date) < now);
+
+        let optionsHTML = '';
+
+        if (pastTourings.length > 0) {
+          optionsHTML += pastTourings.map(t => `<option value="${t.title}">${t.title}</option>`).join('');
+        }
+
+        // Pilihan bawaan permanen untuk agenda selain touring
+        optionsHTML += `
+          <option value="Kopdar & Doa Bersama">Kopdar & Doa Bersama</option>
+          <option value="Kegiatan Umum">Kegiatan Umum</option>
+        `;
+
+        selectEl.innerHTML = optionsHTML;
+        this.openModal('modal-add-photo');
+      }
+
       async handleSaveGalleryPhoto(e) {
         e.preventDefault();
         if (!this.supabase) return;
@@ -2031,31 +2048,24 @@
         const statTouringEl = document.getElementById('stat-touring-count');
         if (statTouringEl) statTouringEl.innerText = upcomingList.length;
 
-        // Render Home Widget Beranda HERO HOOK
         const homeTitle = document.getElementById('home-touring-title');
         const homeSchedule = document.getElementById('home-touring-schedule');
         const homeMeeting = document.getElementById('home-touring-meeting');
-        const homeJoinedCount = document.getElementById('home-joined-count');
 
         if (upcomingList.length > 0) {
           const mainEvent = upcomingList[0];
           if (homeTitle) homeTitle.innerText = mainEvent.title;
           if (homeSchedule) homeSchedule.innerText = mainEvent.schedule_text;
           if (homeMeeting) homeMeeting.innerText = mainEvent.meeting_point;
-
-          const mainEventParticipants = this.touringParticipants.filter(p => p.touring_id === mainEvent.id && p.status === 'Ikut');
-          if (homeJoinedCount) homeJoinedCount.innerText = mainEventParticipants.length;
         } else {
           if (homeTitle) homeTitle.innerText = "Belum Ada Agenda Mendatang";
           if (homeSchedule) homeSchedule.innerText = "-";
           if (homeMeeting) homeMeeting.innerText = "-";
-          if (homeJoinedCount) homeJoinedCount.innerText = "0";
         }
 
         const isSuperAdmin = (this.currentUser && this.currentUser.email === 'mastrisnobpb@gmail.com');
         const isAdmin = (this.currentProfile?.role === 'Admin' || isSuperAdmin);
 
-        // Render Agenda Touring Mendatang dengan Tombol RSVP Masing-Masing Agenda
         const upcomingContainer = document.getElementById('touring-upcoming-list');
         if (upcomingContainer) {
           if (upcomingList.length === 0) {
@@ -2118,7 +2128,6 @@
           }
         }
 
-        // Render Riwayat Touring Selesai
         const historyContainer = document.getElementById('touring-history-list');
         if (historyContainer) {
           if (historyList.length === 0) {
@@ -2474,7 +2483,7 @@
             badgeEl.innerText = 'Status: Ditolak (Rejected)';
             badgeEl.className = 'badge badge-danger';
           }
-          if (descEl) descEl.innerHTML = 'Mohon maaf, pengajuan pendaftaran anggota Anda **ditolak** oleh pengurus/admin. Silakan hubungi pengurus untuk konfirmasi lebih lanjut.';
+          if (descEl) descEl.innerHTML = 'Mohon maaf, pengajuan pendaftaran anggota Anda ditolak oleh pengurus/admin. Silakan hubungi pengurus untuk konfirmasi lebih lanjut.';
           if (iconEl) {
             iconEl.className = 'fa-solid fa-circle-xmark auth-icon';
             iconEl.style.color = '#EF4444';
@@ -3549,9 +3558,8 @@
               }
             })
             .on('postgres_changes', { event: '*', schema: 'public', table: 'touring_participants' }, () => {
-              this.loadTouringParticipants().then(() => {
-                this.renderTouringsUI();
-              });
+              this.loadTouringParticipants();
+              this.renderTouringsUI();
             })
             .subscribe();
         } catch (e) {
