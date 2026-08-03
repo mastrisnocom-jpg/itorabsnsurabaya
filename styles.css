@@ -392,14 +392,14 @@ body {
   min-width: 18px;
   padding: 0 4px;
   border-radius: 9px;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   border: 2px solid #FFFFFF;
   box-shadow: 0 2px 5px rgba(239, 68, 68, 0.4);
 }
 
-/* Modal Overlay Notifikasi (Sembunyi secara default) */
+/* Modal Overlay Notifikasi (Sembunyi secara default tanpa !important) */
 .notif-modal-overlay {
   position: fixed;
   top: 0;
@@ -409,13 +409,18 @@ body {
   background: rgba(15, 23, 42, 0.65);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  z-index: 99999;
-  display: none; /* MEMASIKAN MODAL TERSEMBUNYI SAAT APLIKASI PERTAMA DI-LOAD */
+  z-index: 999999;
+  display: none; 
   justify-content: center;
   align-items: flex-start;
   padding-top: 60px;
   padding-left: 16px;
   padding-right: 16px;
+}
+
+/* Class Pengontrol Tampilan Modal Notifikasi saat Tombol Lonceng Diklik */
+.notif-modal-overlay.show-notif {
+  display: flex !important;
 }
 
 /* Modal Content Card */
@@ -545,12 +550,4 @@ body {
   color: #94A3B8;
   font-size: 13px;
   font-weight: 500;
-}
-/* FORCE DISPLAY UNTUK MODAL NOTIFIKASI */
-#notificationModal.show-notif {
-  display: flex !important;
-}
-
-#notificationModal {
-  z-index: 999999 !important; /* Memastikan posisi di paling depan */
 }
