@@ -315,7 +315,7 @@
     }
 
     .card {
-      border-radius: var(--radius-md); padding: 20px; margin-bottom: 16px;
+      border-radius: var(--radius-md); padding: 18px; margin-bottom: 14px;
       background: #FFFFFF; border: 1px solid var(--border-dark);
       box-shadow: 0 4px 15px rgba(0,0,0,0.03);
     }
@@ -378,6 +378,71 @@
       margin-top: 6px; 
       text-align: center; 
       line-height: 1.2; 
+    }
+
+    /* KARTU TOURING COMPACT BORDER & GRID ICON */
+    .touring-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-dark);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+    }
+
+    .touring-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .touring-title {
+      font-size: var(--font-md);
+      font-weight: var(--fw-extrabold);
+      color: var(--text-main-dark);
+      line-height: 1.3;
+      margin-bottom: 12px;
+    }
+
+    .touring-grid-info {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .touring-info-item {
+      background: #F8FAFC;
+      border: 1px solid var(--border-dark);
+      border-radius: 10px;
+      padding: 8px 6px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .touring-info-item i {
+      font-size: 1rem;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    .touring-info-item span {
+      font-size: 0.65rem;
+      font-weight: var(--fw-bold);
+      color: var(--text-main-dark);
+      line-height: 1.2;
+      word-break: break-word;
+    }
+
+    .touring-info-item small {
+      font-size: 0.58rem;
+      color: var(--text-muted-dark);
+      display: block;
+      margin-top: 2px;
     }
 
     .shop-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 14px; }
@@ -727,7 +792,7 @@
         </div>
       </section>
 
-      <!-- 5. TOURING (MULTIPLE TOURING & OTOMATIS BERPINDAH KE RIWAYAT JIKA SUDAH LEWAT) -->
+      <!-- 5. TOURING (REDESAIN LEBIH COMPACT DENGAN GRID IKON RINGKAS) -->
       <section id="page-touring" class="page">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <h2 style="font-size: var(--font-lg); font-weight: var(--fw-bold);">Jadwal & Rute Touring</h2>
@@ -736,9 +801,9 @@
           </button>
         </div>
 
-        <!-- CONTAINER DAFTAR AGENDA TOURING MENDATANG (UPCOMING) -->
+        <!-- DAFTAR TOURING MENDATANG COMPACT -->
         <div style="margin-top:12px;">
-          <h3 style="font-size: var(--font-md); font-weight: var(--fw-bold); margin-bottom: 8px;">
+          <h3 style="font-size: var(--font-sm); font-weight: var(--fw-bold); color: var(--text-muted-dark); text-transform: uppercase; margin-bottom: 8px;">
             <i class="fa-solid fa-compass" style="color: var(--accent-gold);"></i> Agenda Mendatang
           </h3>
           <div id="touring-upcoming-list">
@@ -747,26 +812,43 @@
         </div>
 
         <!-- STATISTIK RINGKASAN PARTICIPATION MEMBER -->
-        <div class="card" style="background: #F8FAFC; border: 1px dashed var(--border-dark); margin-top: 15px;">
-          <h3 style="font-size: var(--font-sm); font-weight: var(--fw-bold); color: var(--text-muted-dark); text-transform: uppercase;">
+        <div class="card" style="background: #F8FAFC; border: 1px dashed var(--border-dark); margin-top: 10px; padding: 14px;">
+          <h3 style="font-size: var(--font-xs); font-weight: var(--fw-bold); color: var(--text-muted-dark); text-transform: uppercase;">
             <i class="fa-solid fa-chart-pie"></i> Partisipasi Saya
           </h3>
-          <div style="display: flex; gap: 12px; margin-top: 10px;">
-            <div style="flex:1; background: #D1FAE5; padding: 10px; border-radius: 10px; text-align: center;">
-              <strong style="color: #059669; font-size: 1.2rem; display: block;" id="my-ikut-count">0</strong>
-              <span style="font-size: 0.7rem; color: #065F46; font-weight: 600;">Kali Ikut</span>
+          <div style="display: flex; gap: 10px; margin-top: 8px;">
+            <div style="flex:1; background: #D1FAE5; padding: 8px; border-radius: 8px; text-align: center;">
+              <strong style="color: #059669; font-size: 1.1rem; display: block;" id="my-ikut-count">0</strong>
+              <span style="font-size: 0.65rem; color: #065F46; font-weight: 600;">Kali Ikut</span>
             </div>
-            <div style="flex:1; background: #FEE2E2; padding: 10px; border-radius: 10px; text-align: center;">
-              <strong style="color: #DC2626; font-size: 1.2rem; display: block;" id="my-absen-count">0</strong>
-              <span style="font-size: 0.7rem; color: #991B1B; font-weight: 600;">Kali Absen</span>
+            <div style="flex:1; background: #FEE2E2; padding: 8px; border-radius: 8px; text-align: center;">
+              <strong style="color: #DC2626; font-size: 1.1rem; display: block;" id="my-absen-count">0</strong>
+              <span style="font-size: 0.65rem; color: #991B1B; font-weight: 600;">Kali Absen</span>
             </div>
           </div>
         </div>
 
+        <!-- FORM KONFIRMASI (RSVP) -->
+        <div class="card" id="touring-rsvp-card" style="padding: 14px;">
+          <h3 style="font-size: var(--font-base); font-weight: var(--fw-bold); margin-bottom: 4px;">
+            <i class="fa-solid fa-clipboard-check" style="color: var(--primary);"></i> Konfirmasi Kehadiran Anda
+          </h3>
+          <p class="text-muted" style="margin-bottom: 10px;">Pilih status partisipasi Anda untuk mendata rombongan.</p>
+          
+          <div style="display: flex; gap: 10px;">
+            <button type="button" class="btn btn-primary btn-sm" style="flex:1;" onclick="app.submitTouringRSVP('Ikut')">
+              <i class="fa-solid fa-circle-check"></i> Saya Ikut
+            </button>
+            <button type="button" class="btn btn-danger btn-sm" style="flex:1;" onclick="app.submitTouringRSVP('Absen')">
+              <i class="fa-solid fa-circle-xmark"></i> Tidak Ikut
+            </button>
+          </div>
+        </div>
+
         <!-- DAFTAR PENDATAAN ANGGOTA & TOMBOL EXPORT -->
-        <div class="card">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
-            <h3 style="font-size: var(--font-md); font-weight: var(--fw-bold);">
+        <div class="card" style="padding: 14px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
+            <h3 style="font-size: var(--font-base); font-weight: var(--fw-bold);">
               <i class="fa-solid fa-users-viewfinder" style="color: var(--accent-gold);"></i> Pendataan Anggota
             </h3>
             <span class="badge badge-primary" id="touring-count-badge">0 Ikut</span>
@@ -776,15 +858,15 @@
             <p class="text-muted" style="text-align:center;">Memuat data partisipasi...</p>
           </div>
 
-          <div style="display: flex; gap: 10px; margin-top: 15px;">
-            <button type="button" class="btn btn-primary btn-sm" onclick="app.exportData('Touring', 'PDF')"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
-            <button type="button" class="btn btn-primary btn-sm" onclick="app.exportData('Touring', 'Excel')"><i class="fa-solid fa-file-excel"></i> Export Excel</button>
+          <div style="display: flex; gap: 8px; margin-top: 12px;">
+            <button type="button" class="btn btn-primary btn-sm" style="flex:1;" onclick="app.exportData('Touring', 'PDF')"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
+            <button type="button" class="btn btn-primary btn-sm" style="flex:1;" onclick="app.exportData('Touring', 'Excel')"><i class="fa-solid fa-file-excel"></i> Export Excel</button>
           </div>
         </div>
 
         <!-- DAFTAR RIWAYAT TOURING YANG SUDAH LEWAT -->
-        <div style="margin-top: 25px;">
-          <h3 style="font-size: var(--font-md); font-weight: var(--fw-bold); margin-bottom: 10px;">
+        <div style="margin-top: 20px;">
+          <h3 style="font-size: var(--font-sm); font-weight: var(--fw-bold); color: var(--text-muted-dark); text-transform: uppercase; margin-bottom: 8px;">
             <i class="fa-solid fa-clock-rotate-left" style="color: var(--primary);"></i> Riwayat Touring Selesai
           </h3>
           <div id="touring-history-list">
@@ -1473,7 +1555,7 @@
         if (displayWA) displayWA.innerText = `+${this.adminWANumber}`;
       }
 
-      // FITUR BANYAK TOURING (LOAD MULTIPLE TOURING DARI SUPABASE & MEMISAHKAN UTAMA / RIWAYAT)
+      // LOAD TOURING DENGAN REDESAIN COMPACT GRID ICON & FLEXIBEL BANYAK AGENDA
       async loadTouringsFromSupabase() {
         if (!this.supabase) return;
         try {
@@ -1496,7 +1578,6 @@
       renderTouringsUI() {
         const currentDate = new Date();
         
-        // Memisahkan mana touring mendatang (upcoming) dan mana yang sudah lewat (history)
         const upcomingList = this.tourings.filter(t => new Date(t.event_date) >= currentDate);
         const historyList = this.tourings.filter(t => new Date(t.event_date) < currentDate);
 
@@ -1522,28 +1603,45 @@
         const isSuperAdmin = (this.currentUser && this.currentUser.email === 'mastrisnobpb@gmail.com');
         const isAdmin = (this.currentProfile?.role === 'Admin' || isSuperAdmin);
 
-        // Render Agenda Touring Mendatang di Halaman Touring
+        // Render Agenda Touring Mendatang di Halaman Touring (Desain Ringkas Compact Grid)
         const upcomingContainer = document.getElementById('touring-upcoming-list');
         if (upcomingContainer) {
           if (upcomingList.length === 0) {
             upcomingContainer.innerHTML = '<p class="text-muted" style="text-align:center; padding: 15px; background: #fff; border-radius: 12px; border: 1px solid var(--border-dark);">Belum ada agenda touring mendatang.</p>';
           } else {
             upcomingContainer.innerHTML = upcomingList.map(t => `
-              <div class="card" style="margin-top: 12px; position: relative;">
-                ${isAdmin ? `
-                  <div style="position: absolute; top: 16px; right: 16px; display: flex; gap: 6px;">
-                    <button type="button" class="btn btn-sm btn-gold" style="padding: 5px 8px;" onclick="app.openEditTouringModal('${t.id}')"><i class="fa-solid fa-pen-to-square"></i></button>
-                    <button type="button" class="btn btn-sm btn-danger" style="padding: 5px 8px;" onclick="app.adminDeleteTouring('${t.id}')"><i class="fa-solid fa-trash"></i></button>
+              <div class="touring-card">
+                <div class="touring-card-header">
+                  <span class="badge badge-gold">Destinasi Utama</span>
+                  ${isAdmin ? `
+                    <div style="display: flex; gap: 6px;">
+                      <button type="button" class="btn btn-sm btn-gold" style="padding: 4px 8px;" onclick="app.openEditTouringModal('${t.id}')"><i class="fa-solid fa-pen-to-square"></i></button>
+                      <button type="button" class="btn btn-sm btn-danger" style="padding: 4px 8px;" onclick="app.adminDeleteTouring('${t.id}')"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                  ` : ''}
+                </div>
+
+                <div class="touring-title">${t.title}</div>
+
+                <div class="touring-grid-info">
+                  <div class="touring-info-item">
+                    <i class="fa-regular fa-calendar-check"></i>
+                    <span>${t.schedule_text}</span>
+                    <small>Jadwal</small>
                   </div>
-                ` : ''}
-                <span class="badge badge-gold">Destinasi Utama</span>
-                <h3 style="margin-top: 6px; font-size: var(--font-base); font-weight: var(--fw-bold); padding-right: 70px;">${t.title}</h3>
-                <p class="text-muted" style="margin-top: 6px;"><i class="fa-regular fa-calendar"></i> ${t.schedule_text}</p>
-                <p class="text-muted"><i class="fa-solid fa-location-dot"></i> Meeting Point: ${t.meeting_point}</p>
-                <p class="text-muted" style="color: var(--primary); font-weight: var(--fw-bold); margin-top: 4px;">
-                  <i class="fa-solid fa-gauge-high"></i> Estimasi Jarak Tempuh: ${t.distance}
-                </p>
-                <button type="button" class="btn btn-primary" style="margin-top: 14px;" onclick="window.open('${t.maps_url}', '_blank')">
+                  <div class="touring-info-item">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <span>${t.meeting_point}</span>
+                    <small>Titik Kumpul</small>
+                  </div>
+                  <div class="touring-info-item">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <span>${t.distance}</span>
+                    <small>Jarak</small>
+                  </div>
+                </div>
+
+                <button type="button" class="btn btn-primary btn-sm" onclick="window.open('${t.maps_url}', '_blank')">
                   <i class="fa-solid fa-map-location-dot"></i> Buka Rute Google Maps
                 </button>
               </div>
@@ -1558,17 +1656,33 @@
             historyContainer.innerHTML = '<p class="text-muted" style="text-align:center; padding: 15px; background: #fff; border-radius: 12px; border: 1px solid var(--border-dark);">Belum ada riwayat touring terdahulu.</p>';
           } else {
             historyContainer.innerHTML = historyList.map(t => `
-              <div class="card" style="border-left: 4px solid var(--accent-gold); position: relative;">
-                ${isAdmin ? `
-                  <div style="position: absolute; top: 16px; right: 16px; display: flex; gap: 6px;">
-                    <button type="button" class="btn btn-sm btn-danger" style="padding: 5px 8px;" onclick="app.adminDeleteTouring('${t.id}')"><i class="fa-solid fa-trash"></i></button>
+              <div class="touring-card" style="border-left: 4px solid var(--accent-gold);">
+                <div class="touring-card-header">
+                  <span class="badge badge-warning">Selesai</span>
+                  ${isAdmin ? `
+                    <button type="button" class="btn btn-sm btn-danger" style="padding: 4px 8px;" onclick="app.adminDeleteTouring('${t.id}')"><i class="fa-solid fa-trash"></i></button>
+                  ` : ''}
+                </div>
+
+                <div class="touring-title" style="font-size: var(--font-base);">${t.title}</div>
+
+                <div class="touring-grid-info">
+                  <div class="touring-info-item">
+                    <i class="fa-regular fa-calendar"></i>
+                    <span>${t.schedule_text}</span>
+                    <small>Tanggal</small>
                   </div>
-                ` : ''}
-                <span class="badge badge-warning">Selesai</span>
-                <h4 style="font-size: var(--font-base); font-weight: var(--fw-bold); margin-top: 6px; padding-right: 40px;">${t.title}</h4>
-                <p class="text-muted" style="margin-top: 4px;"><i class="fa-regular fa-calendar"></i> ${t.schedule_text}</p>
-                <p class="text-muted"><i class="fa-solid fa-location-dot"></i> ${t.meeting_point}</p>
-                <p class="text-muted"><i class="fa-solid fa-gauge-high"></i> Jarak: ${t.distance}</p>
+                  <div class="touring-info-item">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <span>${t.meeting_point}</span>
+                    <small>Lokasi</small>
+                  </div>
+                  <div class="touring-info-item">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <span>${t.distance}</span>
+                    <small>Jarak</small>
+                  </div>
+                </div>
               </div>
             `).join('');
           }
