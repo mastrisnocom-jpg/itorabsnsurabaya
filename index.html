@@ -113,12 +113,12 @@
                 </div>
 
                 <div class="flex items-center gap-2">
-                  <!-- TOMBOL PENGATURAN SUPERADMIN (OTOMATIS MUNCUL SAAT SUPERADMIN LOGIN) -->
+                  <!-- TOMBOL PENGATURAN SUPERADMIN -->
                   <button type="button" id="btn-admin-landing-setting" onclick="app.showAdminBoardModal()" style="display:none;" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-4 py-2 rounded-full font-bold text-xs shadow-lg transition flex items-center gap-2">
                       <i class="fa-solid fa-gear"></i> Pengaturan Landing Page
                   </button>
 
-                  <!-- TOMBOL LOGOUT/DASHBOARD KHUSUS SUPERADMIN -->
+                  <!-- TOMBOL LOGOUT/DASHBOARD KHUSUS SUPERADMIN/LOGGED IN -->
                   <button type="button" id="btn-admin-go-dashboard" onclick="window.location.href='dashboard.html'" style="display:none;" class="bg-emerald-800 hover:bg-emerald-700 text-white px-4 py-2 rounded-full font-bold text-xs shadow-lg transition flex items-center gap-2 border border-emerald-500/40">
                       <i class="fa-solid fa-gauge-high"></i> Dashboard App
                   </button>
@@ -179,8 +179,8 @@
             <div id="board-tier-divisi" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
         </div>
 
-        <!-- REGISTRASI CEPAT -->
-        <section class="bg-gradient-to-br from-emerald-900 via-emerald-800 to-emerald-950 rounded-3xl text-white p-8 md:p-12 shadow-2xl relative overflow-hidden">
+        <!-- REGISTRASI CEPAT (OTOMATIS HILANG SAAT SUDAH LOGIN) -->
+        <section id="section-landing-register" class="bg-gradient-to-br from-emerald-900 via-emerald-800 to-emerald-950 rounded-3xl text-white p-8 md:p-12 shadow-2xl relative overflow-hidden">
             <div class="max-w-4xl mx-auto relative z-10">
                 <div class="text-center mb-8">
                     <span class="inline-block bg-emerald-700/60 border border-emerald-500/30 text-emerald-200 text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest mb-3">
@@ -432,6 +432,10 @@
       async validateUserFlow() {
         if (!this.currentUser) return;
 
+        // BILA USER SUDAH LOGIN: SEMBUNYIKAN SECTION REGISTRASI LANDING
+        const registerSection = document.getElementById('section-landing-register');
+        if (registerSection) registerSection.style.display = 'none';
+
         // BILA SUPER ADMIN: TAMPILKAN TOMBOL PENGATURAN LANDING & KONTROL
         if (this.currentUser.email === 'mastrisnobpb@gmail.com') {
           const btnSetting = document.getElementById('btn-admin-landing-setting');
@@ -459,6 +463,10 @@
       showLandingPage() {
         document.getElementById('pending-approval-screen').style.display = 'none';
         document.getElementById('landing-screen').style.display = 'block';
+
+        // BILA GUEST (BELUM LOGIN), PASTIKAN SECTION REGISTRASI TAMPIL
+        const registerSection = document.getElementById('section-landing-register');
+        if (registerSection) registerSection.style.display = 'block';
       }
 
       showAuthModal() { document.getElementById('auth-screen').style.display = 'flex'; }
@@ -502,8 +510,8 @@
           } else {
             this.boardMembers = [
               { id: '1', name: 'Branch Manager BSN Surabaya', title: 'Pembina Utama', role_category: 'pembina' },
-              { id: '2', name: 'Fahmi Rosyad', title: 'Ketua Chapter 1', role_category: 'ketua' },
-              { id: '3', name: 'Cristian Haris', title: 'Wakil Ketua 1', role_category: 'wakil' },
+              { id: '2', name: 'Ahmad Fauzi', title: 'Ketua Chapter 1', role_category: 'ketua' },
+              { id: '3', name: 'Sutrisno', title: 'Wakil Ketua 1', role_category: 'wakil' },
               { id: '4', name: 'Budi Santoso', title: 'Sekretaris 1', role_category: 'sekretaris' },
               { id: '5', name: 'Rina Wijaya', title: 'Bendahara 1', role_category: 'bendahara' }
             ];
