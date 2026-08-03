@@ -331,6 +331,7 @@
     .stat-card h3 { font-size: var(--font-md); font-weight: var(--fw-bold); margin-top: 4px; color: var(--text-main-dark); }
     .stat-card span { font-size: var(--font-xs); color: var(--text-muted-dark); font-weight: var(--fw-medium); }
 
+    /* QUICK MENU CARD */
     .quick-menu-card {
       background: #FFFFFF;
       border: 1px solid var(--border-dark);
@@ -380,6 +381,66 @@
       line-height: 1.2; 
     }
 
+    /* REDESAIN WIDGET TOURING TERDEKAT (WITH HERO HOOK) */
+    .home-touring-hero {
+      position: relative;
+      border-radius: var(--radius-md);
+      padding: 20px;
+      color: #FFFFFF;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.78), rgba(0, 135, 90, 0.85)), 
+                  url('https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800&auto=format&fit=crop&q=80') center/cover no-repeat;
+    }
+
+    .home-touring-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .home-touring-hook {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent-gold);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .home-touring-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      line-height: 1.2;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .home-touring-pills {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .touring-pill {
+      background: rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 20px;
+      padding: 5px 10px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
     .touring-card {
       background: #FFFFFF;
       border: 1px solid var(--border-dark);
@@ -394,14 +455,6 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 10px;
-    }
-
-    .touring-title {
-      font-size: var(--font-md);
-      font-weight: var(--fw-extrabold);
-      color: var(--text-main-dark);
-      line-height: 1.3;
-      margin-bottom: 12px;
     }
 
     .touring-grid-info {
@@ -423,26 +476,9 @@
       justify-content: center;
     }
 
-    .touring-info-item i {
-      font-size: 1rem;
-      color: var(--primary);
-      margin-bottom: 4px;
-    }
-
-    .touring-info-item span {
-      font-size: 0.65rem;
-      font-weight: var(--fw-bold);
-      color: var(--text-main-dark);
-      line-height: 1.2;
-      word-break: break-word;
-    }
-
-    .touring-info-item small {
-      font-size: 0.58rem;
-      color: var(--text-muted-dark);
-      display: block;
-      margin-top: 2px;
-    }
+    .touring-info-item i { font-size: 1rem; color: var(--primary); margin-bottom: 4px; }
+    .touring-info-item span { font-size: 0.65rem; font-weight: var(--fw-bold); color: var(--text-main-dark); line-height: 1.2; word-break: break-word; }
+    .touring-info-item small { font-size: 0.58rem; color: var(--text-muted-dark); display: block; margin-top: 2px; }
 
     .shop-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 14px; }
     .product-card { background: #FFFFFF; border: 1px solid var(--border-dark); border-radius: var(--radius-md); overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 4px 12px rgba(0,0,0,0.03); position: relative; }
@@ -681,15 +717,28 @@
           <div class="quick-menu" id="dynamic-quick-menu"></div>
         </div>
 
-        <div class="card">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h3 style="font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-compass" style="color: var(--accent-gold);"></i> Touring Terdekat</h3>
-            <span class="badge badge-primary" id="home-touring-date">Agustus 2026</span>
+        <!-- REDESAIN WIDGET TOURING TERDEKAT BERANDA (HERO HOOK) -->
+        <div class="home-touring-hero">
+          <div class="home-touring-header">
+            <div class="home-touring-hook"><i class="fa-solid fa-fire"></i> Agenda Utama</div>
+            <span class="badge badge-gold" id="home-touring-date">Agustus 2026</span>
           </div>
-          <h4 style="font-size: var(--font-base); font-weight: var(--fw-bold); margin-top: 8px;" id="home-touring-title">Touring Kemerdekaan Bromo</h4>
-          <p class="text-muted" style="margin-top:4px;"><i class="fa-regular fa-calendar"></i> <span id="home-touring-schedule">17 Agustus 2026 | 05:00 WIB</span></p>
-          <p class="text-muted"><i class="fa-solid fa-location-dot"></i> Meeting Point: <span id="home-touring-meeting">Alun-Alun Surabaya</span></p>
-          <button type="button" class="btn btn-gold" style="margin-top: 14px;" onclick="app.navigateTo('touring')">Detail & Rute</button>
+          
+          <h3 class="home-touring-title" id="home-touring-title">Touring Kemerdekaan Bromo</h3>
+          
+          <div class="home-touring-pills">
+            <div class="touring-pill"><i class="fa-regular fa-calendar"></i> <span id="home-touring-schedule">17 Agt 2026</span></div>
+            <div class="touring-pill"><i class="fa-solid fa-location-dot"></i> <span id="home-touring-meeting">Alun-Alun SBY</span></div>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <button type="button" class="btn btn-gold btn-sm" style="width:auto; font-weight:800;" onclick="app.navigateTo('touring')">
+              <i class="fa-solid fa-compass"></i> Detail & Rute
+            </button>
+            <span style="font-size:0.7rem; font-weight:700; background:rgba(0,0,0,0.4); padding:4px 10px; border-radius:12px;" id="home-touring-joined-badge">
+              <i class="fa-solid fa-users"></i> 0 Member Join
+            </span>
+          </div>
         </div>
       </section>
 
@@ -800,7 +849,7 @@
           </button>
         </div>
 
-        <!-- DAFTAR TOURING MENDATANG -->
+        <!-- DAFTAR TOURING MENDATANG COMPACT -->
         <div style="margin-top:12px;">
           <h3 style="font-size: var(--font-sm); font-weight: var(--fw-bold); color: var(--text-muted-dark); text-transform: uppercase; margin-bottom: 8px;">
             <i class="fa-solid fa-compass" style="color: var(--accent-gold);"></i> Agenda Mendatang
@@ -820,7 +869,7 @@
             </div>
           </div>
           <button type="button" class="btn btn-sm btn-gold" style="width:auto;" onclick="app.openModal('modal-touring-rsvp')">
-            <i class="fa-solid fa-users-gear"></i> Kelola Kehadiran
+            <i class="fa-solid fa-users-gear"></i> Konfirmasi Kehadiran / Lihat Peserta
           </button>
         </div>
 
@@ -990,7 +1039,7 @@
       
       <div style="text-align:center; margin-bottom: 15px;">
         <i class="fa-solid fa-clipboard-check" style="font-size: 2.2rem; color: var(--primary);"></i>
-        <h3 style="font-size: var(--font-md); font-weight: var(--fw-bold); margin-top: 6px;">Pendataan & Kehadiran Touring</h3>
+        <h3 style="font-size: var(--font-md); font-weight: var(--fw-bold); margin-top: 6px;">Pendataan Kehadiran</h3>
         <p class="text-muted">Konfirmasi pilihan Anda & cek rombongan anggota</p>
       </div>
 
@@ -1300,7 +1349,6 @@
           <input type="text" class="input-control" id="menu-icon" placeholder="fa-solid fa-bullhorn">
         </div>
 
-        <!-- PENGATURAN WARNA BACKGROUND LINGKARAN IKON -->
         <div class="form-group">
           <label>Warna Background Lingkaran Ikon</label>
           <div style="display:flex; gap:10px; align-items:center;">
@@ -1309,7 +1357,6 @@
           </div>
         </div>
 
-        <!-- PENGATURAN WARNA WARNA IKON / TEKS IKON -->
         <div class="form-group">
           <label>Warna Ikon (FontAwesome Icon Color)</label>
           <div style="display:flex; gap:10px; align-items:center;">
@@ -1564,7 +1611,6 @@
         if (displayWA) displayWA.innerText = `+${this.adminWANumber}`;
       }
 
-      // LOAD TOURING DENGAN REDESAIN COMPACT GRID ICON & FLEXIBEL BANYAK AGENDA
       async loadTouringsFromSupabase() {
         if (!this.supabase) return;
         try {
@@ -1593,7 +1639,7 @@
         const statTouringEl = document.getElementById('stat-touring-count');
         if (statTouringEl) statTouringEl.innerText = upcomingList.length;
 
-        // Render Home Widget Beranda
+        // Render Home Widget Beranda HERO HOOK
         const homeTitle = document.getElementById('home-touring-title');
         const homeSchedule = document.getElementById('home-touring-schedule');
         const homeMeeting = document.getElementById('home-touring-meeting');
@@ -1612,7 +1658,7 @@
         const isSuperAdmin = (this.currentUser && this.currentUser.email === 'mastrisnobpb@gmail.com');
         const isAdmin = (this.currentProfile?.role === 'Admin' || isSuperAdmin);
 
-        // Render Agenda Touring Mendatang di Halaman Touring (Desain Ringkas Compact Grid)
+        // Render Agenda Touring Mendatang
         const upcomingContainer = document.getElementById('touring-upcoming-list');
         if (upcomingContainer) {
           if (upcomingList.length === 0) {
@@ -1788,6 +1834,8 @@
       async loadTouringParticipants() {
         const container = document.getElementById('touring-participants-list');
         const countBadge = document.getElementById('touring-count-badge');
+        const homeJoinedBadge = document.getElementById('home-touring-joined-badge');
+
         if (!container || !this.supabase) return;
 
         try {
@@ -1799,7 +1847,9 @@
           if (!error && data) {
             this.touringParticipants = data;
             const ikutCount = data.filter(d => d.status === 'Ikut').length;
+            
             if (countBadge) countBadge.innerText = `${ikutCount} Anggota Ikut`;
+            if (homeJoinedBadge) homeJoinedBadge.innerHTML = `<i class="fa-solid fa-users"></i> ${ikutCount} Member Join`;
 
             if (this.currentUser) {
               const myHistory = data.filter(d => d.user_id === this.currentUser.id);
