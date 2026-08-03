@@ -399,7 +399,7 @@ body {
   box-shadow: 0 2px 5px rgba(239, 68, 68, 0.4);
 }
 
-/* Modal Overlay Notifikasi (Sembunyi secara default tanpa !important) */
+/* Modal Overlay Notifikasi */
 .notif-modal-overlay {
   position: fixed;
   top: 0;
@@ -418,7 +418,7 @@ body {
   padding-right: 16px;
 }
 
-/* Class Pengontrol Tampilan Modal Notifikasi saat Tombol Lonceng Diklik */
+/* Class Pengontrol Tampilan Modal Notifikasi */
 .notif-modal-overlay.show-notif {
   display: flex !important;
 }
