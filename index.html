@@ -85,6 +85,11 @@
 
     #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 99999; width: 90%; max-width: 400px; }
     .toast { padding: 14px 18px; border-radius: 16px; color: white; font-size: 0.85rem; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+
+    /* CAROUSEL STYLES */
+    .slide-fade { transition: opacity 0.7s ease-in-out; }
+    .dot-indicator { transition: all 0.3s ease; }
+    .dot-indicator.active { width: 28px; background-color: #F59E0B; border-radius: 8px; }
   </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col justify-between">
@@ -179,7 +184,7 @@
             <div id="board-tier-divisi" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
         </div>
 
-        <!-- REGISTRASI CEPAT (OTOMATIS HILANG SAAT SUDAH LOGIN) -->
+        <!-- REGISTRASI CEPAT (TAMPIL UNTUK GUEST / BELUM LOGIN) -->
         <section id="section-landing-register" class="bg-gradient-to-br from-emerald-900 via-emerald-800 to-emerald-950 rounded-3xl text-white p-8 md:p-12 shadow-2xl relative overflow-hidden">
             <div class="max-w-4xl mx-auto relative z-10">
                 <div class="text-center mb-8">
@@ -236,6 +241,78 @@
                 </form>
             </div>
         </section>
+
+        <!-- SLIDE DOKUMENTASI PROFESIONAL (TAMPIL OTOMATIS SAAT USER LOGIN) -->
+        <section id="section-landing-gallery" style="display: none;" class="relative">
+            <div class="text-center mb-8">
+                <span class="inline-block bg-amber-100 border border-amber-300 text-amber-800 text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest mb-2">
+                    <i class="fa-solid fa-camera text-amber-600"></i> Galeri Komunitas
+                </span>
+                <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">Dokumentasi & Keakraban</h2>
+                <p class="text-slate-500 text-xs md:text-sm mt-1">Momen kebersamaan seluruh anggota ITORA Chapter BSN Surabaya</p>
+            </div>
+
+            <!-- CAROUSEL SLIDE CONTAINER -->
+            <div class="relative w-full max-w-5xl mx-auto h-[260px] sm:h-[380px] md:h-[480px] rounded-3xl overflow-hidden shadow-2xl border border-slate-200 bg-slate-900 group" onmouseenter="app.stopSliderAutoplay()" onmouseleave="app.startSliderAutoplay()">
+                
+                <!-- SLIDE ITEMS -->
+                <div id="carousel-slides-wrapper" class="w-full h-full relative">
+                    <!-- Slide 1 -->
+                    <div class="slide-item absolute inset-0 opacity-100 slide-fade flex items-end">
+                        <img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=1200&auto=format&fit=crop&q=80" class="absolute inset-0 w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent"></div>
+                        <div class="relative z-10 p-6 sm:p-10 text-white max-w-2xl">
+                            <span class="bg-amber-500 text-slate-950 text-[10px] sm:text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest mb-2 inline-block">Touring Utama</span>
+                            <h3 class="text-xl sm:text-3xl font-extrabold mb-1 drop-shadow-md">Lautan Pasir Bromo</h3>
+                            <p class="text-xs sm:text-sm text-slate-200 font-light">Eksplorasi keindahan alam dan ujinyawa kebersamaan rombongan ITORA BSN.</p>
+                        </div>
+                    </div>
+
+                    <!-- Slide 2 -->
+                    <div class="slide-item absolute inset-0 opacity-0 slide-fade flex items-end">
+                        <img src="https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=1200&auto=format&fit=crop&q=80" class="absolute inset-0 w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent"></div>
+                        <div class="relative z-10 p-6 sm:p-10 text-white max-w-2xl">
+                            <span class="bg-emerald-500 text-white text-[10px] sm:text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest mb-2 inline-block">Kopdar Rutin</span>
+                            <h3 class="text-xl sm:text-3xl font-extrabold mb-1 drop-shadow-md">Silaturahmi & Doa Bersama</h3>
+                            <p class="text-xs sm:text-sm text-slate-200 font-light">Membangun solidaritas antar karyawan Bank Syariah Nasional Surabaya.</p>
+                        </div>
+                    </div>
+
+                    <!-- Slide 3 -->
+                    <div class="slide-item absolute inset-0 opacity-0 slide-fade flex items-end">
+                        <img src="https://images.unsplash.com/photo-1558980664-3a031cf67ea8?w=1200&auto=format&fit=crop&q=80" class="absolute inset-0 w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent"></div>
+                        <div class="relative z-10 p-6 sm:p-10 text-white max-w-2xl">
+                            <span class="bg-amber-500 text-slate-950 text-[10px] sm:text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest mb-2 inline-block">Rute Jalibar</span>
+                            <h3 class="text-xl sm:text-3xl font-extrabold mb-1 drop-shadow-md">Rolling City Batu Malang</h3>
+                            <p class="text-xs sm:text-sm text-slate-200 font-light">Menikmati kesejukan udara kota Batu dalam kampanye Cari_Aman di jalan.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- WATERMARK LOGO SISI KANAN ATAS -->
+                <div class="absolute top-4 right-4 z-20 bg-slate-950/60 backdrop-blur-md border border-white/20 text-white px-3 py-1.5 rounded-full text-[10px] sm:text-xs font-bold flex items-center gap-2 shadow-lg">
+                    <i class="fa-solid fa-shield text-emerald-400"></i> ITORA BSN SURABAYA
+                </div>
+
+                <!-- NAVIGASI ARROW (NEXT / PREV) -->
+                <button type="button" onclick="app.prevSlide()" class="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-950/40 hover:bg-emerald-600 text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition shadow-lg opacity-80 group-hover:opacity-100 cursor-pointer">
+                    <i class="fa-solid fa-chevron-left text-sm sm:text-base"></i>
+                </button>
+                <button type="button" onclick="app.nextSlide()" class="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-950/40 hover:bg-emerald-600 text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition shadow-lg opacity-80 group-hover:opacity-100 cursor-pointer">
+                    <i class="fa-solid fa-chevron-right text-sm sm:text-base"></i>
+                </button>
+
+                <!-- DOT INDICATORS -->
+                <div id="carousel-dots-container" class="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 bg-slate-950/40 px-4 py-2 rounded-full backdrop-blur-md border border-white/10">
+                    <button type="button" onclick="app.goToSlide(0)" class="dot-indicator w-2.5 h-2.5 rounded-full bg-white/50 hover:bg-white active"></button>
+                    <button type="button" onclick="app.goToSlide(1)" class="dot-indicator w-2.5 h-2.5 rounded-full bg-white/50 hover:bg-white"></button>
+                    <button type="button" onclick="app.goToSlide(2)" class="dot-indicator w-2.5 h-2.5 rounded-full bg-white/50 hover:bg-white"></button>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <footer class="bg-emerald-950 text-emerald-400 text-xs py-8 border-t border-emerald-900/60">
@@ -389,6 +466,8 @@
         this.currentUser = null;
         this.currentProfile = null;
         this.boardMembers = [];
+        this.currentSlide = 0;
+        this.sliderTimer = null;
         this.initSupabase();
       }
 
@@ -432,9 +511,15 @@
       async validateUserFlow() {
         if (!this.currentUser) return;
 
-        // BILA USER SUDAH LOGIN: SEMBUNYIKAN SECTION REGISTRASI LANDING
+        // BILA USER SUDAH LOGIN: TUKAR REGISTRASI MENJADI CAROUSEL FOTO DOKUMENTASI
         const registerSection = document.getElementById('section-landing-register');
+        const gallerySection = document.getElementById('section-landing-register') ? document.getElementById('section-landing-gallery') : null;
+
         if (registerSection) registerSection.style.display = 'none';
+        if (gallerySection) {
+          gallerySection.style.display = 'block';
+          this.startSliderAutoplay();
+        }
 
         // BILA SUPER ADMIN: TAMPILKAN TOMBOL PENGATURAN LANDING & KONTROL
         if (this.currentUser.email === 'mastrisnobpb@gmail.com') {
@@ -464,9 +549,50 @@
         document.getElementById('pending-approval-screen').style.display = 'none';
         document.getElementById('landing-screen').style.display = 'block';
 
-        // BILA GUEST (BELUM LOGIN), PASTIKAN SECTION REGISTRASI TAMPIL
+        // BILA GUEST (BELUM LOGIN), PASTI TAMPILKAN REGISTRASI DAN SEMBUNYIKAN GALERI
         const registerSection = document.getElementById('section-landing-register');
+        const gallerySection = document.getElementById('section-landing-gallery');
         if (registerSection) registerSection.style.display = 'block';
+        if (gallerySection) gallerySection.style.display = 'none';
+      }
+
+      /* LOGIC SLIDER CAROUSEL DOKUMENTASI */
+      goToSlide(index) {
+        const slides = document.querySelectorAll('.slide-item');
+        const dots = document.querySelectorAll('.dot-indicator');
+        if (!slides.length) return;
+
+        this.currentSlide = (index + slides.length) % slides.length;
+
+        slides.forEach((slide, i) => {
+          if (i === this.currentSlide) {
+            slide.style.opacity = '1';
+            slide.style.zIndex = '10';
+          } else {
+            slide.style.opacity = '0';
+            slide.style.zIndex = '1';
+          }
+        });
+
+        dots.forEach((dot, i) => {
+          if (i === this.currentSlide) {
+            dot.classList.add('active');
+          } else {
+            dot.classList.remove('active');
+          }
+        });
+      }
+
+      nextSlide() { this.goToSlide(this.currentSlide + 1); }
+      prevSlide() { this.goToSlide(this.currentSlide - 1); }
+
+      startSliderAutoplay() {
+        this.stopSliderAutoplay();
+        this.sliderTimer = setInterval(() => this.nextSlide(), 4000);
+      }
+
+      stopSliderAutoplay() {
+        if (this.sliderTimer) clearInterval(this.sliderTimer);
       }
 
       showAuthModal() { document.getElementById('auth-screen').style.display = 'flex'; }
