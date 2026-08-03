@@ -12,7 +12,7 @@
 
   <!-- FONTAWESOME STABLE CDN & GOOGLE FONTS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
@@ -22,7 +22,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap');
 
     :root {
       --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -305,7 +305,7 @@
     .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(8px); z-index: 9000; display: none; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
     .modal-overlay.active { display: flex; }
     .modal-card { width: 100%; max-width: 420px; border-radius: var(--radius-lg); padding: 24px; background: #FFFFFF; position: relative; max-height: 90vh; overflow-y: auto; border: 1px solid var(--border-dark); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
-    .close-modal-btn { position: absolute; top: 16px; right: 16px; background: #F1F5F9; border: none; color: var(--text-main-dark); width: 32px; height: 32px; border-radius: 50%; cursor: pointer; }
+    .close-modal-btn { position: absolute; top: 16px; right: 16px; background: #F1F5F9; border: none; color: var(--text-main-dark); width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
     .qr-container { background: white; padding: 15px; border-radius: var(--radius-md); display: inline-block; margin: 15px 0; position: relative; border: 1px solid var(--border-dark); }
     .avatar-placeholder { width: 70px; height: 70px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: white; font-weight: var(--fw-bold); margin: 0 auto 10px; }
@@ -313,6 +313,120 @@
     .menu-admin-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #F8FAFC; border: 1px solid var(--border-dark); border-radius: var(--radius-sm); margin-bottom: 8px; }
     .menu-admin-info { display: flex; align-items: center; gap: 12px; }
     .menu-admin-info i, .menu-admin-info img { width: 24px; height: 24px; object-fit: contain; text-align: center; }
+
+    /* --- STYLES KHUSUS PENGATURAN KAS & WA (PRO LEVEL) --- */
+    .pro-settings-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #f0f0f0;
+      margin-bottom: 20px;
+    }
+    .pro-settings-header i {
+      color: #2ecc71;
+      font-size: 20px;
+    }
+    .pro-settings-header span {
+      color: #1a1a1a;
+      font-weight: 600;
+      font-size: 17px;
+    }
+    .pro-form-section {
+      margin-bottom: 24px;
+    }
+    .pro-form-section:last-child {
+      margin-bottom: 0;
+    }
+    .pro-input-group {
+      position: relative;
+      margin-bottom: 12px;
+    }
+    .pro-input-group label {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #8899a6;
+      font-size: 13px;
+      pointer-events: none;
+      transition: all 0.2s ease;
+      background-color: #fff;
+      padding: 0 4px;
+    }
+    .pro-input-group input {
+      width: 100%;
+      padding: 14px 15px;
+      font-size: 14px;
+      border: 2px solid #e1e8ed;
+      border-radius: 10px;
+      outline: none;
+      color: #1a1a1a;
+      transition: border-color 0.2s;
+      background: transparent;
+    }
+    .pro-input-prefix {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #1a1a1a;
+      font-weight: 500;
+      font-size: 14px;
+      display: none;
+    }
+    .pro-input-group.has-prefix input {
+      padding-left: 42px;
+    }
+    .pro-input-group input:focus,
+    .pro-input-group input:not(:placeholder-shown) {
+      border-color: #3498db;
+    }
+    .pro-input-group input:focus + label,
+    .pro-input-group input:not(:placeholder-shown) + label {
+      top: 0;
+      font-size: 11px;
+      color: #3498db;
+      font-weight: 600;
+    }
+    .pro-input-group.has-prefix input:focus ~ .pro-input-prefix,
+    .pro-input-group.has-prefix input:not(:placeholder-shown) ~ .pro-input-prefix {
+      display: block;
+    }
+    .pro-helper-text {
+      font-size: 11px;
+      color: #8899a6;
+      margin-top: -6px;
+      margin-bottom: 14px;
+      display: block;
+      margin-left: 4px;
+    }
+    .pro-btn-submit {
+      width: 100%;
+      padding: 13px;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      background: linear-gradient(135deg, #e6b94a 0%, #d4a017 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 6px rgba(212, 160, 23, 0.2);
+    }
+    .pro-btn-submit:hover {
+      background: linear-gradient(135deg, #d4a017 0%, #b8860b 100%);
+      box-shadow: 0 6px 12px rgba(212, 160, 23, 0.3);
+      transform: translateY(-1px);
+    }
+    .pro-btn-submit:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 4px rgba(212, 160, 23, 0.2);
+    }
   </style>
 </head>
 <body>
@@ -1075,25 +1189,46 @@
     </div>
   </div>
 
-  <!-- MODAL POP-UP ADMIN 5: PENGATURAN KAS POKOK & WHATSAPP -->
+  <!-- MODAL POP-UP ADMIN 5: PENGATURAN KAS POKOK & WHATSAPP (HASIL REDESAIN PROFESIONAL) -->
   <div class="modal-overlay" id="modal-admin-settings">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-settings')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="margin-bottom: 12px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-sliders" style="color: var(--primary);"></i> Pengaturan Kas & WhatsApp</h3>
-      
-      <div class="form-group">
-        <label>Nomor WA Penerima Konfirmasi (Format: 628xxxxxxxxxx)</label>
-        <input type="text" class="input-control" id="admin-wa-input" placeholder="6281234567890">
-        <button type="button" class="btn btn-gold btn-sm" style="margin-top:6px;" onclick="app.adminUpdateWANumber()"><i class="fa-solid fa-floppy-disk"></i> Simpan WA</button>
+
+      <div class="pro-settings-header">
+        <i class="fa-solid fa-sliders"></i>
+        <span>Pengaturan Kas & WhatsApp</span>
       </div>
 
-      <hr style="border:0; border-top:1px solid var(--border-dark); margin: 16px 0;">
+      <!-- SECTION 1: WHATSAPP -->
+      <div class="pro-form-section">
+        <div class="pro-input-group">
+          <input type="text" id="admin-wa-input" placeholder=" " value="6281234567890">
+          <label for="admin-wa-input">Nomor WA Penerima Konfirmasi</label>
+        </div>
+        <span class="pro-helper-text">Format: 628xxxxxxxxxx</span>
 
-      <div class="form-group">
-        <label>Saldo Kas Pokok Awal (Rp)</label>
-        <input type="number" class="input-control" id="admin-kas-input" placeholder="0">
-        <button type="button" class="btn btn-gold btn-sm" style="margin-top:6px;" onclick="app.adminUpdateBaseKas()"><i class="fa-solid fa-floppy-disk"></i> Simpan Kas Pokok</button>
+        <button type="button" class="pro-btn-submit" onclick="app.adminUpdateWANumber()">
+          <i class="fa-solid fa-lock"></i>
+          Simpan WA
+        </button>
       </div>
+
+      <hr style="border:0; border-top:1px solid #f0f0f0; margin: 20px 0;">
+
+      <!-- SECTION 2: KAS POKOK -->
+      <div class="pro-form-section">
+        <div class="pro-input-group has-prefix">
+          <input type="number" id="admin-kas-input" placeholder=" " value="0">
+          <label for="admin-kas-input">Saldo Kas Pokok Awal</label>
+          <span class="pro-input-prefix">Rp.</span>
+        </div>
+
+        <button type="button" class="pro-btn-submit" onclick="app.adminUpdateBaseKas()">
+          <i class="fa-solid fa-lock"></i>
+          Simpan Kas Pokok
+        </button>
+      </div>
+
     </div>
   </div>
 
@@ -1443,6 +1578,22 @@
 
         const displayWA = document.getElementById('contact-wa-display');
         if (displayWA) displayWA.innerText = `+${this.adminWANumber}`;
+      }
+
+      adminUpdateWANumber() {
+        const input = document.getElementById('admin-wa-input');
+        if (!input) return;
+
+        const val = input.value.trim();
+        if (!val) {
+          this.showToast('Nomor WA tidak boleh kosong!', 'error');
+          return;
+        }
+
+        this.adminWANumber = val;
+        localStorage.setItem('itora_admin_wa', val);
+        this.updateWAUI();
+        this.showToast('Nomor WhatsApp Berhasil Disimpan!', 'success');
       }
 
       async loadGalleryFromSupabase() {
@@ -2934,8 +3085,15 @@
       }
 
       adminUpdateBaseKas() {
-        const val = parseFloat(document.getElementById('admin-kas-input').value);
-        if (isNaN(val)) return;
+        const input = document.getElementById('admin-kas-input');
+        if (!input) return;
+
+        const val = parseFloat(input.value);
+        if (isNaN(val)) {
+          this.showToast('Masukkan nominal Kas Pokok yang valid!', 'error');
+          return;
+        }
+
         this.baseKas = val;
         localStorage.setItem('itora_base_kas', val);
         this.updateKasUI();
@@ -3377,7 +3535,7 @@
           if (format === 'PDF') {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            doc.text(`Daftar Peserta Touring - ${this.touringData.title}`, 14, 15);
+            doc.text(`Daftar Peserta Touring`, 14, 15);
 
             const tableData = this.touringParticipants.map((item, index) => [
               index + 1,
