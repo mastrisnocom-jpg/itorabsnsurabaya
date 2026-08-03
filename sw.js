@@ -2,13 +2,13 @@ const CACHE_NAME = 'itora-bsn-v1';
 const urlsToCache = [
   '/',
   '/index.html',
+  '/dashboard.html',
   '/styles.css',
   '/config.js',
   '/app.js',
   '/manifest.json'
 ];
 
-// Install Service Worker
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
@@ -18,7 +18,6 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-// Activate Service Worker
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -34,7 +33,6 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch Offline Support
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request).then((response) => {
