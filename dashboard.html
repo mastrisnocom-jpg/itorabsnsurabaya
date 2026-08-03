@@ -166,11 +166,10 @@
           <i class="fa-solid fa-qrcode"></i>
         </button>
 
-        <!-- TOMBOL LONCENG NOTIFIKASI -->
-        <button type="button" class="icon-btn" id="notificationBtn" onclick="toggleNotificationModal()" style="position: relative;">
+        <!-- TOMBOL LONCENG NOTIFIKASI PERBAIKAN -->
+        <button type="button" class="icon-btn" id="notificationBtn" onclick="toggleNotificationModal()">
           <i class="fa-solid fa-bell"></i>
-          <!-- Badge Merah Jumlah Notifikasi Belum Dibaca -->
-          <span id="notifBadge" class="notif-badge" style="display: none;">0</span>
+          <span id="notifBadge" class="notif-badge">0</span>
         </button>
 
         <!-- Tombol Profil -->
@@ -540,8 +539,8 @@
 
   <!-- ALL MODALS -->
 
-  <!-- MODAL NOTIFIKASI (TERPROTEKSI DENGAN INLINE STYLE DISPLAY NONE IMPLICIT) -->
-  <div id="notificationModal" class="notif-modal-overlay" style="display: none !important;" onclick="closeNotifModalOuter(event)">
+  <!-- MODAL NOTIFIKASI PERBAIKAN -->
+  <div id="notificationModal" class="notif-modal-overlay" onclick="closeNotifModalOuter(event)">
     <div class="notif-modal-content">
       <div class="notif-modal-header">
         <h3>Notifikasi</h3>
