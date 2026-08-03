@@ -2306,3 +2306,176 @@ if ('serviceWorker' in navigator) {
       .catch((err) => console.error('Service Worker registration failed:', err));
   });
 }
+// ==========================================
+// MODUL NOTIFIKASI COMMUNITY ITORA BSN
+// ==========================================
+
+// 1. Fungsi Toggle Modal Notifikasi
+function toggleNotificationModal() {
+  const modal = document.getElementById('notificationModal');
+  if (modal.style.display === 'flex') {
+    modal.style.display = 'none';
+  } else {
+    modal.style.display = 'flex';
+    loadNotifications();
+  }
+}
+
+function closeNotifModalOuter(event) {
+  if (event.target.id === 'notificationModal') {
+    document.getElementById('notificationModal').style.display = 'none';
+  }
+}
+
+// 2. Load Data Notifikasi dari Supabase
+async function loadNotifications() {
+  const notifList = document.getElementById('notifList');
+  notifList.innerHTML = '<div class="notif-empty">Memuat notifikasi...</div>';
+
+  try {
+    const user = supabase.auth.user();
+    const currentUserId = user ? user.id : null;
+
+    // Ambil notifikasi milik user ATAU notifikasi umum (user_id IS NULL)
+    let query = supabase
+      .from('notifications')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(20);
+
+    if (currentUserId) {
+      query = query.or(`user_id.eq.${currentUserId},user_id.is.null`);
+    } else {
+      query = query.is('user_id', null);
+    }
+
+    const { data, error } = await query;
+
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      notifList.innerHTML = '<div class="notif-empty">Belum ada notifikasi.</div>';
+      return;
+    }
+
+    let html = '';
+    data.forEach(item => {
+      const isUnread = !item.is_read ? 'unread' : '';
+      const dateFormatted = new Date(item.created_at).toLocaleString('id-ID', {
+        day: 'numeric',
+        month: 'short',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+
+      html += `
+        <div class="notif-item ${isUnread}" onclick="markAsRead(${item.id})">
+          <div class="notif-item-title">${escapeHtml(item.title)}</div>
+          <div class="notif-item-msg">${escapeHtml(item.message)}</div>
+          <div class="notif-item-time">${dateFormatted}</div>
+        </div>
+      `;
+    });
+
+    notifList.innerHTML = html;
+    updateUnreadCountBadge();
+
+  } catch (err) {
+    console.error('Error loadNotifications:', err);
+    notifList.innerHTML = '<div class="notif-empty">Gagal memuat notifikasi.</div>';
+  }
+}
+
+// Helper Sanitasi HTML
+function escapeHtml(str) {
+  return str ? str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") : '';
+}
+
+// 3. Hitung Jumlah Unread untuk Badge Merah
+async function updateUnreadCountBadge() {
+  try {
+    const user = supabase.auth.user();
+    const currentUserId = user ? user.id : null;
+
+    let query = supabase
+      .from('notifications')
+      .select('id', { count: 'exact', head: true })
+      .eq('is_read', false);
+
+    if (currentUserId) {
+      query = query.or(`user_id.eq.${currentUserId},user_id.is.null`);
+    } else {
+      query = query.is('user_id', null);
+    }
+
+    const { count, error } = await query;
+
+    if (error) throw error;
+
+    const badge = document.getElementById('notifBadge');
+    if (count > 0) {
+      badge.textContent = count > 99 ? '99+' : count;
+      badge.style.display = 'flex';
+    } else {
+      badge.style.display = 'none';
+    }
+  } catch (err) {
+    console.error('Error updateUnreadCountBadge:', err);
+  }
+}
+
+// 4. Tandai Satu Notifikasi Dibaca
+async function markAsRead(id) {
+  try {
+    await supabase.from('notifications').update({ is_read: true }).eq('id', id);
+    loadNotifications();
+  } catch (err) {
+    console.error('Error markAsRead:', err);
+  }
+}
+
+// 5. Tandai Semua Notifikasi Dibaca
+async function markAllNotificationsAsRead() {
+  try {
+    const user = supabase.auth.user();
+    const currentUserId = user ? user.id : null;
+
+    let query = supabase.from('notifications').update({ is_read: true }).eq('is_read', false);
+
+    if (currentUserId) {
+      query = query.or(`user_id.eq.${currentUserId},user_id.is.null`);
+    } else {
+      query = query.is('user_id', null);
+    }
+
+    await query;
+    loadNotifications();
+  } catch (err) {
+    console.error('Error markAllNotificationsAsRead:', err);
+  }
+}
+
+// 6. FUNGSI HELPER: BISA DIPANGGIL DI MANA SAJA UNTUK TRIGER NOTIFIKASI
+async function createNotification(userId, title, message, type = 'info') {
+  try {
+    const { error } = await supabase.from('notifications').insert([
+      {
+        user_id: userId, // Pass null jika untuk SEMUA member
+        title: title,
+        message: message,
+        type: type,
+        is_read: false
+      }
+    ]);
+    if (error) console.error('Gagal membuat notifikasi:', error);
+    else updateUnreadCountBadge();
+  } catch (e) {
+    console.error('Error createNotification:', e);
+  }
+}
+
+// Jalankan update badge saat aplikasi dimuat
+document.addEventListener('DOMContentLoaded', () => {
+  updateUnreadCountBadge();
+});
+
