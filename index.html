@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>ITORA BSN SURABAYA - Landing Page & Registrasi</title>
+  <title>ITORA BSN SURABAYA - Landing Page & Pengaturan</title>
 
   <!-- TAILWIND CSS & FONTAWESOME -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -57,26 +57,30 @@
     }
 
     .auth-card {
-      width: 100%; max-width: 380px; border-radius: 32px; padding: 32px 24px; position: relative;
-      background: rgba(255, 255, 255, 0.94); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+      width: 100%; max-width: 440px; border-radius: 28px; padding: 28px 24px; position: relative;
+      background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(18px);
       border: 1px solid rgba(255, 255, 255, 0.8); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
     }
 
-    .auth-card .form-group { margin-bottom: 16px; }
-    .auth-card .form-group label { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 6px; }
-    .auth-card .input-control {
-      width: 100%; padding: 14px 18px; border-radius: 18px; border: 1px solid rgba(226, 232, 240, 0.9);
-      background: rgba(248, 250, 252, 0.92); color: #0F172A; outline: none; font-size: 0.9rem; font-weight: 500;
+    .form-group { margin-bottom: 16px; position: relative; }
+    .form-group label { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 6px; }
+    .input-control {
+      width: 100%; padding: 12px 16px; border-radius: 14px; border: 1.5px solid #E2E8F0;
+      background: #F8FAFC; color: #0F172A; outline: none; font-size: 0.88rem; font-weight: 500;
+    }
+    .input-control:focus { border-color: #059669; background: #FFFFFF; }
+
+    .btn-primary {
+      width: 100%; background: #00875A; color: #FFFFFF; border-radius: 16px; padding: 12px; font-size: 0.9rem; font-weight: 700;
+      border: none; box-shadow: 0 6px 18px rgba(0, 135, 90, 0.3); cursor: pointer;
+    }
+    .btn-gold {
+      background: #D4AF37; color: #000; font-weight: 700; padding: 10px 16px; border-radius: 12px; border: none; cursor: pointer;
     }
 
-    .auth-card .btn-primary {
-      width: 100%; background: #00875A; color: #FFFFFF; border-radius: 20px; padding: 14px; font-size: 0.92rem; font-weight: 700;
-      border: none; box-shadow: 0 6px 18px rgba(0, 135, 90, 0.3); transition: transform 0.1s ease;
-    }
-
-    .auth-card .btn-outline {
-      width: 100%; background: rgba(255, 255, 255, 0.4); border: 1.5px solid #00875A; color: #00875A; border-radius: 20px;
-      padding: 13px; font-size: 0.88rem; font-weight: 700; margin-top: 10px;
+    .modal-admin-item {
+      display: flex; align-items: center; justify-content: space-between; padding: 12px;
+      background: #F1F5F9; border-radius: 12px; margin-bottom: 8px; border: 1px solid #E2E8F0;
     }
 
     #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 99999; width: 90%; max-width: 400px; }
@@ -107,9 +111,22 @@
                     <i class="fa-solid fa-motorcycle text-amber-400 text-2xl"></i>
                     <span class="font-extrabold text-lg tracking-tight">ITORA BSN SURABAYA</span>
                 </div>
-                <button type="button" onclick="app.showAuthModal()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-5 py-2 rounded-full font-bold text-xs shadow-lg transition flex items-center gap-2">
-                    <i class="fa-solid fa-right-to-bracket"></i> Masuk Anggota
-                </button>
+
+                <div class="flex items-center gap-2">
+                  <!-- TOMBOL PENGATURAN SUPERADMIN (OTOMATIS MUNCUL SAAT SUPERADMIN LOGIN) -->
+                  <button type="button" id="btn-admin-landing-setting" onclick="app.showAdminBoardModal()" style="display:none;" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-4 py-2 rounded-full font-bold text-xs shadow-lg transition flex items-center gap-2">
+                      <i class="fa-solid fa-gear"></i> Pengaturan Landing Page
+                  </button>
+
+                  <!-- TOMBOL LOGOUT/DASHBOARD KHUSUS SUPERADMIN -->
+                  <button type="button" id="btn-admin-go-dashboard" onclick="window.location.href='dashboard.html'" style="display:none;" class="bg-emerald-800 hover:bg-emerald-700 text-white px-4 py-2 rounded-full font-bold text-xs shadow-lg transition flex items-center gap-2 border border-emerald-500/40">
+                      <i class="fa-solid fa-gauge-high"></i> Dashboard App
+                  </button>
+
+                  <button type="button" id="btn-login-main" onclick="app.showAuthModal()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-5 py-2 rounded-full font-bold text-xs shadow-lg transition flex items-center gap-2">
+                      <i class="fa-solid fa-right-to-bracket"></i> Masuk Anggota
+                  </button>
+                </div>
             </div>
 
             <div class="text-center py-4">
@@ -230,7 +247,7 @@
 
   </div>
 
-  <!-- AUTH MODAL -->
+  <!-- AUTH MODAL (LOGIN) -->
   <div id="auth-screen" class="auth-overlay" style="display: none;">
     <div class="auth-card">
       <button type="button" onclick="app.hideAuthModal()" style="position:absolute; top:16px; right:18px; border:none; background:#F1F5F9; color:#64748B; width:32px; height:32px; border-radius:50%; cursor:pointer;">
@@ -259,9 +276,80 @@
         </button>
       </form>
 
-      <button type="button" class="btn-outline" id="auth-toggle-btn" onclick="app.toggleAuthMode()">
+      <button type="button" style="width:100%; border:1.5px solid #00875A; color:#00875A; background:transparent; padding:12px; border-radius:16px; margin-top:10px; font-weight:700;" id="auth-toggle-btn" onclick="app.toggleAuthMode()">
         Belum Memiliki Akun? Daftar Disini
       </button>
+    </div>
+  </div>
+
+  <!-- MODAL SUPERADMIN: PENGATURAN STRUKTUR PENGURUS LANDING PAGE -->
+  <div id="modal-admin-board" class="auth-overlay" style="display: none;">
+    <div class="auth-card" style="max-width: 520px;">
+      <button type="button" onclick="app.closeAdminBoardModal()" style="position:absolute; top:16px; right:18px; border:none; background:#F1F5F9; color:#64748B; width:32px; height:32px; border-radius:50%; cursor:pointer;">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h3 style="font-size:1.15rem; font-weight:800; color:#0F172A;"><i class="fa-solid fa-gear text-amber-500"></i> Pengaturan Landing Page</h3>
+        <button class="btn-gold" style="padding:6px 14px; font-size:0.75rem;" onclick="app.openAddBoardForm()"><i class="fa-solid fa-plus"></i> Tambah Pengurus</button>
+      </div>
+
+      <p style="font-size:0.75rem; color:#64748B; margin-bottom:12px;">Kelola daftar pengurus, ubah nama, foto, dan kategori yang tampil pada halaman utama:</p>
+
+      <div id="admin-board-list" style="max-height: 380px; overflow-y: auto;">
+        <p style="text-align:center; color:#64748B; font-size:0.8rem;">Memuat data pengurus...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL FORM EDIT / TAMBAH PENGURUS LANDING PAGE -->
+  <div id="modal-add-board" class="auth-overlay" style="display: none; z-index: 10005;">
+    <div class="auth-card">
+      <button type="button" onclick="app.closeAddBoardForm()" style="position:absolute; top:16px; right:18px; border:none; background:#F1F5F9; color:#64748B; width:32px; height:32px; border-radius:50%; cursor:pointer;">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <h3 style="font-size:1.1rem; font-weight:800; color:#0F172A; margin-bottom:16px;"><i class="fa-solid fa-user-pen text-emerald-600"></i> Form Pengurus Landing</h3>
+
+      <form id="form-board" onsubmit="app.handleSaveBoardMember(event)">
+        <input type="hidden" id="board-id">
+
+        <div class="form-group">
+          <label>Nama Lengkap Pengurus</label>
+          <input type="text" class="input-control" id="board-name" placeholder="Ahmad Fauzi" required>
+        </div>
+
+        <div class="form-group">
+          <label>Jabatan / Gelar (e.g. Ketua Chapter 1)</label>
+          <input type="text" class="input-control" id="board-title" placeholder="Ketua Chapter 1" required>
+        </div>
+
+        <div class="form-group">
+          <label>Kategori Struktur</label>
+          <select class="input-control" id="board-role-category" required>
+            <option value="pembina">Pembina / Penasihat</option>
+            <option value="ketua">Ketua Chapter</option>
+            <option value="wakil">Wakil Ketua</option>
+            <option value="sekretaris">Sekretaris</option>
+            <option value="bendahara">Bendahara</option>
+            <option value="divisi">Koordinator Divisi</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Upload Foto Diri Pengurus (Opsional)</label>
+          <input type="file" class="input-control" id="board-photo-file" accept="image/*">
+        </div>
+
+        <div class="form-group">
+          <label>Urutan Tampil (Sort Order)</label>
+          <input type="number" class="input-control" id="board-sort-order" value="1" required>
+        </div>
+
+        <button type="submit" class="btn-primary" id="btn-save-board" style="margin-top:10px;">
+          <i class="fa-solid fa-floppy-disk"></i> Simpan Data Pengurus
+        </button>
+      </form>
     </div>
   </div>
 
@@ -280,17 +368,17 @@
         <i class="fa-brands fa-whatsapp"></i> Hubungi Pengurus via WA
       </button>
 
-      <button type="button" class="btn-outline" onclick="app.checkSession()" style="margin-top:10px;">
+      <button type="button" style="width:100%; border:1.5px solid #00875A; color:#00875A; background:transparent; padding:12px; border-radius:16px; margin-top:10px; font-weight:700;" onclick="app.checkSession()">
         <i class="fa-solid fa-rotate"></i> Cek Status Ulang
       </button>
 
-      <button type="button" class="btn-outline" onclick="app.handleLogout()" style="margin-top:8px;">
+      <button type="button" style="width:100%; border:1.5px solid #EF4444; color:#EF4444; background:transparent; padding:12px; border-radius:16px; margin-top:8px; font-weight:700;" onclick="app.handleLogout()">
         <i class="fa-solid fa-right-from-bracket"></i> Keluar
       </button>
     </div>
   </div>
 
-  <!-- JAVASCRIPT INDEX.HTML -->
+  <!-- JAVASCRIPT LOGIC INDEX.HTML -->
   <script>
     const SUPABASE_URL = 'https://lfusrctizdydnsiopzfi.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxmdXNyY3RpemR5ZG5zaW9wemZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU2NjI0OTQsImV4cCI6MjEwMTIzODQ5NH0.vWd4l9zbRg3HxHVECN8I67h7gGUsZdaRJ9bD-gmEDUY';
@@ -344,8 +432,15 @@
       async validateUserFlow() {
         if (!this.currentUser) return;
 
+        // BILA SUPER ADMIN: TAMPILKAN TOMBOL PENGATURAN LANDING & KONTROL
         if (this.currentUser.email === 'mastrisnobpb@gmail.com') {
-          window.location.href = 'dashboard.html';
+          const btnSetting = document.getElementById('btn-admin-landing-setting');
+          const btnDashboard = document.getElementById('btn-admin-go-dashboard');
+          const btnLogin = document.getElementById('btn-login-main');
+          
+          if (btnSetting) btnSetting.style.display = 'flex';
+          if (btnDashboard) btnDashboard.style.display = 'flex';
+          if (btnLogin) btnLogin.style.display = 'none';
           return;
         }
 
@@ -368,6 +463,19 @@
 
       showAuthModal() { document.getElementById('auth-screen').style.display = 'flex'; }
       hideAuthModal() { document.getElementById('auth-screen').style.display = 'none'; }
+
+      showAdminBoardModal() {
+        this.loadAdminBoardList();
+        document.getElementById('modal-admin-board').style.display = 'flex';
+      }
+      closeAdminBoardModal() { document.getElementById('modal-admin-board').style.display = 'none'; }
+
+      openAddBoardForm() {
+        document.getElementById('form-board').reset();
+        document.getElementById('board-id').value = '';
+        document.getElementById('modal-add-board').style.display = 'flex';
+      }
+      closeAddBoardForm() { document.getElementById('modal-add-board').style.display = 'none'; }
 
       toggleAuthMode() {
         const title = document.getElementById('auth-title');
@@ -394,8 +502,8 @@
           } else {
             this.boardMembers = [
               { id: '1', name: 'Branch Manager BSN Surabaya', title: 'Pembina Utama', role_category: 'pembina' },
-              { id: '2', name: 'Ahmad Fauzi', title: 'Ketua Chapter 1', role_category: 'ketua' },
-              { id: '3', name: 'Sutrisno', title: 'Wakil Ketua 1', role_category: 'wakil' },
+              { id: '2', name: 'Fahmi Rosyad', title: 'Ketua Chapter 1', role_category: 'ketua' },
+              { id: '3', name: 'Cristian Haris', title: 'Wakil Ketua 1', role_category: 'wakil' },
               { id: '4', name: 'Budi Santoso', title: 'Sekretaris 1', role_category: 'sekretaris' },
               { id: '5', name: 'Rina Wijaya', title: 'Bendahara 1', role_category: 'bendahara' }
             ];
@@ -459,6 +567,113 @@
         `).join('');
       }
 
+      async loadAdminBoardList() {
+        const container = document.getElementById('admin-board-list');
+        if (!container || !this.supabase) return;
+
+        try {
+          const { data } = await this.supabase
+            .from('board_members')
+            .select('*')
+            .order('sort_order', { ascending: true });
+
+          if (data && data.length > 0) {
+            container.innerHTML = data.map(m => `
+              <div class="modal-admin-item">
+                <div style="display:flex; align-items:center; gap:10px;">
+                  ${m.photo_url ? `<img src="${m.photo_url}" style="width:36px; height:36px; border-radius:50%; object-fit:cover;">` : `<i class="fa-solid fa-user-circle text-2xl text-emerald-600"></i>`}
+                  <div>
+                    <strong style="font-size:0.85rem; display:block;">${m.name}</strong>
+                    <span style="font-size:0.7rem; color:#64748B;">${m.title} (${m.role_category})</span>
+                  </div>
+                </div>
+                <div style="display:flex; gap:6px;">
+                  <button class="btn-gold" style="padding:4px 8px; font-size:0.7rem;" onclick="app.editBoardModal('${m.id}')"><i class="fa-solid fa-pen"></i> Edit</button>
+                  <button style="background:#EF4444; color:white; padding:4px 8px; font-size:0.7rem; border-radius:8px; border:none;" onclick="app.deleteBoardMember('${m.id}')"><i class="fa-solid fa-trash"></i></button>
+                </div>
+              </div>
+            `).join('');
+          } else {
+            container.innerHTML = '<p style="text-align:center; color:#64748B; font-size:0.8rem;">Belum ada data pengurus.</p>';
+          }
+        } catch(e) {}
+      }
+
+      editBoardModal(id) {
+        const item = this.boardMembers.find(m => m.id === id);
+        if (!item) return;
+
+        document.getElementById('board-id').value = item.id;
+        document.getElementById('board-name').value = item.name;
+        document.getElementById('board-title').value = item.title;
+        document.getElementById('board-role-category').value = item.role_category;
+        document.getElementById('board-sort-order').value = item.sort_order || 1;
+
+        document.getElementById('modal-add-board').style.display = 'flex';
+      }
+
+      async handleSaveBoardMember(e) {
+        e.preventDefault();
+        const btn = document.getElementById('btn-save-board');
+        btn.disabled = true;
+
+        const id = document.getElementById('board-id').value;
+        const file = document.getElementById('board-photo-file').files[0];
+        let photoUrl = '';
+
+        try {
+          if (file) {
+            const fileName = `board_${Date.now()}_${file.name}`;
+            const { error: uploadErr } = await this.supabase.storage.from('gallery-images').upload(fileName, file, { upsert: true });
+            
+            if (!uploadErr) {
+              const { data: urlData } = this.supabase.storage.from('gallery-images').getPublicUrl(fileName);
+              photoUrl = urlData ? urlData.publicUrl : '';
+            }
+          }
+
+          const payload = {
+            name: document.getElementById('board-name').value.trim(),
+            title: document.getElementById('board-title').value.trim(),
+            role_category: document.getElementById('board-role-category').value,
+            sort_order: parseInt(document.getElementById('board-sort-order').value) || 1
+          };
+
+          if (photoUrl) payload.photo_url = photoUrl;
+
+          let err;
+          if (id) {
+            ({ error: err } = await this.supabase.from('board_members').update(payload).eq('id', id));
+          } else {
+            ({ error: err } = await this.supabase.from('board_members').insert([payload]));
+          }
+
+          if (err) throw err;
+
+          this.showToast('Data Pengurus Disimpan!', 'success');
+          this.closeAddBoardForm();
+          await this.loadBoardFromSupabase();
+          this.loadAdminBoardList();
+
+        } catch (error) {
+          this.showToast('Gagal menyimpan: ' + error.message, 'error');
+        } finally {
+          btn.disabled = false;
+        }
+      }
+
+      async deleteBoardMember(id) {
+        if (!confirm('Hapus pengurus ini dari Landing Page?')) return;
+        try {
+          await this.supabase.from('board_members').delete().eq('id', id);
+          this.showToast('Pengurus berhasil dihapus!', 'success');
+          await this.loadBoardFromSupabase();
+          this.loadAdminBoardList();
+        } catch (e) {
+          this.showToast('Gagal menghapus.', 'error');
+        }
+      }
+
       async handleLandingRegisterSubmit(e) {
         e.preventDefault();
         const email = document.getElementById('landing-email').value.trim();
@@ -503,23 +718,17 @@
           if (error) throw error;
 
           this.currentUser = data.user;
-          this.showToast('Login Berhasil! Mengalihkan...', 'success');
+          this.showToast('Login Berhasil!', 'success');
           setTimeout(() => this.validateUserFlow(), 500);
         } catch (err) {
           this.showToast('Login Gagal! Periksa email/password.', 'error');
         }
       }
 
-      contactAdminForApproval() {
-        const myName = this.currentProfile?.full_name || 'Anggota ITORA';
-        const msg = `Halo Pengurus ITORA BSN SURABAYA,%0ASaya *${myName}* telah mendaftar. Mohon bantuannya untuk verifikasi akun saya.`;
-        window.open(`https://wa.me/6281234567890?text=${msg}`, '_blank');
-      }
-
       async handleLogout() {
         if (this.supabase) await this.supabase.auth.signOut();
         this.currentUser = null;
-        this.showLandingPage();
+        window.location.reload();
       }
 
       showToast(msg, type = 'info') {
