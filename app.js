@@ -1981,49 +1981,60 @@ class App {
 
   subscribeToRealtimeChanges() {
     if (!this.supabase || !this.currentUser) return;
-    const isSuperAdmin = (this.currentUser.email === 'mastrisnobpb@gmail.com');
-    const isAdmin = (this.currentProfile?.role === 'Admin' || isSuperAdmin);
-
-    if (!isAdmin) return;
 
     try {
       this.supabase.removeAllChannels();
 
+      // Listener Notifikasi Realtime untuk SEMUA MEMBER
       this.supabase
-        .channel('realtime-app-channel')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'members' }, (payload) => {
-          this.checkRealtimeNotifications();
-          this.loadAdminPendingMembersList();
-          this.loadMembersFromSupabase();
-          this.loadBreakingNewsText();
-          if (payload.eventType === 'INSERT') {
-            this.showToast('Pendaftaran anggota baru masuk!', 'info');
-          }
-        })
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'dues' }, (payload) => {
-          this.checkRealtimeNotifications();
-          this.loadAdminDuesList();
-          this.loadBreakingNewsText();
-          if (payload.eventType === 'INSERT') {
-            this.showToast('Setoran iuran baru masuk!', 'info');
-          }
-        })
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (payload) => {
-          this.checkRealtimeNotifications();
-          this.loadAdminOrdersList();
-          this.loadBreakingNewsText();
-          if (payload.eventType === 'INSERT') {
-            this.showToast('Pesanan Merchandise baru masuk!', 'info');
-          }
-        })
+        .channel('realtime-notif-channel')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'notifications' }, () => {
           this.updateUnreadCountBadge();
-        })
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'touring_participants' }, () => {
-          this.loadTouringParticipants();
-          this.renderTouringsUI();
+          const modal = document.getElementById('notificationModal');
+          if (modal && modal.style.display === 'flex') {
+            this.loadNotifications();
+          }
         })
         .subscribe();
+
+      // Listener khusus Admin
+      const isSuperAdmin = (this.currentUser.email === 'mastrisnobpb@gmail.com');
+      const isAdmin = (this.currentProfile?.role === 'Admin' || isSuperAdmin);
+
+      if (isAdmin) {
+        this.supabase
+          .channel('realtime-admin-channel')
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'members' }, (payload) => {
+            this.checkRealtimeNotifications();
+            this.loadAdminPendingMembersList();
+            this.loadMembersFromSupabase();
+            this.loadBreakingNewsText();
+            if (payload.eventType === 'INSERT') {
+              this.showToast('Pendaftaran anggota baru masuk!', 'info');
+            }
+          })
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'dues' }, (payload) => {
+            this.checkRealtimeNotifications();
+            this.loadAdminDuesList();
+            this.loadBreakingNewsText();
+            if (payload.eventType === 'INSERT') {
+              this.showToast('Setoran iuran baru masuk!', 'info');
+            }
+          })
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (payload) => {
+            this.checkRealtimeNotifications();
+            this.loadAdminOrdersList();
+            this.loadBreakingNewsText();
+            if (payload.eventType === 'INSERT') {
+              this.showToast('Pesanan Merchandise baru masuk!', 'info');
+            }
+          })
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'touring_participants' }, () => {
+            this.loadTouringParticipants();
+            this.renderTouringsUI();
+          })
+          .subscribe();
+      }
     } catch (e) {
       console.error('Realtime subscription error:', e);
     }
