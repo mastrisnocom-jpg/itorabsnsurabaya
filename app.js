@@ -623,6 +623,7 @@ class App {
       this.showToast('Agenda Touring Berhasil Disimpan!', 'success');
       this.closeModal('modal-admin-touring');
       
+      // BROADCAST NOTIFIKASI TOURING BARU
       if (!id) {
         await this.createNotification(
           null,
@@ -734,6 +735,7 @@ class App {
 
       this.showToast(`Konfirmasi berhasil untuk agenda ${agendaTitle}: Anda memilih "${status}"`, 'success');
       
+      // TRIGGER NOTIFIKASI TOURING PERSONAL
       await this.createNotification(
         this.currentUser.id,
         `Konfirmasi Touring ${agendaTitle} 🏍️`,
@@ -921,6 +923,7 @@ class App {
 
     this.checkRealtimeNotifications();
     this.subscribeToRealtimeChanges();
+    this.updateUnreadCountBadge();
   }
 
   hideDashboard() {
@@ -1188,6 +1191,7 @@ class App {
       this.showToast('Profil Berhasil Diperbarui!', 'success');
       this.closeModal('modal-edit-profile');
 
+      // TRIGGER NOTIFIKASI PERSONAL PROFILE
       await this.createNotification(
         this.currentUser.id,
         "Profil Berhasil Diperbarui 👤",
@@ -1268,6 +1272,7 @@ class App {
 
       this.showToast(`Jabatan / Role Berhasil Diubah Menjadi: ${newRole}!`, 'success');
       
+      // TRIGGER NOTIFIKASI PERUBAHAN ROLE
       await this.createNotification(
         memberId,
         "Pembaruan Jabatan Komunitas 🎖️",
@@ -1747,6 +1752,7 @@ class App {
       this.showToast(`Pendaftaran Anggota Berhasil di-${status}!`, 'success');
 
       if (status === 'Approved') {
+        // NOTIFIKASI PERSONAL KE USER BARU
         await this.createNotification(
           memberId,
           "Pendaftaran Akun Disetujui! 🎉",
@@ -1754,6 +1760,7 @@ class App {
           "member"
         );
 
+        // BROADCAST KE SELURUH MEMBER
         await this.createNotification(
           null,
           "Anggota Baru Bergabung! 🎉",
@@ -1810,6 +1817,7 @@ class App {
       this.showToast(`Status Pesanan Diubah: ${status}!`, 'success');
 
       if (status === 'Completed') {
+        // TRIGGER NOTIFIKASI MERCHANDISE SELESAI
         await this.createNotification(
           userId,
           "Pembelian Merchandise Disetujui! 🛍️",
@@ -1978,17 +1986,19 @@ class App {
     try {
       this.supabase.removeAllChannels();
 
+      // Listener Notifikasi Realtime untuk SEMUA MEMBER
       this.supabase
         .channel('realtime-notif-channel')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'notifications' }, () => {
           this.updateUnreadCountBadge();
           const modal = document.getElementById('notificationModal');
-          if (modal && window.getComputedStyle(modal).display === 'flex') {
+          if (modal && modal.classList.contains('show-notif')) {
             this.loadNotifications();
           }
         })
         .subscribe();
 
+      // Listener khusus Admin
       const isSuperAdmin = (this.currentUser.email === 'mastrisnobpb@gmail.com');
       const isAdmin = (this.currentProfile?.role === 'Admin' || isSuperAdmin);
 
@@ -2095,6 +2105,7 @@ class App {
       this.showToast(`Iuran Berhasil Diubah: ${status}!`, 'success');
 
       if (status === 'Verified') {
+        // NOTIFIKASI PERSONAL KE PEMBAYAR IURAN
         await this.createNotification(
           userId,
           "Setor Iuran Disetujui 💳",
@@ -2102,6 +2113,7 @@ class App {
           "iuran"
         );
 
+        // BROADCAST NOTIFIKASI KAS KE SEMUA MEMBER
         await this.createNotification(
           null,
           "Update Setor Iuran 💸",
@@ -2544,15 +2556,13 @@ function toggleNotificationModal() {
   const modal = document.getElementById('notificationModal');
   if (!modal) return;
 
-  const computedDisplay = window.getComputedStyle(modal).display;
-
-  if (computedDisplay === 'none') {
-    modal.style.setProperty('display', 'flex', 'important');
+  if (!modal.classList.contains('show-notif')) {
+    modal.classList.add('show-notif');
     if (window.app) {
       app.loadNotifications();
     }
   } else {
-    modal.style.setProperty('display', 'none', 'important');
+    modal.classList.remove('show-notif');
   }
 }
 
@@ -2560,7 +2570,7 @@ function closeNotifModalOuter(event) {
   if (event.target.id === 'notificationModal') {
     const modal = document.getElementById('notificationModal');
     if (modal) {
-      modal.style.setProperty('display', 'none', 'important');
+      modal.classList.remove('show-notif');
     }
   }
 }
