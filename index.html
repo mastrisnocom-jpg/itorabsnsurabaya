@@ -53,6 +53,64 @@
       --radius-lg: 24px;
     }
 
+    /* ---------------------------------------------------- */
+    /* PENGATURAN BLANK TOTAL PADA DESKTOP (MIN-WIDTH: 769px) */
+    /* ---------------------------------------------------- */
+    #desktop-blank-notice {
+      display: none; /* Sembunyi di mobile */
+    }
+
+    @media screen and (min-width: 769px) {
+      body {
+        background-color: #FFFFFF !important;
+        overflow: hidden !important;
+      }
+
+      /* Sembunyikan seluruh tampilan aplikasi di Desktop */
+      #splash-screen,
+      #auth-screen,
+      #complete-data-screen,
+      #pending-approval-screen,
+      #app-dashboard,
+      .modal-overlay,
+      #toast-container {
+        display: none !important;
+      }
+
+      /* Tampilkan layar blank putih bersih */
+      #desktop-blank-notice {
+        display: flex !important;
+        position: fixed;
+        inset: 0;
+        background: #FFFFFF;
+        z-index: 999999;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 20px;
+        color: #64748B;
+        font-family: var(--font-main);
+      }
+
+      #desktop-blank-notice i {
+        font-size: 3.5rem;
+        color: #00875A;
+        margin-bottom: 12px;
+      }
+
+      #desktop-blank-notice h2 {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #0F172A;
+      }
+
+      #desktop-blank-notice p {
+        font-size: 0.85rem;
+        margin-top: 6px;
+      }
+    }
+    /* ---------------------------------------------------- */
+
     * {
       margin: 0;
       padding: 0;
@@ -331,7 +389,6 @@
     .stat-card h3 { font-size: var(--font-md); font-weight: var(--fw-bold); margin-top: 4px; color: var(--text-main-dark); }
     .stat-card span { font-size: var(--font-xs); color: var(--text-muted-dark); font-weight: var(--fw-medium); }
 
-    /* QUICK MENU CARD */
     .quick-menu-card {
       background: #FFFFFF;
       border: 1px solid var(--border-dark);
@@ -381,7 +438,6 @@
       line-height: 1.2; 
     }
 
-    /* REDESAIN WIDGET TOURING TERDEKAT (WITH HERO HOOK) */
     .home-touring-hero {
       position: relative;
       border-radius: var(--radius-md);
@@ -539,6 +595,15 @@
   </style>
 </head>
 <body>
+
+  <!-- PEMBERITAHUAN KHUSUS LAYAR DESKTOP (BLANK VIEWPORT) -->
+  <div id="desktop-blank-notice">
+    <div>
+      <i class="fa-solid fa-mobile-screen-button"></i>
+      <h2>Aplikasi Khusus Tampilan Mobile</h2>
+      <p>Silakan buka situs <strong>itora.my.id</strong> melalui Smartphone / HP Anda.</p>
+    </div>
+  </div>
 
   <div id="toast-container"></div>
 
@@ -1032,7 +1097,7 @@
 
   </div>
 
-  <!-- MODAL POP-UP PENDATAAN & KEHADIRAN TOURING (POP-UP LENGKAP & ELEGAN) -->
+  <!-- MODAL POP-UP PENDATAAN & KEHADIRAN TOURING -->
   <div class="modal-overlay" id="modal-touring-rsvp">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-touring-rsvp')"><i class="fa-solid fa-xmark"></i></button>
@@ -1043,7 +1108,6 @@
         <p class="text-muted">Konfirmasi pilihan Anda & cek rombongan anggota</p>
       </div>
 
-      <!-- FORM RSVP PILIHAN SAYA -->
       <div style="background: #F8FAFC; border: 1px solid var(--border-dark); border-radius: 12px; padding: 12px; margin-bottom: 16px;">
         <strong style="font-size: var(--font-xs); color: var(--text-muted-dark); display: block; margin-bottom: 8px;">PILIH STATUS ANDA:</strong>
         <div style="display: flex; gap: 8px;">
@@ -1056,7 +1120,6 @@
         </div>
       </div>
 
-      <!-- DAFTAR NOMINATIF ANGGOTA -->
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
         <strong style="font-size: var(--font-sm);"><i class="fa-solid fa-users"></i> Daftar Rombongan</strong>
         <span class="badge badge-primary" id="touring-count-badge">0 Ikut</span>
@@ -1066,7 +1129,6 @@
         <p class="text-muted" style="text-align:center;">Memuat data partisipasi...</p>
       </div>
 
-      <!-- TOMBOL EXPORT -->
       <div style="display: flex; gap: 8px; margin-top: 16px;">
         <button type="button" class="btn btn-primary btn-sm" style="flex:1;" onclick="app.exportData('Touring', 'PDF')"><i class="fa-solid fa-file-pdf"></i> PDF</button>
         <button type="button" class="btn btn-primary btn-sm" style="flex:1;" onclick="app.exportData('Touring', 'Excel')"><i class="fa-solid fa-file-excel"></i> Excel</button>
@@ -1516,13 +1578,6 @@
         this.baseKas = 0;
         this.approvedKasTotal = 0;
         this.adminWANumber = "6281234567890";
-        this.touringData = {
-          title: "Touring Kemerdekaan 2",
-          schedule: "17 Maret 2026 | 09:00 WIB",
-          meeting: "Parkir BSN KC Surabaya",
-          distance: "± 70 KM",
-          maps: "https://maps.google.com/?q=Bromo"
-        };
         this.initSupabase();
       }
 
@@ -1611,6 +1666,7 @@
         if (displayWA) displayWA.innerText = `+${this.adminWANumber}`;
       }
 
+      // LOAD TOURING DENGAN REDESAIN COMPACT GRID ICON & FLEXIBEL BANYAK AGENDA
       async loadTouringsFromSupabase() {
         if (!this.supabase) return;
         try {
@@ -1658,7 +1714,7 @@
         const isSuperAdmin = (this.currentUser && this.currentUser.email === 'mastrisnobpb@gmail.com');
         const isAdmin = (this.currentProfile?.role === 'Admin' || isSuperAdmin);
 
-        // Render Agenda Touring Mendatang
+        // Render Agenda Touring Mendatang di Halaman Touring (Desain Ringkas Compact Grid)
         const upcomingContainer = document.getElementById('touring-upcoming-list');
         if (upcomingContainer) {
           if (upcomingList.length === 0) {
