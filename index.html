@@ -34,21 +34,70 @@
     body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F8FAFC; color: #0F172A; }
     .emerald-gradient { background: linear-gradient(135deg, #064e3b 0%, #047857 50%, #059669 100%); }
 
+    /* SPLASH SCREEN & ANIMASI MOTOR KENCANG */
     #splash-screen {
-      position: fixed; inset: 0; background: #FFFFFF; z-index: 99999;
+      position: fixed; inset: 0; background: #0F172A; z-index: 99999;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
+      overflow: hidden;
     }
-    .splash-logo { text-align: center; color: #00875A; }
-    .splash-logo i { font-size: 3.5rem; color: #D4AF37; }
-    .splash-logo h1 { font-size: 1.4rem; font-weight: 800; margin-top: 10px; color: #0F172A; }
-    .splash-logo span { color: #D4AF37; font-size: 0.68rem; letter-spacing: 2px; font-weight: 700; }
+    .splash-logo { text-align: center; color: #FFFFFF; position: relative; }
+    
+    .fast-bike-container {
+      position: relative;
+      display: inline-block;
+      padding: 10px 20px;
+    }
+
+    .fast-bike {
+      font-size: 4rem;
+      color: #F59E0B;
+      display: inline-block;
+      animation: bikeSpeed 0.9s infinite ease-in-out;
+      filter: drop-shadow(0 0 12px rgba(245, 158, 11, 0.6));
+    }
+
+    @keyframes bikeSpeed {
+      0% {
+        transform: translateX(-40px) skewX(-20deg) scale(0.9);
+        opacity: 0.2;
+      }
+      50% {
+        transform: translateX(10px) skewX(-25deg) scale(1.1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(60px) skewX(-15deg) scale(1);
+        opacity: 0;
+      }
+    }
+
+    /* GARIS KECEPATAN (SPEED LINES) */
+    .speed-lines {
+      position: absolute;
+      top: 50%;
+      left: -40px;
+      transform: translateY(-50%);
+      font-weight: 900;
+      font-style: italic;
+      font-size: 1.5rem;
+      color: rgba(245, 158, 11, 0.5);
+      letter-spacing: -3px;
+      animation: speedPulse 0.3s infinite alternate;
+      pointer-events: none;
+    }
+
+    @keyframes speedPulse {
+      from { opacity: 0.3; transform: translateY(-50%) scaleX(0.7); }
+      to { opacity: 0.9; transform: translateY(-50%) scaleX(1.4); }
+    }
 
     .spinner {
-      width: 40px; height: 40px; border: 4px solid rgba(0, 135, 90, 0.1); border-top-color: #00875A;
-      border-radius: 50%; animation: spin 1s infinite linear; margin-top: 30px;
+      width: 42px; height: 42px; border: 4px solid rgba(245, 158, 11, 0.2); border-top-color: #F59E0B;
+      border-radius: 50%; animation: spin 0.8s infinite linear; margin-top: 25px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* AUTH MODAL STYLES */
     .auth-overlay {
       position: fixed; inset: 0;
       background: linear-gradient(rgba(15, 23, 42, 0.6), rgba(15, 23, 42, 0.6)), 
@@ -95,12 +144,15 @@
 
   <div id="toast-container"></div>
 
-  <!-- SPLASH SCREEN -->
+  <!-- SPLASH SCREEN ANIMASI MOTOR KENCANG -->
   <div id="splash-screen">
     <div class="splash-logo">
-      <i class="fa-solid fa-motorcycle"></i>
-      <h1>ITORA BSN</h1>
-      <span>SURABAYA CLUB</span>
+      <div class="fast-bike-container">
+        <span class="speed-lines">///</span>
+        <i class="fa-solid fa-motorcycle fast-bike"></i>
+      </div>
+      <h1 class="text-2xl font-black tracking-tight text-white mt-1">ITORA BSN</h1>
+      <span class="text-xs font-extrabold text-amber-400 tracking-widest uppercase">SURABAYA CLUB</span>
     </div>
     <div class="spinner"></div>
   </div>
@@ -546,7 +598,7 @@
           const splash = document.getElementById('splash-screen');
           if (splash) splash.style.display = 'none';
           this.checkSession();
-        }, 800);
+        }, 1100);
       }
 
       async checkSession() {
@@ -849,7 +901,6 @@
         document.getElementById('modal-add-board').style.display = 'flex';
       }
 
-      // LOGIKA SIMPAN PENGURUS & PERBAIKAN UPLOAD FOTO PROFIL (STORE TO SUPABASE)
       async handleSaveBoardMember(e) {
         e.preventDefault();
         const btn = document.getElementById('btn-save-board');
@@ -861,7 +912,6 @@
         let photoUrl = null;
 
         try {
-          // Jika ada berkas foto baru yang diunggah
           if (file) {
             const fileName = `board_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
             const { error: uploadErr } = await this.supabase.storage.from('gallery-images').upload(fileName, file, { upsert: true });
@@ -879,7 +929,6 @@
             sort_order: parseInt(document.getElementById('board-sort-order').value) || 1
           };
 
-          // Hanya perbarui foto jika ada file baru yang dipilih
           if (photoUrl) payload.photo_url = photoUrl;
 
           let err;
