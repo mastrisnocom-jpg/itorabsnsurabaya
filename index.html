@@ -119,15 +119,21 @@
 
                 <div class="flex items-center gap-2">
                   <!-- TOMBOL PENGATURAN SUPERADMIN -->
-                  <button type="button" id="btn-admin-landing-setting" onclick="app.showAdminBoardModal()" style="display:none;" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-4 py-2 rounded-full font-bold text-xs shadow-lg transition flex items-center gap-2">
+                  <button type="button" id="btn-admin-landing-setting" onclick="app.showAdminBoardModal()" style="display:none;" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-4 py-2 rounded-full font-bold text-xs shadow-lg transition flex items-center gap-2 border border-amber-300">
                       <i class="fa-solid fa-gear"></i> Pengaturan Landing Page
                   </button>
 
-                  <!-- TOMBOL LOGOUT/DASHBOARD KHUSUS SUPERADMIN/LOGGED IN -->
-                  <button type="button" id="btn-admin-go-dashboard" onclick="window.location.href='dashboard.html'" style="display:none;" class="bg-emerald-800 hover:bg-emerald-700 text-white px-4 py-2 rounded-full font-bold text-xs shadow-lg transition flex items-center gap-2 border border-emerald-500/40">
+                  <!-- TOMBOL KE DASHBOARD APP (MUNCUL JIKA USER/ADMIN SUDAH LOGIN) -->
+                  <button type="button" id="btn-go-dashboard" onclick="window.location.href='dashboard.html'" style="display:none;" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-5 py-2 rounded-full font-bold text-xs shadow-lg transition flex items-center gap-2">
                       <i class="fa-solid fa-gauge-high"></i> Dashboard App
                   </button>
 
+                  <!-- TOMBOL LOGOUT (MUNCUL JIKA USER SUDAH LOGIN) -->
+                  <button type="button" id="btn-logout-main" onclick="app.handleLogout()" style="display:none;" class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-full font-bold text-xs shadow-lg transition flex items-center gap-2">
+                      <i class="fa-solid fa-right-from-bracket"></i> Keluar
+                  </button>
+
+                  <!-- TOMBOL MASUK ANGGOTA (MUNCUL JIKA BELUM LOGIN) -->
                   <button type="button" id="btn-login-main" onclick="app.showAuthModal()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-5 py-2 rounded-full font-bold text-xs shadow-lg transition flex items-center gap-2">
                       <i class="fa-solid fa-right-to-bracket"></i> Masuk Anggota
                   </button>
@@ -184,7 +190,7 @@
             <div id="board-tier-divisi" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
         </div>
 
-        <!-- REGISTRASI CEPAT (TAMPIL UNTUK GUEST / BELUM LOGIN) -->
+        <!-- REGISTRASI CEPAT (TAMPIL HANYA UNTUK GUEST / BELUM LOGIN) -->
         <section id="section-landing-register" class="bg-gradient-to-br from-emerald-900 via-emerald-800 to-emerald-950 rounded-3xl text-white p-8 md:p-12 shadow-2xl relative overflow-hidden">
             <div class="max-w-4xl mx-auto relative z-10">
                 <div class="text-center mb-8">
@@ -242,7 +248,7 @@
             </div>
         </section>
 
-        <!-- SLIDE DOKUMENTASI PROFESIONAL (TAMPIL OTOMATIS SAAT USER LOGIN) -->
+        <!-- SLIDE DOKUMENTASI PROFESIONAL (OTOMATIS MUNCUL SETELAH USER LOGIN) -->
         <section id="section-landing-gallery" style="display: none;" class="relative">
             <div class="text-center mb-8">
                 <span class="inline-block bg-amber-100 border border-amber-300 text-amber-800 text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest mb-2">
@@ -255,7 +261,6 @@
             <!-- CAROUSEL SLIDE CONTAINER -->
             <div class="relative w-full max-w-5xl mx-auto h-[260px] sm:h-[380px] md:h-[480px] rounded-3xl overflow-hidden shadow-2xl border border-slate-200 bg-slate-900 group" onmouseenter="app.stopSliderAutoplay()" onmouseleave="app.startSliderAutoplay()">
                 
-                <!-- SLIDE ITEMS -->
                 <div id="carousel-slides-wrapper" class="w-full h-full relative">
                     <!-- Slide 1 -->
                     <div class="slide-item absolute inset-0 opacity-100 slide-fade flex items-end">
@@ -291,12 +296,12 @@
                     </div>
                 </div>
 
-                <!-- WATERMARK LOGO SISI KANAN ATAS -->
+                <!-- WATERMARK LOGO -->
                 <div class="absolute top-4 right-4 z-20 bg-slate-950/60 backdrop-blur-md border border-white/20 text-white px-3 py-1.5 rounded-full text-[10px] sm:text-xs font-bold flex items-center gap-2 shadow-lg">
                     <i class="fa-solid fa-shield text-emerald-400"></i> ITORA BSN SURABAYA
                 </div>
 
-                <!-- NAVIGASI ARROW (NEXT / PREV) -->
+                <!-- PANAH NAVIGASI -->
                 <button type="button" onclick="app.prevSlide()" class="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-950/40 hover:bg-emerald-600 text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition shadow-lg opacity-80 group-hover:opacity-100 cursor-pointer">
                     <i class="fa-solid fa-chevron-left text-sm sm:text-base"></i>
                 </button>
@@ -304,7 +309,7 @@
                     <i class="fa-solid fa-chevron-right text-sm sm:text-base"></i>
                 </button>
 
-                <!-- DOT INDICATORS -->
+                <!-- INDIKATOR TITIK (DOTS) -->
                 <div id="carousel-dots-container" class="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 bg-slate-950/40 px-4 py-2 rounded-full backdrop-blur-md border border-white/10">
                     <button type="button" onclick="app.goToSlide(0)" class="dot-indicator w-2.5 h-2.5 rounded-full bg-white/50 hover:bg-white active"></button>
                     <button type="button" onclick="app.goToSlide(1)" class="dot-indicator w-2.5 h-2.5 rounded-full bg-white/50 hover:bg-white"></button>
@@ -511,9 +516,24 @@
       async validateUserFlow() {
         if (!this.currentUser) return;
 
-        // BILA USER SUDAH LOGIN: TUKAR REGISTRASI MENJADI CAROUSEL FOTO DOKUMENTASI
+        // BILA USER TERDETEKSI LOGIN: TAMPILKAN TOMBOL DASHBOARD & LOGOUT, TAMPILKAN SLIDE FOTO
+        const btnDashboard = document.getElementById('btn-go-dashboard');
+        const btnLogout = document.getElementById('btn-logout-main');
+        const btnLogin = document.getElementById('btn-login-main');
+        const btnSetting = document.getElementById('btn-admin-landing-setting');
+
+        if (btnDashboard) btnDashboard.style.display = 'flex';
+        if (btnLogout) btnLogout.style.display = 'flex';
+        if (btnLogin) btnLogin.style.display = 'none';
+
+        // BILA SUPER ADMIN LOGIN: TAMPILKAN TOMBOL PENGATURAN LANDING
+        if (this.currentUser.email === 'mastrisnobpb@gmail.com') {
+          if (btnSetting) btnSetting.style.display = 'flex';
+        }
+
+        // TUKAR REGISTRASI MENJADI CAROUSEL FOTO DOKUMENTASI
         const registerSection = document.getElementById('section-landing-register');
-        const gallerySection = document.getElementById('section-landing-register') ? document.getElementById('section-landing-gallery') : null;
+        const gallerySection = document.getElementById('section-landing-gallery');
 
         if (registerSection) registerSection.style.display = 'none';
         if (gallerySection) {
@@ -521,35 +541,25 @@
           this.startSliderAutoplay();
         }
 
-        // BILA SUPER ADMIN: TAMPILKAN TOMBOL PENGATURAN LANDING & KONTROL
-        if (this.currentUser.email === 'mastrisnobpb@gmail.com') {
-          const btnSetting = document.getElementById('btn-admin-landing-setting');
-          const btnDashboard = document.getElementById('btn-admin-go-dashboard');
-          const btnLogin = document.getElementById('btn-login-main');
-          
-          if (btnSetting) btnSetting.style.display = 'flex';
-          if (btnDashboard) btnDashboard.style.display = 'flex';
-          if (btnLogin) btnLogin.style.display = 'none';
-          return;
-        }
-
-        const { data } = await this.supabase.from('members').select('*').eq('id', this.currentUser.id).single();
-        this.currentProfile = data;
-
-        if (data && data.approval_status === 'Approved') {
-          window.location.href = 'dashboard.html';
-        } else {
-          document.getElementById('landing-screen').style.display = 'none';
-          document.getElementById('auth-screen').style.display = 'none';
-          document.getElementById('pending-approval-screen').style.display = 'flex';
-        }
+        // CATATAN: PENGGUNA TIDAK DI-REDIRECT DENGAN PAKSA KE DASHBOARD.HTML
+        // Pengguna tetap berada di index.html dan bebas klik tombol "Dashboard App"
       }
 
       showLandingPage() {
         document.getElementById('pending-approval-screen').style.display = 'none';
         document.getElementById('landing-screen').style.display = 'block';
 
-        // BILA GUEST (BELUM LOGIN), PASTI TAMPILKAN REGISTRASI DAN SEMBUNYIKAN GALERI
+        // BILA GUEST (BELUM LOGIN), TAMPILKAN TOMBOL LOGIN & REGISTRASI CEPAT
+        const btnDashboard = document.getElementById('btn-go-dashboard');
+        const btnLogout = document.getElementById('btn-logout-main');
+        const btnLogin = document.getElementById('btn-login-main');
+        const btnSetting = document.getElementById('btn-admin-landing-setting');
+
+        if (btnDashboard) btnDashboard.style.display = 'none';
+        if (btnLogout) btnLogout.style.display = 'none';
+        if (btnSetting) btnSetting.style.display = 'none';
+        if (btnLogin) btnLogin.style.display = 'flex';
+
         const registerSection = document.getElementById('section-landing-register');
         const gallerySection = document.getElementById('section-landing-gallery');
         if (registerSection) registerSection.style.display = 'block';
@@ -853,7 +863,8 @@
 
           this.currentUser = data.user;
           this.showToast('Login Berhasil!', 'success');
-          setTimeout(() => this.validateUserFlow(), 500);
+          this.hideAuthModal();
+          await this.validateUserFlow();
         } catch (err) {
           this.showToast('Login Gagal! Periksa email/password.', 'error');
         }
