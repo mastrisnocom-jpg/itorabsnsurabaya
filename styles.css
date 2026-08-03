@@ -546,3 +546,11 @@ body {
   font-size: 13px;
   font-weight: 500;
 }
+/* FORCE DISPLAY UNTUK MODAL NOTIFIKASI */
+#notificationModal.show-notif {
+  display: flex !important;
+}
+
+#notificationModal {
+  z-index: 999999 !important; /* Memastikan posisi di paling depan */
+}
