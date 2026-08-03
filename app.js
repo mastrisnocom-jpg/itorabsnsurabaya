@@ -2478,4 +2478,53 @@ async function createNotification(userId, title, message, type = 'info') {
 document.addEventListener('DOMContentLoaded', () => {
   updateUnreadCountBadge();
 });
+// Panggil ketika Admin Approve Merch
+createNotification(
+  memberUserId, 
+  "Pembelian Merchandise Disetujui! 🛍️", 
+  "Pesanan Kaos Official ITORA BSN Anda telah disetujui admin dan siap diproses.", 
+  "merch"
+);
+// Panggil setelah fungsi ganti password sukses
+createNotification(
+  currentUserId, 
+  "Ganti Password Berhasil 🔒", 
+  "Kata sandi akun ITORA BSN Anda telah berhasil diperbarui.", 
+  "auth"
+);
+// Panggil saat member submit konfirmasi kehadiran touring
+createNotification(
+  currentUserId, 
+  "Konfirmasi Touring BATU MALANG 🏍️", 
+  `Anda telah memilih status: ${statusKehadiran === 'ikut' ? 'IKUT' : 'TIDAK IKUT'}.`, 
+  "touring"
+);
+// Panggil saat Admin menyetujui setoran iuran
+createNotification(
+  memberUserId, 
+  "Setor Iuran Disetujui 💳", 
+  "Setoran iuran bulanan Anda (Agustus 2026) telah terverifikasi LUNAS.", 
+  "iuran"
+);
+// userId = null (Broadcast ke semua member)
+createNotification(
+  null, 
+  "Anggota Baru Bergabung! 🎉", 
+  `${namaMemberBaru} telah resmi bergabung dengan komunitas ITORA BSN Surabaya.`, 
+  "member"
+);
+// userId = null (Broadcast ke semua member)
+createNotification(
+  null, 
+  "Jadwal Touring Baru! 📍", 
+  "Agenda Utama Touring Batu Malang telah ditambahkan. Cek detail & rutenya sekarang!", 
+  "touring"
+);
+// Broadcast update kas komunitas
+createNotification(
+  null, 
+  "Update Setor Iuran 💸", 
+  `${namaMember} baru saja melunasi iuran bulanan. Kas komunitas bertambah!`, 
+  "iuran"
+);
 
