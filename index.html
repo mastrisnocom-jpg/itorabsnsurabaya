@@ -331,15 +331,56 @@
     .stat-card h3 { font-size: var(--font-md); font-weight: var(--fw-bold); margin-top: 4px; color: var(--text-main-dark); }
     .stat-card span { font-size: var(--font-xs); color: var(--text-muted-dark); font-weight: var(--fw-medium); }
 
-    .quick-menu { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px 10px; margin: 18px 0; }
-    .quick-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; }
-    .quick-icon {
-      width: 52px; height: 52px; border-radius: 50%; display: flex;
-      align-items: center; justify-content: center; font-size: 1.25rem;
-      background: #F1F5F9; color: var(--primary); border: 1px solid var(--border-dark);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04); position: relative;
+    /* BORDER KOTAK RAPI PADA QUICK MENU BERANDA */
+    .quick-menu { 
+      display: grid; 
+      grid-template-columns: repeat(4, 1fr); 
+      gap: 12px 10px; 
+      margin: 18px 0; 
     }
-    .quick-item span { font-size: var(--font-sm); font-weight: var(--fw-medium); color: var(--text-main-dark); margin-top: 6px; text-align: center; line-height: 1.2; }
+
+    .quick-item { 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      cursor: pointer; 
+      position: relative;
+      background: #FFFFFF;
+      border: 1px solid var(--border-dark);
+      border-radius: var(--radius-md);
+      padding: 12px 6px 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+      transition: all 0.2s ease;
+    }
+
+    .quick-item:active {
+      transform: scale(0.96);
+      background: #F8FAFC;
+    }
+
+    .quick-icon {
+      width: 48px; 
+      height: 48px; 
+      border-radius: 50%; 
+      display: flex;
+      align-items: center; 
+      justify-content: center; 
+      font-size: 1.2rem;
+      color: var(--primary); 
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03); 
+      position: relative;
+      transition: background-color 0.3s ease;
+    }
+
+    .quick-item span { 
+      font-size: var(--font-xs); 
+      font-weight: var(--fw-bold); 
+      color: var(--text-main-dark); 
+      margin-top: 8px; 
+      text-align: center; 
+      line-height: 1.2; 
+    }
 
     .shop-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 14px; }
     .product-card { background: #FFFFFF; border: 1px solid var(--border-dark); border-radius: var(--radius-md); overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 4px 12px rgba(0,0,0,0.03); position: relative; }
@@ -518,7 +559,7 @@
     </div>
   </div>
 
-  <!-- 4. MAIN APP DASHBOARD (KHUSUS ANGGOTA TERSETUJUI / APPROVED) -->
+  <!-- 4. MAIN APP DASHBOARD -->
   <div id="app-dashboard" class="app-container" style="display: none;">
 
     <header class="app-header">
@@ -540,7 +581,6 @@
       <!-- 1. BERANDA -->
       <section id="page-beranda" class="page active">
         
-        <!-- BREAKING NEWS TICKER -->
         <div class="news-ticker-wrapper">
           <div class="news-badge"><i class="fa-solid fa-bolt"></i> Update</div>
           <div class="news-ticker-content">
@@ -574,6 +614,7 @@
           </div>
         </div>
 
+        <!-- QUICK MENU BERISI BORDER KOTAK RAPI -->
         <div class="quick-menu" id="dynamic-quick-menu"></div>
 
         <div class="card">
@@ -686,7 +727,7 @@
         </div>
       </section>
 
-      <!-- 5. TOURING (DENGAN STATISTIK PARTISIPASI SAYA & EXPORT LAPORAN) -->
+      <!-- 5. TOURING (OTOMATISASI AGENDA UPCOMING & RIWAYAT SELESAI) -->
       <section id="page-touring" class="page">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <h2 style="font-size: var(--font-lg); font-weight: var(--fw-bold);">Jadwal & Rute Touring</h2>
@@ -695,83 +736,95 @@
           </button>
         </div>
 
-        <div class="card" style="margin-top: 12px; position: relative;">
-          
-          <div id="touring-admin-actions" style="position: absolute; top: 16px; right: 16px; display: none; gap: 6px;">
-            <button type="button" class="btn btn-sm btn-gold" style="padding: 5px 8px;" onclick="app.openModal('modal-admin-touring')" title="Edit Touring">
-              <i class="fa-solid fa-pen-to-square"></i>
-            </button>
-            <button type="button" class="btn btn-sm btn-danger" style="padding: 5px 8px;" onclick="app.adminDeleteTouring()" title="Hapus Touring">
-              <i class="fa-solid fa-trash"></i>
-            </button>
-          </div>
-
-          <span class="badge badge-gold" id="touring-badge-tag">Destinasi Utama</span>
-          <h3 style="margin-top: 6px; font-size: var(--font-base); font-weight: var(--fw-bold); padding-right: 70px;" id="touring-page-title">Bromo Sunrise Ride</h3>
-          
-          <p class="text-muted" style="margin-top: 6px;"><i class="fa-regular fa-calendar"></i> <span id="touring-page-schedule">17 Agustus 2026 | 05:00 WIB</span></p>
-          <p class="text-muted"><i class="fa-solid fa-location-dot"></i> Meeting Point: <span id="touring-page-meeting">Alun-Alun Surabaya</span></p>
-          
-          <p class="text-muted" style="color: var(--primary); font-weight: var(--fw-bold); margin-top: 4px;">
-            <i class="fa-solid fa-gauge-high"></i> Estimasi Jarak Tempuh: <span id="touring-page-distance">± 110 KM</span>
-          </p>
-
-          <button type="button" class="btn btn-primary" style="margin-top: 14px;" id="touring-maps-btn" onclick="window.open('https://maps.google.com/?q=Bromo', '_blank')">
-            <i class="fa-solid fa-map-location-dot"></i> Buka Rute Google Maps
-          </button>
-        </div>
-
-        <!-- STATISTIK RINGKASAN PARTICIPATION MEMBER -->
-        <div class="card" style="background: #F8FAFC; border: 1px dashed var(--border-dark);">
-          <h3 style="font-size: var(--font-sm); font-weight: var(--fw-bold); color: var(--text-muted-dark); text-transform: uppercase;">
-            <i class="fa-solid fa-chart-pie"></i> Riwayat Partisipasi Saya
-          </h3>
-          <div style="display: flex; gap: 12px; margin-top: 10px;">
-            <div style="flex:1; background: #D1FAE5; padding: 10px; border-radius: 10px; text-align: center;">
-              <strong style="color: #059669; font-size: 1.2rem; display: block;" id="my-ikut-count">0</strong>
-              <span style="font-size: 0.7rem; color: #065F46; font-weight: 600;">Kali Ikut</span>
+        <!-- 1. AGENDA UPCOMING -->
+        <div id="touring-upcoming-container">
+          <div class="card" style="margin-top: 12px; position: relative;" id="touring-active-card">
+            
+            <div id="touring-admin-actions" style="position: absolute; top: 16px; right: 16px; display: none; gap: 6px;">
+              <button type="button" class="btn btn-sm btn-gold" style="padding: 5px 8px;" onclick="app.openModal('modal-admin-touring')" title="Edit Touring">
+                <i class="fa-solid fa-pen-to-square"></i>
+              </button>
+              <button type="button" class="btn btn-sm btn-danger" style="padding: 5px 8px;" onclick="app.adminDeleteTouring()" title="Hapus Touring">
+                <i class="fa-solid fa-trash"></i>
+              </button>
             </div>
-            <div style="flex:1; background: #FEE2E2; padding: 10px; border-radius: 10px; text-align: center;">
-              <strong style="color: #DC2626; font-size: 1.2rem; display: block;" id="my-absen-count">0</strong>
-              <span style="font-size: 0.7rem; color: #991B1B; font-weight: 600;">Kali Absen</span>
-            </div>
-          </div>
-        </div>
 
-        <!-- FORM KONFIRMASI (RSVP) -->
-        <div class="card">
-          <h3 style="font-size: var(--font-md); font-weight: var(--fw-bold); margin-bottom: 6px;">
-            <i class="fa-solid fa-clipboard-check" style="color: var(--primary);"></i> Konfirmasi Kehadiran Anda
-          </h3>
-          <p class="text-muted" style="margin-bottom: 12px;">Pilih status partisipasi Anda untuk mendata rombongan touring.</p>
-          
-          <div style="display: flex; gap: 10px;">
-            <button type="button" class="btn btn-primary" style="flex:1;" onclick="app.submitTouringRSVP('Ikut')">
-              <i class="fa-solid fa-circle-check"></i> Saya Ikut
-            </button>
-            <button type="button" class="btn btn-danger" style="flex:1;" onclick="app.submitTouringRSVP('Absen')">
-              <i class="fa-solid fa-circle-xmark"></i> Tidak Ikut
+            <span class="badge badge-gold" id="touring-badge-tag">Destinasi Utama</span>
+            <h3 style="margin-top: 6px; font-size: var(--font-base); font-weight: var(--fw-bold); padding-right: 70px;" id="touring-page-title">Bromo Sunrise Ride</h3>
+            
+            <p class="text-muted" style="margin-top: 6px;"><i class="fa-regular fa-calendar"></i> <span id="touring-page-schedule">17 Agustus 2026 | 05:00 WIB</span></p>
+            <p class="text-muted"><i class="fa-solid fa-location-dot"></i> Meeting Point: <span id="touring-page-meeting">Alun-Alun Surabaya</span></p>
+            
+            <p class="text-muted" style="color: var(--primary); font-weight: var(--fw-bold); margin-top: 4px;">
+              <i class="fa-solid fa-gauge-high"></i> Estimasi Jarak Tempuh: <span id="touring-page-distance">± 110 KM</span>
+            </p>
+
+            <button type="button" class="btn btn-primary" style="margin-top: 14px;" id="touring-maps-btn" onclick="window.open('https://maps.google.com/?q=Bromo', '_blank')">
+              <i class="fa-solid fa-map-location-dot"></i> Buka Rute Google Maps
             </button>
           </div>
-        </div>
 
-        <!-- DAFTAR PENDATAAN ANGGOTA & TOMBOL EXPORT -->
-        <div class="card">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
-            <h3 style="font-size: var(--font-md); font-weight: var(--fw-bold);">
-              <i class="fa-solid fa-users-viewfinder" style="color: var(--accent-gold);"></i> Pendataan Anggota
+          <!-- STATISTIK RINGKASAN PARTICIPATION MEMBER -->
+          <div class="card" style="background: #F8FAFC; border: 1px dashed var(--border-dark);">
+            <h3 style="font-size: var(--font-sm); font-weight: var(--fw-bold); color: var(--text-muted-dark); text-transform: uppercase;">
+              <i class="fa-solid fa-chart-pie"></i> Partisipasi Saya
             </h3>
-            <span class="badge badge-primary" id="touring-count-badge">0 Ikut</span>
+            <div style="display: flex; gap: 12px; margin-top: 10px;">
+              <div style="flex:1; background: #D1FAE5; padding: 10px; border-radius: 10px; text-align: center;">
+                <strong style="color: #059669; font-size: 1.2rem; display: block;" id="my-ikut-count">0</strong>
+                <span style="font-size: 0.7rem; color: #065F46; font-weight: 600;">Kali Ikut</span>
+              </div>
+              <div style="flex:1; background: #FEE2E2; padding: 10px; border-radius: 10px; text-align: center;">
+                <strong style="color: #DC2626; font-size: 1.2rem; display: block;" id="my-absen-count">0</strong>
+                <span style="font-size: 0.7rem; color: #991B1B; font-weight: 600;">Kali Absen</span>
+              </div>
+            </div>
           </div>
 
-          <div id="touring-participants-list">
-            <p class="text-muted" style="text-align:center;">Memuat data partisipasi...</p>
+          <!-- FORM KONFIRMASI (RSVP) -->
+          <div class="card" id="touring-rsvp-card">
+            <h3 style="font-size: var(--font-md); font-weight: var(--fw-bold); margin-bottom: 6px;">
+              <i class="fa-solid fa-clipboard-check" style="color: var(--primary);"></i> Konfirmasi Kehadiran Anda
+            </h3>
+            <p class="text-muted" style="margin-bottom: 12px;">Pilih status partisipasi Anda untuk mendata rombongan touring.</p>
+            
+            <div style="display: flex; gap: 10px;">
+              <button type="button" class="btn btn-primary" style="flex:1;" onclick="app.submitTouringRSVP('Ikut')">
+                <i class="fa-solid fa-circle-check"></i> Saya Ikut
+              </button>
+              <button type="button" class="btn btn-danger" style="flex:1;" onclick="app.submitTouringRSVP('Absen')">
+                <i class="fa-solid fa-circle-xmark"></i> Tidak Ikut
+              </button>
+            </div>
           </div>
 
-          <!-- TOMBOL EXPORT LAPORAN TOURING -->
-          <div style="display: flex; gap: 10px; margin-top: 15px;">
-            <button type="button" class="btn btn-primary btn-sm" onclick="app.exportData('Touring', 'PDF')"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
-            <button type="button" class="btn btn-primary btn-sm" onclick="app.exportData('Touring', 'Excel')"><i class="fa-solid fa-file-excel"></i> Export Excel</button>
+          <!-- DAFTAR PENDATAAN ANGGOTA & TOMBOL EXPORT -->
+          <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
+              <h3 style="font-size: var(--font-md); font-weight: var(--fw-bold);">
+                <i class="fa-solid fa-users-viewfinder" style="color: var(--accent-gold);"></i> Pendataan Anggota
+              </h3>
+              <span class="badge badge-primary" id="touring-count-badge">0 Ikut</span>
+            </div>
+
+            <div id="touring-participants-list">
+              <p class="text-muted" style="text-align:center;">Memuat data partisipasi...</p>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+              <button type="button" class="btn btn-primary btn-sm" onclick="app.exportData('Touring', 'PDF')"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
+              <button type="button" class="btn btn-primary btn-sm" onclick="app.exportData('Touring', 'Excel')"><i class="fa-solid fa-file-excel"></i> Export Excel</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. RIWAYAT TOURING (JIKA WAKTU ACARA SUDAH LEWAT) -->
+        <div style="margin-top: 25px;">
+          <h3 style="font-size: var(--font-md); font-weight: var(--fw-bold); margin-bottom: 10px;">
+            <i class="fa-solid fa-clock-rotate-left" style="color: var(--primary);"></i> Riwayat Touring Selesai
+          </h3>
+          <div id="touring-history-list">
+            <p class="text-muted" style="text-align:center; padding: 15px; background: #fff; border-radius: 12px; border: 1px solid var(--border-dark);">Belum ada riwayat touring terdahulu.</p>
           </div>
         </div>
       </section>
@@ -1173,7 +1226,7 @@
     </div>
   </div>
 
-  <!-- MODAL ADD/EDIT MENU DINAMIS -->
+  <!-- MODAL ADD/EDIT MENU DINAMIS (DILENGKAPI PILIHAN WARNA LINGKARAN IKON SUPER ADMIN) -->
   <div class="modal-overlay" id="modal-add-menu">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-add-menu')"><i class="fa-solid fa-xmark"></i></button>
@@ -1193,6 +1246,16 @@
           <label>Icon FontAwesome Class</label>
           <input type="text" class="input-control" id="menu-icon" placeholder="fa-solid fa-bullhorn">
         </div>
+
+        <!-- INPUT BARU: PENGATURAN WARNA BACKGROUND LINGKARAN IKON -->
+        <div class="form-group">
+          <label>Warna Background Lingkaran Ikon</label>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <input type="color" id="menu-bg-color" value="#F1F5F9" style="width: 50px; height: 40px; border: none; cursor: pointer; border-radius: 8px;">
+            <input type="text" class="input-control" id="menu-bg-color-text" value="#F1F5F9" placeholder="#F1F5F9" style="flex:1;">
+          </div>
+        </div>
+
         <div class="form-group">
           <label>Gambar / Ikon Kustom (Upload ke Storage)</label>
           <input type="file" class="input-control" id="menu-image-file" accept="image/*">
@@ -1344,10 +1407,10 @@
         this.approvedKasTotal = 0;
         this.adminWANumber = "6281234567890";
         this.touringData = {
-          title: "Touring Kemerdekaan",
-          schedule: "17 Agustus 2026 | 09:00 WIB",
+          title: "Touring Kemerdekaan 2",
+          schedule: "17 Maret 2026 | 09:00 WIB",
           meeting: "Parkir BSN KC Surabaya",
-          distance: "± 110 KM",
+          distance: "± 70 KM",
           maps: "https://maps.google.com/?q=Bromo"
         };
         this.initSupabase();
@@ -1383,6 +1446,14 @@
           try { this.touringData = JSON.parse(savedTouring); } catch(e){}
         }
         this.updateTouringUI();
+
+        // Sync warna picker modal
+        const colorInput = document.getElementById('menu-bg-color');
+        const colorText = document.getElementById('menu-bg-color-text');
+        if (colorInput && colorText) {
+          colorInput.addEventListener('input', (e) => colorText.value = e.target.value);
+          colorText.addEventListener('input', (e) => colorInput.value = e.target.value);
+        }
 
         setTimeout(() => {
           const splash = document.getElementById('splash-screen');
@@ -1429,30 +1500,88 @@
       }
 
       updateTouringUI() {
-        const isTouringActive = (this.touringData.title && this.touringData.title !== 'Belum Ada Agenda');
-        const touringCount = isTouringActive ? 1 : 0;
+        const scheduleText = this.touringData.schedule || "";
+        let isPastEvent = false;
+
+        try {
+          const dateMatch = scheduleText.match(/(\d{1,2})\s+([a-zA-Z]+)\s+(\d{4})/);
+          if (dateMatch) {
+            const day = parseInt(dateMatch[1]);
+            const monthNames = ["januari","februari","maret","april","mei","juni","juli","agustus","september","oktober","november","desember"];
+            const monthIndex = monthNames.indexOf(dateMatch[2].toLowerCase());
+            const year = parseInt(dateMatch[3]);
+
+            if (monthIndex !== -1) {
+              const eventDate = new Date(year, monthIndex, day, 23, 59, 59);
+              const currentDate = new Date();
+              if (eventDate < currentDate) {
+                isPastEvent = true;
+              }
+            }
+          }
+        } catch (e) {
+          console.error("Error parsing touring date:", e);
+        }
 
         const statTouringEl = document.getElementById('stat-touring-count');
-        if (statTouringEl) statTouringEl.innerText = touringCount;
+        if (statTouringEl) statTouringEl.innerText = isPastEvent ? 0 : 1;
 
         const homeTitle = document.getElementById('home-touring-title');
         const homeSchedule = document.getElementById('home-touring-schedule');
         const homeMeeting = document.getElementById('home-touring-meeting');
-        if (homeTitle) homeTitle.innerText = this.touringData.title;
-        if (homeSchedule) homeSchedule.innerText = this.touringData.schedule;
-        if (homeMeeting) homeMeeting.innerText = this.touringData.meeting;
 
         const pageTitle = document.getElementById('touring-page-title');
         const pageSchedule = document.getElementById('touring-page-schedule');
         const pageMeeting = document.getElementById('touring-page-meeting');
         const pageDistance = document.getElementById('touring-page-distance');
         const pageMapsBtn = document.getElementById('touring-maps-btn');
-        
-        if (pageTitle) pageTitle.innerText = this.touringData.title;
-        if (pageSchedule) pageSchedule.innerText = this.touringData.schedule;
-        if (pageMeeting) pageMeeting.innerText = this.touringData.meeting;
-        if (pageDistance) pageDistance.innerText = this.touringData.distance || '± 0 KM';
-        if (pageMapsBtn) pageMapsBtn.setAttribute('onclick', `window.open('${this.touringData.maps}', '_blank')`);
+
+        const historyContainer = document.getElementById('touring-history-list');
+        const rsvpCard = document.getElementById('touring-rsvp-card');
+
+        if (isPastEvent) {
+          if (homeTitle) homeTitle.innerText = "Belum Ada Agenda Mendatang";
+          if (homeSchedule) homeSchedule.innerText = "-";
+          if (homeMeeting) homeMeeting.innerText = "-";
+
+          if (pageTitle) pageTitle.innerText = "Belum Ada Agenda Mendatang";
+          if (pageSchedule) pageSchedule.innerText = "-";
+          if (pageMeeting) pageMeeting.innerText = "-";
+          if (pageDistance) pageDistance.innerText = "-";
+          if (pageMapsBtn) pageMapsBtn.style.display = "none";
+          if (rsvpCard) rsvpCard.style.display = "none";
+
+          if (historyContainer) {
+            historyContainer.innerHTML = `
+              <div class="card" style="border-left: 4px solid var(--accent-gold);">
+                <span class="badge badge-warning">Selesai</span>
+                <h4 style="font-size: var(--font-base); font-weight: var(--fw-bold); margin-top: 6px;">${this.touringData.title}</h4>
+                <p class="text-muted" style="margin-top: 4px;"><i class="fa-regular fa-calendar"></i> ${this.touringData.schedule}</p>
+                <p class="text-muted"><i class="fa-solid fa-location-dot"></i> ${this.touringData.meeting}</p>
+                <p class="text-muted"><i class="fa-solid fa-gauge-high"></i> ${this.touringData.distance}</p>
+              </div>
+            `;
+          }
+
+        } else {
+          if (homeTitle) homeTitle.innerText = this.touringData.title;
+          if (homeSchedule) homeSchedule.innerText = this.touringData.schedule;
+          if (homeMeeting) homeMeeting.innerText = this.touringData.meeting;
+
+          if (pageTitle) pageTitle.innerText = this.touringData.title;
+          if (pageSchedule) pageSchedule.innerText = this.touringData.schedule;
+          if (pageMeeting) pageMeeting.innerText = this.touringData.meeting;
+          if (pageDistance) pageDistance.innerText = this.touringData.distance || '± 0 KM';
+          if (pageMapsBtn) {
+            pageMapsBtn.style.display = "block";
+            pageMapsBtn.setAttribute('onclick', `window.open('${this.touringData.maps}', '_blank')`);
+          }
+          if (rsvpCard) rsvpCard.style.display = "block";
+
+          if (historyContainer) {
+            historyContainer.innerHTML = `<p class="text-muted" style="text-align:center; padding: 15px; background: #fff; border-radius: 12px; border: 1px solid var(--border-dark);">Belum ada riwayat touring terdahulu.</p>`;
+          }
+        }
 
         const adminTitle = document.getElementById('admin-touring-title');
         const adminDate = document.getElementById('admin-touring-date');
@@ -2298,6 +2427,7 @@
           ];
         }
 
+        // QUICK MENU BERANDA (DILENGKAPI BORDER KOTAK DAN WARNA BACKGROUND LINGKARAN KUSTOM)
         const quickMenuContainer = document.getElementById('dynamic-quick-menu');
         if (quickMenuContainer) {
           const quickItems = this.menus.filter(m => m.is_active && m.show_in_quick_menu);
@@ -2309,13 +2439,14 @@
               if (m.menu_key === 'setor_iuran') actionCall = `app.openModal('modal-iuran')`;
               if (m.menu_key === 'keluar') actionCall = `app.handleLogout()`;
 
+              const customBg = m.bg_color || '#F1F5F9';
               const iconContent = m.image_url 
                 ? `<img src="${m.image_url}" alt="${m.title}" style="width: 24px; height: 24px; object-fit: contain;">`
                 : `<i class="${m.icon_class}"></i>`;
 
               return `
                 <div class="quick-item" onclick="${actionCall}">
-                  <div class="quick-icon">
+                  <div class="quick-icon" style="background-color: ${customBg};">
                     ${iconContent}
                     ${m.menu_key === 'admin' ? '<span class="notification-badge" id="admin-notif-dot"></span>' : ''}
                   </div>
@@ -2353,7 +2484,7 @@
               ${m.image_url ? `<img src="${m.image_url}">` : `<i class="${m.icon_class}"></i>`}
               <div>
                 <strong style="font-size:var(--font-base); font-weight:var(--fw-bold);">${m.title}</strong>
-                <span class="text-muted" style="display:block;">Key: ${m.menu_key} | Order: ${m.sort_order}</span>
+                <span class="text-muted" style="display:block;">Key: ${m.menu_key} | Color: ${m.bg_color || '#F1F5F9'}</span>
               </div>
             </div>
             <div style="display:flex; gap:6px; align-items:center;">
@@ -2387,6 +2518,8 @@
         document.getElementById('menu-title').value = menu.title;
         document.getElementById('menu-icon').value = menu.icon_class;
         document.getElementById('menu-order').value = menu.sort_order;
+        document.getElementById('menu-bg-color').value = menu.bg_color || '#F1F5F9';
+        document.getElementById('menu-bg-color-text').value = menu.bg_color || '#F1F5F9';
         document.getElementById('menu-show-quick').checked = menu.show_in_quick_menu;
         document.getElementById('menu-show-bottom').checked = menu.show_in_bottom_nav;
 
@@ -2423,6 +2556,7 @@
             menu_key: document.getElementById('menu-key').value.trim().toLowerCase(),
             title: document.getElementById('menu-title').value.trim(),
             icon_class: document.getElementById('menu-icon').value.trim() || 'fa-solid fa-square',
+            bg_color: document.getElementById('menu-bg-color').value,
             sort_order: parseInt(document.getElementById('menu-order').value) || 0,
             show_in_quick_menu: document.getElementById('menu-show-quick').checked,
             show_in_bottom_nav: document.getElementById('menu-show-bottom').checked
@@ -2733,7 +2867,6 @@
         }
       }
 
-      // PERBAIKAN: PERSIAPAN CHANNEL TUNGGAL DAN PEMBERSIHAN DENGAN removeAllChannels()
       subscribeToRealtimeChanges() {
         if (!this.supabase || !this.currentUser) return;
         const isSuperAdmin = (this.currentUser.email === 'mastrisnobpb@gmail.com');
@@ -3009,7 +3142,6 @@
         }
       }
 
-      // FUNGSI EXPORT DATA (PDF & EXCEL) SUNGGUHAN BERJALAN
       exportData(type, format) {
         if (type === 'Kas') {
           if (!this.iuranHistory || this.iuranHistory.length === 0) {
