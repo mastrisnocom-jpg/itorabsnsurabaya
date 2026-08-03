@@ -26,6 +26,7 @@
 
     :root {
       --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-pro: 'Poppins', sans-serif;
       
       --font-xs: 0.68rem;    /* 11px */
       --font-sm: 0.75rem;    /* 12px */
@@ -129,8 +130,8 @@
 
     .auth-card {
       width: 100%; max-width: 380px; border-radius: 32px; padding: 32px 24px;
-      background: rgba(255, 255, 255, 0.78); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
-      border: 1px solid rgba(255, 255, 255, 0.6); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+      background: rgba(255, 255, 255, 0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.8); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
     }
     .auth-header { text-align: center; margin-bottom: 24px; }
     .auth-icon { font-size: 3.2rem; color: #00875A; margin-bottom: 12px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
@@ -178,7 +179,7 @@
     }
 
     .bottom-nav {
-      position: fixed; bottom: 0; left: 0; right: 0; height: 70px; z-index: 9999; display: flex; justify-content: space-around;
+      position: fixed; bottom: 0; left: 0; right: 0; height: 70px; z-index: 8999; display: flex; justify-content: space-around;
       align-items: center; background: #FFFFFF; border-top: 1px solid var(--border-dark); border-top-left-radius: var(--radius-lg);
       border-top-right-radius: var(--radius-lg); box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08); padding-bottom: env(safe-area-inset-bottom, 0px);
     }
@@ -281,7 +282,7 @@
     .info-item div span { display: block; font-size: var(--font-xs); color: var(--text-muted-dark); font-weight: var(--fw-medium); }
     .info-item div strong { font-size: var(--font-base); color: var(--text-main-dark); font-weight: var(--fw-bold); }
 
-    .btn { width: 100%; padding: 12px 14px; border-radius: var(--radius-md); border: none; font-weight: var(--fw-bold); font-size: var(--font-base); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn { width: 100%; padding: 12px 14px; border-radius: var(--radius-md); border: none; font-weight: var(--fw-bold); font-size: var(--font-base); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s ease; }
     .btn-sm { padding: 6px 12px; font-size: var(--font-xs); border-radius: var(--radius-sm); }
     .btn-primary { background: var(--primary); color: white; }
     .btn-gold { background: var(--accent-gold); color: #000; }
@@ -302,11 +303,6 @@
 
     @keyframes slideDown { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-    .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(8px); z-index: 9000; display: none; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
-    .modal-overlay.active { display: flex; }
-    .modal-card { width: 100%; max-width: 420px; border-radius: var(--radius-lg); padding: 24px; background: #FFFFFF; position: relative; max-height: 90vh; overflow-y: auto; border: 1px solid var(--border-dark); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
-    .close-modal-btn { position: absolute; top: 16px; right: 16px; background: #F1F5F9; border: none; color: var(--text-main-dark); width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-
     .qr-container { background: white; padding: 15px; border-radius: var(--radius-md); display: inline-block; margin: 15px 0; position: relative; border: 1px solid var(--border-dark); }
     .avatar-placeholder { width: 70px; height: 70px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: white; font-weight: var(--fw-bold); margin: 0 auto 10px; }
 
@@ -314,98 +310,204 @@
     .menu-admin-info { display: flex; align-items: center; gap: 12px; }
     .menu-admin-info i, .menu-admin-info img { width: 24px; height: 24px; object-fit: contain; text-align: center; }
 
-    /* --- STYLES KHUSUS PENGATURAN KAS & WA (PRO LEVEL) --- */
-    .pro-settings-header {
+    /* --- SISTEM DESAIN MODAL POP-UP UTAMA (PRO & MODERN) --- */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 90000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      overflow-y: auto;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      animation: modalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 450px;
+      border-radius: var(--radius-lg);
+      padding: 0;
+      background: #FFFFFF;
+      position: relative;
+      max-height: 88vh;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      font-family: var(--font-pro);
+    }
+
+    .pro-modal-header {
+      padding: 20px 24px;
+      background: #FFFFFF;
+      border-bottom: 1px solid #F1F5F9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .pro-modal-header .title-wrap {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid #f0f0f0;
-      margin-bottom: 20px;
     }
-    .pro-settings-header i {
-      color: #2ecc71;
+
+    .pro-modal-header .title-wrap i {
+      color: var(--primary);
       font-size: 20px;
     }
-    .pro-settings-header span {
-      color: #1a1a1a;
-      font-weight: 600;
-      font-size: 17px;
+
+    .pro-modal-header h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #0F172A;
+      margin: 0;
+      letter-spacing: -0.02em;
     }
-    .pro-form-section {
-      margin-bottom: 24px;
-    }
-    .pro-form-section:last-child {
-      margin-bottom: 0;
-    }
-    .pro-input-group {
-      position: relative;
-      margin-bottom: 12px;
-    }
-    .pro-input-group label {
+
+    .close-modal-btn {
       position: absolute;
-      left: 15px;
+      top: 16px;
+      right: 18px;
+      background: #F1F5F9;
+      border: none;
+      color: #64748B;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      transition: all 0.2s ease;
+      z-index: 12;
+    }
+
+    .close-modal-btn:hover {
+      background: #FEE2E2;
+      color: #EF4444;
+    }
+
+    .pro-modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    /* Floating / Outlined Input Group Standard Modals */
+    .pro-form-group {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .pro-form-group label {
+      position: absolute;
+      left: 14px;
       top: 50%;
       transform: translateY(-50%);
       color: #8899a6;
       font-size: 13px;
       pointer-events: none;
       transition: all 0.2s ease;
-      background-color: #fff;
+      background-color: #FFFFFF;
       padding: 0 4px;
+      font-weight: 500;
     }
-    .pro-input-group input {
+
+    .pro-form-group input,
+    .pro-form-group select,
+    .pro-form-group textarea {
       width: 100%;
       padding: 14px 15px;
       font-size: 14px;
-      border: 2px solid #e1e8ed;
-      border-radius: 10px;
+      border: 2px solid #E1E8ED;
+      border-radius: 12px;
       outline: none;
-      color: #1a1a1a;
-      transition: border-color 0.2s;
-      background: transparent;
+      color: #0F172A;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: #FFFFFF;
+      font-family: var(--font-pro);
     }
+
+    .pro-form-group textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .pro-form-group.has-prefix input {
+      padding-left: 42px;
+    }
+
     .pro-input-prefix {
       position: absolute;
       left: 15px;
       top: 50%;
       transform: translateY(-50%);
-      color: #1a1a1a;
-      font-weight: 500;
+      color: #0F172A;
+      font-weight: 600;
       font-size: 14px;
       display: none;
     }
-    .pro-input-group.has-prefix input {
-      padding-left: 42px;
+
+    .pro-form-group input:focus,
+    .pro-form-group select:focus,
+    .pro-form-group textarea:focus,
+    .pro-form-group input:not(:placeholder-shown),
+    .pro-form-group textarea:not(:placeholder-shown) {
+      border-color: #3498DB;
     }
-    .pro-input-group input:focus,
-    .pro-input-group input:not(:placeholder-shown) {
-      border-color: #3498db;
-    }
-    .pro-input-group input:focus + label,
-    .pro-input-group input:not(:placeholder-shown) + label {
+
+    .pro-form-group input:focus + label,
+    .pro-form-group select:focus + label,
+    .pro-form-group textarea:focus + label,
+    .pro-form-group input:not(:placeholder-shown) + label,
+    .pro-form-group textarea:not(:placeholder-shown) + label,
+    .pro-form-group.always-float label {
       top: 0;
       font-size: 11px;
-      color: #3498db;
+      color: #3498DB;
       font-weight: 600;
     }
-    .pro-input-group.has-prefix input:focus ~ .pro-input-prefix,
-    .pro-input-group.has-prefix input:not(:placeholder-shown) ~ .pro-input-prefix {
+
+    .pro-form-group.has-prefix input:focus ~ .pro-input-prefix,
+    .pro-form-group.has-prefix input:not(:placeholder-shown) ~ .pro-input-prefix {
       display: block;
     }
+
     .pro-helper-text {
       font-size: 11px;
       color: #8899a6;
-      margin-top: -6px;
-      margin-bottom: 14px;
+      margin-top: -14px;
+      margin-bottom: 16px;
       display: block;
       margin-left: 4px;
     }
-    .pro-btn-submit {
+
+    /* Tombol Aksi Gradien Emas Premium */
+    .pro-btn-gold {
       width: 100%;
-      padding: 13px;
+      padding: 14px;
       border: none;
-      border-radius: 10px;
+      border-radius: 12px;
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
@@ -414,18 +516,44 @@
       align-items: center;
       gap: 8px;
       transition: all 0.3s ease;
-      background: linear-gradient(135deg, #e6b94a 0%, #d4a017 100%);
-      color: #ffffff;
-      box-shadow: 0 4px 6px rgba(212, 160, 23, 0.2);
+      background: linear-gradient(135deg, #E6B94A 0%, #D4A017 100%);
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(212, 160, 23, 0.25);
     }
-    .pro-btn-submit:hover {
-      background: linear-gradient(135deg, #d4a017 0%, #b8860b 100%);
-      box-shadow: 0 6px 12px rgba(212, 160, 23, 0.3);
+
+    .pro-btn-gold:hover {
+      background: linear-gradient(135deg, #D4A017 0%, #B8860B 100%);
+      box-shadow: 0 6px 16px rgba(212, 160, 23, 0.35);
       transform: translateY(-1px);
     }
-    .pro-btn-submit:active {
+
+    .pro-btn-gold:active {
       transform: translateY(1px);
       box-shadow: 0 2px 4px rgba(212, 160, 23, 0.2);
+    }
+
+    .pro-btn-primary {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      background: linear-gradient(135deg, #00875A 0%, #005E3E 100%);
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(0, 135, 90, 0.25);
+    }
+
+    .pro-btn-primary:hover {
+      background: linear-gradient(135deg, #00704A 0%, #004D33 100%);
+      box-shadow: 0 6px 16px rgba(0, 135, 90, 0.35);
+      transform: translateY(-1px);
     }
   </style>
 </head>
@@ -940,20 +1068,24 @@
 
   </div>
 
-  <!-- MODAL ZOOM LIGHTBOX PREVIEW DOKUMENTASI FOTO (WATERMARK) -->
+  <!-- ALL MODALS REDESIGNED WITH MODERN GLASSMORPHISM & MATERIAL FLOATING INPUTS -->
+
+  <!-- MODAL ZOOM LIGHTBOX PREVIEW DOKUMENTASI FOTO -->
   <div class="modal-overlay" id="modal-zoom-photo">
-    <div class="modal-card" style="padding: 12px; text-align: center; max-width: 500px; background:#0F172A; border:none;">
+    <div class="modal-card" style="max-width: 500px; background:#0F172A; border:none;">
       <button type="button" class="close-modal-btn" style="background:#334155; color:#fff;" onclick="app.closeModal('modal-zoom-photo')"><i class="fa-solid fa-xmark"></i></button>
 
-      <div style="position: relative; width: 100%; border-radius: 12px; overflow: hidden; margin-top: 20px;">
-        <img id="zoom-photo-img" src="" style="width: 100%; height: auto; max-height: 70vh; object-fit: contain; border-radius: 8px;">
-        <div class="gallery-watermark" style="font-size: 0.65rem; padding: 4px 8px; bottom: 8px; right: 8px;">
-          <i class="fa-solid fa-shield"></i> ITORA BSN SURABAYA
+      <div class="pro-modal-body" style="text-align:center; padding:20px;">
+        <div style="position: relative; width: 100%; border-radius: 16px; overflow: hidden; margin-top: 10px;">
+          <img id="zoom-photo-img" src="" style="width: 100%; height: auto; max-height: 65vh; object-fit: contain; border-radius: 12px;">
+          <div class="gallery-watermark" style="font-size: 0.65rem; padding: 4px 8px; bottom: 8px; right: 8px;">
+            <i class="fa-solid fa-shield"></i> ITORA BSN SURABAYA
+          </div>
         </div>
-      </div>
 
-      <p style="color: #F8FAFC; font-weight: 700; margin-top: 12px; font-size: var(--font-sm);" id="zoom-photo-caption">-</p>
-      <span class="badge badge-gold" style="margin-top: 4px;" id="zoom-photo-touring">-</span>
+        <p style="color: #F8FAFC; font-weight: 600; margin-top: 14px; font-size: var(--font-base);" id="zoom-photo-caption">-</p>
+        <span class="badge badge-gold" style="margin-top: 6px;" id="zoom-photo-touring">-</span>
+      </div>
     </div>
   </div>
 
@@ -961,31 +1093,42 @@
   <div class="modal-overlay" id="modal-add-photo">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-add-photo')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="text-align: center; margin-bottom: 15px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-camera" style="color: var(--primary);"></i> Upload Dokumentasi Foto</h3>
       
-      <form onsubmit="app.handleSaveGalleryPhoto(event)">
-        <div class="form-group">
-          <label>Kategori Agenda / Lokasi Touring</label>
-          <select class="input-control" id="photo-touring-name" required>
-            <option value="Touring Bromo Sunrise">Touring Bromo Sunrise</option>
-            <option value="Touring Batu Malang">Touring Batu Malang</option>
-            <option value="Kopdar & Doa Bersama">Kopdar & Doa Bersama</option>
-            <option value="Kegiatan Umum">Kegiatan Umum</option>
-          </select>
+      <div class="pro-modal-header">
+        <div class="title-wrap">
+          <i class="fa-solid fa-camera" style="color:var(--primary);"></i>
+          <h3>Upload Dokumentasi Foto</h3>
         </div>
+      </div>
 
-        <div class="form-group">
-          <label>Pilih Foto Kegiatan (Otomatis Kompres & Watermark)</label>
-          <input type="file" class="input-control" id="photo-file-input" accept="image/*" required>
-        </div>
+      <div class="pro-modal-body">
+        <form onsubmit="app.handleSaveGalleryPhoto(event)">
+          <div class="pro-form-group always-float">
+            <select id="photo-touring-name" required>
+              <option value="Touring Bromo Sunrise">Touring Bromo Sunrise</option>
+              <option value="Touring Batu Malang">Touring Batu Malang</option>
+              <option value="Kopdar & Doa Bersama">Kopdar & Doa Bersama</option>
+              <option value="Kegiatan Umum">Kegiatan Umum</option>
+            </select>
+            <label for="photo-touring-name">Kategori Agenda / Lokasi</label>
+          </div>
 
-        <div class="form-group">
-          <label>Keterangan / Caption Foto (Opsional)</label>
-          <input type="text" class="input-control" id="photo-caption-input" placeholder="e.g. Momen di Puncak Penanjakan Bromo">
-        </div>
+          <div class="pro-form-group always-float">
+            <input type="file" id="photo-file-input" accept="image/*" required>
+            <label for="photo-file-input">Pilih Foto Kegiatan</label>
+          </div>
+          <span class="pro-helper-text">Foto otomatis dikompres & diberi watermark resmi</span>
 
-        <button type="submit" class="btn btn-gold" id="btn-save-photo"><i class="fa-solid fa-cloud-arrow-up"></i> Upload Foto Galeri</button>
-      </form>
+          <div class="pro-form-group">
+            <input type="text" id="photo-caption-input" placeholder=" ">
+            <label for="photo-caption-input">Keterangan / Caption Foto (Opsional)</label>
+          </div>
+
+          <button type="submit" class="pro-btn-gold" id="btn-save-photo">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Upload Foto Galeri
+          </button>
+        </form>
+      </div>
     </div>
   </div>
 
@@ -993,37 +1136,40 @@
   <div class="modal-overlay" id="modal-touring-rsvp">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-touring-rsvp')"><i class="fa-solid fa-xmark"></i></button>
-      
-      <div style="text-align:center; margin-bottom: 15px;">
-        <i class="fa-solid fa-clipboard-check" style="font-size: 2.2rem; color: var(--primary);"></i>
-        <h3 style="font-size: var(--font-md); font-weight: var(--fw-bold); margin-top: 6px;">Pendataan Kehadiran</h3>
-        <p class="text-muted">Konfirmasi pilihan Anda & cek rombongan anggota</p>
-      </div>
 
-      <div style="background: #F8FAFC; border: 1px solid var(--border-dark); border-radius: 12px; padding: 12px; margin-bottom: 16px;">
-        <strong style="font-size: var(--font-xs); color: var(--text-muted-dark); display: block; margin-bottom: 8px;">PILIH STATUS ANDA:</strong>
-        <div style="display: flex; gap: 8px;">
-          <button type="button" class="btn btn-primary btn-sm" style="flex:1;" onclick="app.submitTouringRSVP('Ikut')">
-            <i class="fa-solid fa-circle-check"></i> Saya Ikut
-          </button>
-          <button type="button" class="btn btn-danger btn-sm" style="flex:1;" onclick="app.submitTouringRSVP('Absen')">
-            <i class="fa-solid fa-circle-xmark"></i> Tidak Ikut
-          </button>
+      <div class="pro-modal-header">
+        <div class="title-wrap">
+          <i class="fa-solid fa-clipboard-check" style="color:var(--primary);"></i>
+          <h3>Pendataan Kehadiran</h3>
         </div>
       </div>
 
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
-        <strong style="font-size: var(--font-sm);"><i class="fa-solid fa-users"></i> Daftar Rombongan</strong>
-        <span class="badge badge-primary" id="touring-count-badge">0 Ikut</span>
-      </div>
+      <div class="pro-modal-body">
+        <div style="background: #F8FAFC; border: 1px solid var(--border-dark); border-radius: 16px; padding: 16px; margin-bottom: 20px;">
+          <strong style="font-size: var(--font-xs); color: var(--text-muted-dark); display: block; margin-bottom: 10px; letter-spacing:0.5px;">KONFIRMASI STATUS ANDA:</strong>
+          <div style="display: flex; gap: 10px;">
+            <button type="button" class="pro-btn-primary" style="padding:10px; font-size:13px;" onclick="app.submitTouringRSVP('Ikut')">
+              <i class="fa-solid fa-circle-check"></i> Saya Ikut
+            </button>
+            <button type="button" class="btn btn-danger" style="border-radius:12px; padding:10px; font-size:13px;" onclick="app.submitTouringRSVP('Absen')">
+              <i class="fa-solid fa-circle-xmark"></i> Tidak Ikut
+            </button>
+          </div>
+        </div>
 
-      <div id="touring-participants-list" style="max-height: 220px; overflow-y: auto; padding-right: 4px;">
-        <p class="text-muted" style="text-align:center;">Memuat data partisipasi...</p>
-      </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
+          <strong style="font-size: var(--font-base);"><i class="fa-solid fa-users" style="color:var(--primary);"></i> Daftar Rombongan</strong>
+          <span class="badge badge-primary" id="touring-count-badge">0 Ikut</span>
+        </div>
 
-      <div style="display: flex; gap: 8px; margin-top: 16px;">
-        <button type="button" class="btn btn-primary btn-sm" style="flex:1;" onclick="app.exportData('Touring', 'PDF')"><i class="fa-solid fa-file-pdf"></i> PDF</button>
-        <button type="button" class="btn btn-primary btn-sm" style="flex:1;" onclick="app.exportData('Touring', 'Excel')"><i class="fa-solid fa-file-excel"></i> Excel</button>
+        <div id="touring-participants-list" style="max-height: 220px; overflow-y: auto; padding-right: 4px;">
+          <p class="text-muted" style="text-align:center;">Memuat data partisipasi...</p>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+          <button type="button" class="pro-btn-primary" style="padding:10px; font-size:12px;" onclick="app.exportData('Touring', 'PDF')"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+          <button type="button" class="pro-btn-primary" style="padding:10px; font-size:12px; background:linear-gradient(135deg,#059669,#047857);" onclick="app.exportData('Touring', 'Excel')"><i class="fa-solid fa-file-excel"></i> Excel</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1032,10 +1178,19 @@
   <div class="modal-overlay" id="modal-admin-roles">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-roles')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="margin-bottom: 12px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-user-gear" style="color: var(--accent-gold);"></i> Kelola Role & Jabatan</h3>
-      <p class="text-muted" style="margin-bottom: 12px;">Ubah role anggota menjadi Admin, Ketua, Bendahara, Sekretaris, atau Anggota</p>
-      <div id="admin-roles-list">
-        <p class="text-muted" style="text-align:center;">Memuat daftar anggota...</p>
+
+      <div class="pro-modal-header">
+        <div class="title-wrap">
+          <i class="fa-solid fa-user-gear" style="color:var(--accent-gold);"></i>
+          <h3>Kelola Role & Jabatan</h3>
+        </div>
+      </div>
+
+      <div class="pro-modal-body">
+        <p class="text-muted" style="margin-bottom: 16px;">Ubah role anggota menjadi Admin, Ketua, Bendahara, Sekretaris, atau Anggota Resmi.</p>
+        <div id="admin-roles-list">
+          <p class="text-muted" style="text-align:center;">Memuat daftar anggota...</p>
+        </div>
       </div>
     </div>
   </div>
@@ -1044,44 +1199,52 @@
   <div class="modal-overlay" id="modal-order-merch">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-order-merch')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="text-align: center; margin-bottom: 15px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-shirt" style="color: var(--primary);"></i> Form Pemesanan Merch</h3>
-      
-      <form id="form-order-merch" onsubmit="app.handleOrderMerchSubmit(event)">
-        <div class="form-group">
-          <label>Nama Barang</label>
-          <input type="text" class="input-control" id="merch-item-name" readonly>
-        </div>
 
-        <div class="form-group">
-          <label>Harga Satuan</label>
-          <input type="text" class="input-control" id="merch-item-price" readonly>
+      <div class="pro-modal-header">
+        <div class="title-wrap">
+          <i class="fa-solid fa-shirt" style="color:var(--primary);"></i>
+          <h3>Form Pemesanan Merch</h3>
         </div>
+      </div>
 
-        <div class="form-group">
-          <label>Ukuran / Varian</label>
-          <select class="input-control" id="merch-item-size" required>
-            <option value="All Size">Ukuran All Size</option>
-            <option value="M">Ukuran M</option>
-            <option value="L" selected>Ukuran L</option>
-            <option value="XL">Ukuran XL</option>
-            <option value="XXL">Ukuran XXL (+10rb)</option>
-          </select>
-        </div>
+      <div class="pro-modal-body">
+        <form id="form-order-merch" onsubmit="app.handleOrderMerchSubmit(event)">
+          <div class="pro-form-group always-float">
+            <input type="text" id="merch-item-name" readonly placeholder=" ">
+            <label for="merch-item-name">Nama Barang</label>
+          </div>
 
-        <div class="form-group">
-          <label>Jumlah Pesanan (Pcs)</label>
-          <input type="number" class="input-control" id="merch-item-qty" value="1" min="1" required>
-        </div>
+          <div class="pro-form-group always-float">
+            <input type="text" id="merch-item-price" readonly placeholder=" ">
+            <label for="merch-item-price">Harga Satuan</label>
+          </div>
 
-        <div class="form-group">
-          <label>Catatan Tambahan (Lengan Panjang/Pendek/Warna)</label>
-          <input type="text" class="input-control" id="merch-item-note" placeholder="Misal: Lengan Panjang Hitam">
-        </div>
+          <div class="pro-form-group always-float">
+            <select id="merch-item-size" required>
+              <option value="All Size">Ukuran All Size</option>
+              <option value="M">Ukuran M</option>
+              <option value="L" selected>Ukuran L</option>
+              <option value="XL">Ukuran XL</option>
+              <option value="XXL">Ukuran XXL (+10rb)</option>
+            </select>
+            <label for="merch-item-size">Ukuran / Varian</label>
+          </div>
 
-        <button type="submit" class="btn btn-primary" id="btn-submit-merch">
-          <i class="fa-brands fa-whatsapp"></i> Pesan & Kirim ke WA Admin
-        </button>
-      </form>
+          <div class="pro-form-group">
+            <input type="number" id="merch-item-qty" value="1" min="1" required placeholder=" ">
+            <label for="merch-item-qty">Jumlah Pesanan (Pcs)</label>
+          </div>
+
+          <div class="pro-form-group">
+            <input type="text" id="merch-item-note" placeholder=" ">
+            <label for="merch-item-note">Catatan Tambahan (Lengan Panjang/Pendek)</label>
+          </div>
+
+          <button type="submit" class="pro-btn-primary" id="btn-submit-merch">
+            <i class="fa-brands fa-whatsapp"></i> Pesan & Kirim ke WA Admin
+          </button>
+        </form>
+      </div>
     </div>
   </div>
 
@@ -1089,12 +1252,19 @@
   <div class="modal-overlay" id="modal-admin-products">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-products')"><i class="fa-solid fa-xmark"></i></button>
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <h3 style="font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-box-open" style="color: #10B981;"></i> Kelola Produk Merch</h3>
-        <button class="btn btn-sm btn-gold" style="width:auto;" onclick="app.openModal('modal-add-product')"><i class="fa-solid fa-plus"></i> Tambah Produk</button>
+
+      <div class="pro-modal-header">
+        <div class="title-wrap">
+          <i class="fa-solid fa-box-open" style="color:#10B981;"></i>
+          <h3>Kelola Produk Merch</h3>
+        </div>
+        <button class="btn btn-sm btn-gold" style="width:auto;" onclick="app.openModal('modal-add-product')"><i class="fa-solid fa-plus"></i> Tambah</button>
       </div>
-      <div id="admin-products-list">
-        <p class="text-muted" style="text-align:center;">Memuat katalog produk admin...</p>
+
+      <div class="pro-modal-body">
+        <div id="admin-products-list">
+          <p class="text-muted" style="text-align:center;">Memuat katalog produk admin...</p>
+        </div>
       </div>
     </div>
   </div>
@@ -1103,42 +1273,54 @@
   <div class="modal-overlay" id="modal-add-product">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-add-product')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="text-align: center; margin-bottom: 15px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-box-archive" style="color: var(--primary);"></i> Tambah / Edit Produk</h3>
-      
-      <form id="form-product" onsubmit="app.handleSaveProduct(event)">
-        <input type="hidden" id="product-id">
-        <div class="form-group">
-          <label>Nama Produk Merchandise</label>
-          <input type="text" class="input-control" id="product-title" placeholder="e.g. Kaos Official ITORA" required>
-        </div>
 
-        <div class="form-group">
-          <label>Harga Produk (Rp)</label>
-          <input type="number" class="input-control" id="product-price" placeholder="125000" required>
+      <div class="pro-modal-header">
+        <div class="title-wrap">
+          <i class="fa-solid fa-box-archive" style="color:var(--primary);"></i>
+          <h3>Tambah / Edit Produk</h3>
         </div>
+      </div>
 
-        <div class="form-group">
-          <label>Status Stok / Badge</label>
-          <select class="input-control" id="product-stock" required>
-            <option value="Ready Stock">Ready Stock</option>
-            <option value="Pre-Order">Pre-Order</option>
-            <option value="Stok Terbatas">Stok Terbatas</option>
-            <option value="Habis">Stok Habis</option>
-          </select>
-        </div>
+      <div class="pro-modal-body">
+        <form id="form-product" onsubmit="app.handleSaveProduct(event)">
+          <input type="hidden" id="product-id">
+          
+          <div class="pro-form-group">
+            <input type="text" id="product-title" placeholder=" " required>
+            <label for="product-title">Nama Produk Merchandise</label>
+          </div>
 
-        <div class="form-group">
-          <label>Foto Produk (Otomatis Kompres & Upload)</label>
-          <input type="file" class="input-control" id="product-image-file" accept="image/*">
-        </div>
+          <div class="pro-form-group has-prefix">
+            <input type="number" id="product-price" placeholder=" " required>
+            <label for="product-price">Harga Produk</label>
+            <span class="pro-input-prefix">Rp.</span>
+          </div>
 
-        <div class="form-group">
-          <label>Deskripsi Singkat</label>
-          <input type="text" class="input-control" id="product-desc" placeholder="Bahan Combed 30s">
-        </div>
+          <div class="pro-form-group always-float">
+            <select id="product-stock" required>
+              <option value="Ready Stock">Ready Stock</option>
+              <option value="Pre-Order">Pre-Order</option>
+              <option value="Stok Terbatas">Stok Terbatas</option>
+              <option value="Habis">Stok Habis</option>
+            </select>
+            <label for="product-stock">Status Stok / Badge</label>
+          </div>
 
-        <button type="submit" class="btn btn-gold" id="btn-save-product"><i class="fa-solid fa-floppy-disk"></i> Simpan Produk</button>
-      </form>
+          <div class="pro-form-group always-float">
+            <input type="file" id="product-image-file" accept="image/*">
+            <label for="product-image-file">Foto Produk (Opsional)</label>
+          </div>
+
+          <div class="pro-form-group">
+            <input type="text" id="product-desc" placeholder=" ">
+            <label for="product-desc">Deskripsi Singkat</label>
+          </div>
+
+          <button type="submit" class="pro-btn-gold" id="btn-save-product">
+            <i class="fa-solid fa-floppy-disk"></i> Simpan Produk
+          </button>
+        </form>
+      </div>
     </div>
   </div>
 
@@ -1146,12 +1328,19 @@
   <div class="modal-overlay" id="modal-admin-menu">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-menu')"><i class="fa-solid fa-xmark"></i></button>
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <h3 style="font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-bars-staggered" style="color: var(--primary);"></i> Pengaturan Menu App</h3>
+
+      <div class="pro-modal-header">
+        <div class="title-wrap">
+          <i class="fa-solid fa-bars-staggered" style="color:var(--primary);"></i>
+          <h3>Pengaturan Menu App</h3>
+        </div>
         <button class="btn btn-sm btn-gold" style="width:auto;" onclick="app.openModal('modal-add-menu')"><i class="fa-solid fa-plus"></i> Tambah</button>
       </div>
-      <div id="admin-menu-list">
-        <p class="text-muted" style="text-align:center;">Memuat data menu...</p>
+
+      <div class="pro-modal-body">
+        <div id="admin-menu-list">
+          <p class="text-muted" style="text-align:center;">Memuat data menu...</p>
+        </div>
       </div>
     </div>
   </div>
@@ -1160,9 +1349,18 @@
   <div class="modal-overlay" id="modal-admin-members">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-members')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="margin-bottom: 12px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-user-check" style="color: var(--accent-gold);"></i> Persetujuan Anggota Baru</h3>
-      <div id="admin-pending-members-list">
-        <p class="text-muted" style="text-align:center;">Memuat pendaftaran anggota...</p>
+
+      <div class="pro-modal-header">
+        <div class="title-wrap">
+          <i class="fa-solid fa-user-check" style="color:var(--accent-gold);"></i>
+          <h3>Persetujuan Anggota Baru</h3>
+        </div>
+      </div>
+
+      <div class="pro-modal-body">
+        <div id="admin-pending-members-list">
+          <p class="text-muted" style="text-align:center;">Memuat pendaftaran anggota...</p>
+        </div>
       </div>
     </div>
   </div>
@@ -1171,9 +1369,18 @@
   <div class="modal-overlay" id="modal-admin-dues">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-dues')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="margin-bottom: 12px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-check-to-slot" style="color: var(--primary);"></i> Verifikasi Iuran Anggota</h3>
-      <div id="admin-dues-list">
-        <p class="text-muted" style="text-align:center;">Memuat data iuran...</p>
+
+      <div class="pro-modal-header">
+        <div class="title-wrap">
+          <i class="fa-solid fa-check-to-slot" style="color:var(--primary);"></i>
+          <h3>Verifikasi Iuran Anggota</h3>
+        </div>
+      </div>
+
+      <div class="pro-modal-body">
+        <div id="admin-dues-list">
+          <p class="text-muted" style="text-align:center;">Memuat data iuran...</p>
+        </div>
       </div>
     </div>
   </div>
@@ -1182,53 +1389,63 @@
   <div class="modal-overlay" id="modal-admin-orders">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-orders')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="margin-bottom: 12px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-cart-shopping" style="color: #9333EA;"></i> Pemesanan Merchandise</h3>
-      <div id="admin-orders-list">
-        <p class="text-muted" style="text-align:center;">Memuat data pesanan merchandise...</p>
+
+      <div class="pro-modal-header">
+        <div class="title-wrap">
+          <i class="fa-solid fa-cart-shopping" style="color:#9333EA;"></i>
+          <h3>Pemesanan Merchandise</h3>
+        </div>
+      </div>
+
+      <div class="pro-modal-body">
+        <div id="admin-orders-list">
+          <p class="text-muted" style="text-align:center;">Memuat data pesanan merchandise...</p>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- MODAL POP-UP ADMIN 5: PENGATURAN KAS POKOK & WHATSAPP (HASIL REDESAIN PROFESIONAL) -->
+  <!-- MODAL POP-UP ADMIN 5: PENGATURAN KAS POKOK & WHATSAPP -->
   <div class="modal-overlay" id="modal-admin-settings">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-settings')"><i class="fa-solid fa-xmark"></i></button>
 
-      <div class="pro-settings-header">
-        <i class="fa-solid fa-sliders"></i>
-        <span>Pengaturan Kas & WhatsApp</span>
-      </div>
-
-      <!-- SECTION 1: WHATSAPP -->
-      <div class="pro-form-section">
-        <div class="pro-input-group">
-          <input type="text" id="admin-wa-input" placeholder=" " value="6281234567890">
-          <label for="admin-wa-input">Nomor WA Penerima Konfirmasi</label>
+      <div class="pro-modal-header">
+        <div class="title-wrap">
+          <i class="fa-solid fa-sliders" style="color:#2ecc71;"></i>
+          <h3>Pengaturan Kas & WhatsApp</h3>
         </div>
-        <span class="pro-helper-text">Format: 628xxxxxxxxxx</span>
-
-        <button type="button" class="pro-btn-submit" onclick="app.adminUpdateWANumber()">
-          <i class="fa-solid fa-lock"></i>
-          Simpan WA
-        </button>
       </div>
 
-      <hr style="border:0; border-top:1px solid #f0f0f0; margin: 20px 0;">
+      <div class="pro-modal-body">
+        <!-- SECTION 1: WHATSAPP -->
+        <div style="margin-bottom: 24px;">
+          <div class="pro-form-group">
+            <input type="text" id="admin-wa-input" placeholder=" " value="6281234567890">
+            <label for="admin-wa-input">Nomor WA Penerima Konfirmasi</label>
+          </div>
+          <span class="pro-helper-text">Format: 628xxxxxxxxxx</span>
 
-      <!-- SECTION 2: KAS POKOK -->
-      <div class="pro-form-section">
-        <div class="pro-input-group has-prefix">
-          <input type="number" id="admin-kas-input" placeholder=" " value="0">
-          <label for="admin-kas-input">Saldo Kas Pokok Awal</label>
-          <span class="pro-input-prefix">Rp.</span>
+          <button type="button" class="pro-btn-gold" onclick="app.adminUpdateWANumber()">
+            <i class="fa-solid fa-lock"></i> Simpan WA
+          </button>
         </div>
 
-        <button type="button" class="pro-btn-submit" onclick="app.adminUpdateBaseKas()">
-          <i class="fa-solid fa-lock"></i>
-          Simpan Kas Pokok
-        </button>
-      </div>
+        <hr style="border:0; border-top:1px solid #F1F5F9; margin: 20px 0;">
 
+        <!-- SECTION 2: KAS POKOK -->
+        <div>
+          <div class="pro-form-group has-prefix">
+            <input type="number" id="admin-kas-input" placeholder=" " value="0">
+            <label for="admin-kas-input">Saldo Kas Pokok Awal</label>
+            <span class="pro-input-prefix">Rp.</span>
+          </div>
+
+          <button type="button" class="pro-btn-gold" onclick="app.adminUpdateBaseKas()">
+            <i class="fa-solid fa-lock"></i> Simpan Kas Pokok
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1236,36 +1453,53 @@
   <div class="modal-overlay" id="modal-admin-touring">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-touring')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="margin-bottom: 12px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-route" style="color: var(--primary);"></i> Kelola Agenda Touring</h3>
-      
-      <form onsubmit="app.handleSaveTouring(event)">
-        <input type="hidden" id="admin-touring-id">
-        <div class="form-group">
-          <label>Nama Destinasi / Judul Touring</label>
-          <input type="text" class="input-control" id="admin-touring-title" placeholder="e.g. Bromo Sunrise Ride" required>
+
+      <div class="pro-modal-header">
+        <div class="title-wrap">
+          <i class="fa-solid fa-route" style="color:var(--primary);"></i>
+          <h3>Kelola Agenda Touring</h3>
         </div>
-        <div class="form-group">
-          <label>Tanggal Acara (Untuk Penentuan Status Otomatis)</label>
-          <input type="date" class="input-control" id="admin-touring-date-picker" required>
-        </div>
-        <div class="form-group">
-          <label>Teks Jadwal & Jam</label>
-          <input type="text" class="input-control" id="admin-touring-schedule-text" placeholder="17 Agustus 2026 | 05:00 WIB" required>
-        </div>
-        <div class="form-group">
-          <label>Titik Kumpul (Meeting Point)</label>
-          <input type="text" class="input-control" id="admin-touring-meeting" placeholder="e.g. Parkir BSN KC Surabaya" required>
-        </div>
-        <div class="form-group">
-          <label>Jarak Tempuh (Satu Arah/PP)</label>
-          <input type="text" class="input-control" id="admin-touring-distance" placeholder="e.g. ± 110 KM (Sekali Jalan)" required>
-        </div>
-        <div class="form-group">
-          <label>Link Google Maps Rute</label>
-          <input type="text" class="input-control" id="admin-touring-maps" placeholder="https://maps.google.com/?q=..." required>
-        </div>
-        <button type="submit" class="btn btn-gold" id="btn-save-touring"><i class="fa-solid fa-floppy-disk"></i> Simpan Agenda Touring</button>
-      </form>
+      </div>
+
+      <div class="pro-modal-body">
+        <form onsubmit="app.handleSaveTouring(event)">
+          <input type="hidden" id="admin-touring-id">
+          
+          <div class="pro-form-group">
+            <input type="text" id="admin-touring-title" placeholder=" " required>
+            <label for="admin-touring-title">Nama Destinasi / Judul Touring</label>
+          </div>
+
+          <div class="pro-form-group always-float">
+            <input type="date" id="admin-touring-date-picker" required>
+            <label for="admin-touring-date-picker">Tanggal Acara</label>
+          </div>
+
+          <div class="pro-form-group">
+            <input type="text" id="admin-touring-schedule-text" placeholder=" " required>
+            <label for="admin-touring-schedule-text">Teks Jadwal & Jam (e.g. 17 Agt 2026 | 05:00 WIB)</label>
+          </div>
+
+          <div class="pro-form-group">
+            <input type="text" id="admin-touring-meeting" placeholder=" " required>
+            <label for="admin-touring-meeting">Titik Kumpul (Meeting Point)</label>
+          </div>
+
+          <div class="pro-form-group">
+            <input type="text" id="admin-touring-distance" placeholder=" " required>
+            <label for="admin-touring-distance">Jarak Tempuh (e.g. ± 110 KM)</label>
+          </div>
+
+          <div class="pro-form-group">
+            <input type="text" id="admin-touring-maps" placeholder=" " required>
+            <label for="admin-touring-maps">Link Google Maps Rute</label>
+          </div>
+
+          <button type="submit" class="pro-btn-gold" id="btn-save-touring">
+            <i class="fa-solid fa-floppy-disk"></i> Simpan Agenda Touring
+          </button>
+        </form>
+      </div>
     </div>
   </div>
 
@@ -1273,33 +1507,41 @@
   <div class="modal-overlay" id="modal-edit-profile">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-edit-profile')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="text-align: center; margin-bottom: 15px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-user-pen" style="color: var(--primary);"></i> Edit Profil Anggota</h3>
-      
-      <form id="form-edit-profile" onsubmit="app.handleSaveProfile(event)">
-        <div class="form-group">
-          <label>Nama Lengkap</label>
-          <input type="text" class="input-control" id="edit-fullname" required>
-        </div>
 
-        <div class="form-group">
-          <label>Nomor WhatsApp / Telepon</label>
-          <input type="text" class="input-control" id="edit-phone" placeholder="081234567890">
+      <div class="pro-modal-header">
+        <div class="title-wrap">
+          <i class="fa-solid fa-user-pen" style="color:var(--primary);"></i>
+          <h3>Edit Profil Anggota</h3>
         </div>
+      </div>
 
-        <div class="form-group">
-          <label>Merek / Tipe Motor</label>
-          <input type="text" class="input-control" id="edit-bike" placeholder="Honda Vario / Yamaha NMAX">
-        </div>
+      <div class="pro-modal-body">
+        <form id="form-edit-profile" onsubmit="app.handleSaveProfile(event)">
+          <div class="pro-form-group">
+            <input type="text" id="edit-fullname" placeholder=" " required>
+            <label for="edit-fullname">Nama Lengkap</label>
+          </div>
 
-        <div class="form-group">
-          <label>Nomor Plat Kendaraan</label>
-          <input type="text" class="input-control" id="edit-plate" placeholder="L 1234 ABC">
-        </div>
+          <div class="pro-form-group">
+            <input type="text" id="edit-phone" placeholder=" ">
+            <label for="edit-phone">Nomor WhatsApp / Telepon</label>
+          </div>
 
-        <button type="submit" class="btn btn-primary" id="btn-save-profile">
-          <i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan Profil
-        </button>
-      </form>
+          <div class="pro-form-group">
+            <input type="text" id="edit-bike" placeholder=" ">
+            <label for="edit-bike">Merek / Tipe Motor</label>
+          </div>
+
+          <div class="pro-form-group">
+            <input type="text" id="edit-plate" placeholder=" ">
+            <label for="edit-plate">Nomor Plat Kendaraan</label>
+          </div>
+
+          <button type="submit" class="pro-btn-primary" id="btn-save-profile">
+            <i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan Profil
+          </button>
+        </form>
+      </div>
     </div>
   </div>
 
@@ -1307,57 +1549,73 @@
   <div class="modal-overlay" id="modal-add-menu">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-add-menu')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="text-align: center; margin-bottom: 15px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-plus" style="color: var(--primary);"></i> Tambah / Edit Menu</h3>
-      
-      <form id="form-menu" onsubmit="app.handleSaveMenu(event)">
-        <input type="hidden" id="menu-id">
-        <div class="form-group">
-          <label>Key Identifier (Unik, huruf kecil)</label>
-          <input type="text" class="input-control" id="menu-key" placeholder="e.g. pengumuman" required>
-        </div>
-        <div class="form-group">
-          <label>Judul Tampilan Menu</label>
-          <input type="text" class="input-control" id="menu-title" placeholder="e.g. Pengumuman Resmi" required>
-        </div>
-        <div class="form-group">
-          <label>Icon FontAwesome Class</label>
-          <input type="text" class="input-control" id="menu-icon" placeholder="fa-solid fa-bullhorn">
-        </div>
 
-        <div class="form-group">
-          <label>Warna Background Lingkaran Ikon</label>
-          <div style="display:flex; gap:10px; align-items:center;">
-            <input type="color" id="menu-bg-color" value="#F1F5F9" style="width: 50px; height: 40px; border: none; cursor: pointer; border-radius: 8px;">
-            <input type="text" class="input-control" id="menu-bg-color-text" value="#F1F5F9" placeholder="#F1F5F9" style="flex:1;">
+      <div class="pro-modal-header">
+        <div class="title-wrap">
+          <i class="fa-solid fa-plus" style="color:var(--primary);"></i>
+          <h3>Tambah / Edit Menu</h3>
+        </div>
+      </div>
+
+      <div class="pro-modal-body">
+        <form id="form-menu" onsubmit="app.handleSaveMenu(event)">
+          <input type="hidden" id="menu-id">
+
+          <div class="pro-form-group">
+            <input type="text" id="menu-key" placeholder=" " required>
+            <label for="menu-key">Key Identifier (Misal: pengumuman)</label>
           </div>
-        </div>
 
-        <div class="form-group">
-          <label>Warna Ikon (FontAwesome Icon Color)</label>
-          <div style="display:flex; gap:10px; align-items:center;">
-            <input type="color" id="menu-icon-color" value="#00875A" style="width: 50px; height: 40px; border: none; cursor: pointer; border-radius: 8px;">
-            <input type="text" class="input-control" id="menu-icon-color-text" value="#00875A" placeholder="#00875A" style="flex:1;">
+          <div class="pro-form-group">
+            <input type="text" id="menu-title" placeholder=" " required>
+            <label for="menu-title">Judul Tampilan Menu</label>
           </div>
-        </div>
 
-        <div class="form-group">
-          <label>Gambar / Ikon Kustom (Upload ke Storage)</label>
-          <input type="file" class="input-control" id="menu-image-file" accept="image/*">
-        </div>
-        <div class="form-group">
-          <label>Urutan Tampil (Sort Order)</label>
-          <input type="number" class="input-control" id="menu-order" value="1" required>
-        </div>
-        <div class="form-group" style="display:flex; gap:10px; align-items:center;">
-          <input type="checkbox" id="menu-show-quick" checked>
-          <label for="menu-show-quick" style="margin:0;">Tampilkan di Quick Menu Beranda</label>
-        </div>
-        <div class="form-group" style="display:flex; gap:10px; align-items:center;">
-          <input type="checkbox" id="menu-show-bottom">
-          <label for="menu-show-bottom" style="margin:0;">Tampilkan di Bottom Navigation Bar</label>
-        </div>
-        <button type="submit" class="btn btn-gold" id="btn-save-menu"><i class="fa-solid fa-floppy-disk"></i> Simpan Menu</button>
-      </form>
+          <div class="pro-form-group">
+            <input type="text" id="menu-icon" placeholder=" ">
+            <label for="menu-icon">FontAwesome Icon Class (e.g. fa-solid fa-bullhorn)</label>
+          </div>
+
+          <div class="pro-form-group always-float">
+            <div style="display:flex; gap:10px; align-items:center;">
+              <input type="color" id="menu-bg-color" value="#F1F5F9" style="width: 50px; height: 42px; border: none; cursor: pointer; border-radius: 8px;">
+              <input type="text" id="menu-bg-color-text" value="#F1F5F9" style="flex:1;">
+            </div>
+            <label>Warna Background Lingkaran</label>
+          </div>
+
+          <div class="pro-form-group always-float">
+            <div style="display:flex; gap:10px; align-items:center;">
+              <input type="color" id="menu-icon-color" value="#00875A" style="width: 50px; height: 42px; border: none; cursor: pointer; border-radius: 8px;">
+              <input type="text" id="menu-icon-color-text" value="#00875A" style="flex:1;">
+            </div>
+            <label>Warna Ikon</label>
+          </div>
+
+          <div class="pro-form-group always-float">
+            <input type="file" id="menu-image-file" accept="image/*">
+            <label for="menu-image-file">Ikon Gambar Kustom (Opsional)</label>
+          </div>
+
+          <div class="pro-form-group">
+            <input type="number" id="menu-order" value="1" placeholder=" " required>
+            <label for="menu-order">Urutan Tampil (Sort Order)</label>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px;">
+            <label style="display:flex; gap:10px; align-items:center; cursor:pointer; font-size:13px; font-weight:600; color:#334155;">
+              <input type="checkbox" id="menu-show-quick" checked style="width:18px; height:18px;"> Tampilkan di Quick Menu Beranda
+            </label>
+            <label style="display:flex; gap:10px; align-items:center; cursor:pointer; font-size:13px; font-weight:600; color:#334155;">
+              <input type="checkbox" id="menu-show-bottom" style="width:18px; height:18px;"> Tampilkan di Bottom Navigation Bar
+            </label>
+          </div>
+
+          <button type="submit" class="pro-btn-gold" id="btn-save-menu">
+            <i class="fa-solid fa-floppy-disk"></i> Simpan Menu
+          </button>
+        </form>
+      </div>
     </div>
   </div>
 
@@ -1365,10 +1623,19 @@
   <div class="modal-overlay" id="qr-modal">
     <div class="modal-card" style="text-align: center;">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('qr-modal')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="font-size: var(--font-md); font-weight: var(--fw-bold);">Kartu Anggota Digital</h3>
-      <div class="qr-container"><div id="qrcode"></div></div>
-      <p style="font-weight: var(--fw-bold); color: var(--primary);" id="qr-member-id">ITORA-BSN-MEMBER</p>
-      <button type="button" class="btn btn-primary" style="margin-top: 15px;" onclick="app.closeModal('qr-modal')">Tutup</button>
+
+      <div class="pro-modal-header">
+        <div class="title-wrap" style="margin: 0 auto;">
+          <i class="fa-solid fa-qrcode" style="color:var(--primary);"></i>
+          <h3>Kartu Anggota Digital</h3>
+        </div>
+      </div>
+
+      <div class="pro-modal-body">
+        <div class="qr-container"><div id="qrcode"></div></div>
+        <p style="font-weight: 700; color: var(--primary); margin-bottom:15px;" id="qr-member-id">ITORA-BSN-MEMBER</p>
+        <button type="button" class="pro-btn-primary" onclick="app.closeModal('qr-modal')">Tutup</button>
+      </div>
     </div>
   </div>
 
@@ -1376,44 +1643,47 @@
   <div class="modal-overlay" id="modal-scanned-member">
     <div class="modal-card" style="text-align: center;">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-scanned-member')"><i class="fa-solid fa-xmark"></i></button>
-      <i class="fa-solid fa-circle-check" style="font-size: 3rem; color: #10B981; margin-bottom: 10px;"></i>
-      <h3 style="font-size: var(--font-lg); font-weight: var(--fw-bold);">Hasil Verifikasi Anggota</h3>
-      <span class="badge badge-success" style="margin-top:6px;">Terverifikasi Resmi</span>
 
-      <div class="profile-info-list" style="margin-top: 15px;">
-        <div class="info-item">
-          <i class="fa-solid fa-user"></i>
-          <div>
-            <span>Nama Lengkap</span>
-            <strong id="scan-member-name">-</strong>
+      <div class="pro-modal-body">
+        <i class="fa-solid fa-circle-check" style="font-size: 3.5rem; color: #10B981; margin-bottom: 10px;"></i>
+        <h3 style="font-size: var(--font-lg); font-weight: 800;">Hasil Verifikasi Anggota</h3>
+        <span class="badge badge-success" style="margin-top:6px;">Terverifikasi Resmi</span>
+
+        <div class="profile-info-list" style="margin-top: 20px;">
+          <div class="info-item">
+            <i class="fa-solid fa-user"></i>
+            <div>
+              <span>Nama Lengkap</span>
+              <strong id="scan-member-name">-</strong>
+            </div>
+          </div>
+          <div class="info-item">
+            <i class="fa-solid fa-id-card"></i>
+            <div>
+              <span>Nomor Induk Anggota (NIA)</span>
+              <strong id="scan-member-nia">-</strong>
+            </div>
+          </div>
+          <div class="info-item">
+            <i class="fa-solid fa-user-shield"></i>
+            <div>
+              <span>Jabatan / Role</span>
+              <strong id="scan-member-role">-</strong>
+            </div>
+          </div>
+          <div class="info-item">
+            <i class="fa-solid fa-motorcycle"></i>
+            <div>
+              <span>Kendaraan & Plat</span>
+              <strong id="scan-member-bike">-</strong>
+            </div>
           </div>
         </div>
-        <div class="info-item">
-          <i class="fa-solid fa-id-card"></i>
-          <div>
-            <span>Nomor Induk Anggota (NIA)</span>
-            <strong id="scan-member-nia">-</strong>
-          </div>
-        </div>
-        <div class="info-item">
-          <i class="fa-solid fa-user-shield"></i>
-          <div>
-            <span>Jabatan / Role</span>
-            <strong id="scan-member-role">-</strong>
-          </div>
-        </div>
-        <div class="info-item">
-          <i class="fa-solid fa-motorcycle"></i>
-          <div>
-            <span>Kendaraan & Plat</span>
-            <strong id="scan-member-bike">-</strong>
-          </div>
-        </div>
+
+        <button type="button" class="pro-btn-primary" style="margin-top: 24px;" onclick="app.closeModal('modal-scanned-member')">
+          Tutup Verifikasi
+        </button>
       </div>
-
-      <button type="button" class="btn btn-primary" style="margin-top: 20px;" onclick="app.closeModal('modal-scanned-member')">
-        Tutup
-      </button>
     </div>
   </div>
 
@@ -1421,53 +1691,63 @@
   <div class="modal-overlay" id="modal-iuran">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-iuran')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="text-align: center; margin-bottom: 15px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-receipt" style="color: var(--primary);"></i> Setor Iuran Anggota</h3>
-      
-      <form id="form-iuran" onsubmit="app.handleSubmitIuran(event)">
-        <div class="form-group">
-          <label>Periode Bulan Iuran</label>
-          <select class="input-control" id="iuran-periode" required>
-            <option value="Agustus 2026">Agustus 2026</option>
-            <option value="September 2026">September 2026</option>
-            <option value="Oktober 2026">Oktober 2026</option>
-            <option value="November 2026">November 2026</option>
-            <option value="Desember 2026">Desember 2026</option>
-          </select>
-        </div>
 
-        <div class="form-group">
-          <label>Jumlah / Nominal (Rp)</label>
-          <input type="number" class="input-control" id="iuran-jumlah" placeholder="25000" value="25000" required>
+      <div class="pro-modal-header">
+        <div class="title-wrap">
+          <i class="fa-solid fa-receipt" style="color:var(--primary);"></i>
+          <h3>Setor Iuran Anggota</h3>
         </div>
+      </div>
 
-        <div class="form-group">
-          <label>Tanggal & Waktu Transfer</label>
-          <input type="datetime-local" class="input-control" id="iuran-tanggal" required>
-        </div>
+      <div class="pro-modal-body">
+        <form id="form-iuran" onsubmit="app.handleSubmitIuran(event)">
+          <div class="pro-form-group always-float">
+            <select id="iuran-periode" required>
+              <option value="Agustus 2026">Agustus 2026</option>
+              <option value="September 2026">September 2026</option>
+              <option value="Oktober 2026">Oktober 2026</option>
+              <option value="November 2026">November 2026</option>
+              <option value="Desember 2026">Desember 2026</option>
+            </select>
+            <label for="iuran-periode">Periode Bulan Iuran</label>
+          </div>
 
-        <div class="form-group">
-          <label>Metode Pembayaran</label>
-          <select class="input-control" id="iuran-metode">
-            <option value="Transfer BSN">Transfer Rekening BSN</option>
-            <option value="QRIS">QRIS Komunitas</option>
-            <option value="Tunai">Tunai (via Bendahara)</option>
-          </select>
-        </div>
+          <div class="pro-form-group has-prefix">
+            <input type="number" id="iuran-jumlah" placeholder=" " value="25000" required>
+            <label for="iuran-jumlah">Jumlah / Nominal</label>
+            <span class="pro-input-prefix">Rp.</span>
+          </div>
 
-        <div class="form-group">
-          <label>Upload Bukti Transfer (Otomatis &lt; 200KB)</label>
-          <input type="file" class="input-control" id="iuran-bukti" accept="image/*" required>
-        </div>
+          <div class="pro-form-group always-float">
+            <input type="datetime-local" id="iuran-tanggal" required>
+            <label for="iuran-tanggal">Tanggal & Waktu Transfer</label>
+          </div>
 
-        <div class="form-group">
-          <label>Catatan Tambahan (Opsional)</label>
-          <input type="text" class="input-control" id="iuran-catatan" placeholder="Misal: Lunas iuran Agustus">
-        </div>
+          <div class="pro-form-group always-float">
+            <select id="iuran-metode">
+              <option value="Transfer BSN">Transfer Rekening BSN</option>
+              <option value="QRIS">QRIS Komunitas</option>
+              <option value="Tunai">Tunai (via Bendahara)</option>
+            </select>
+            <label for="iuran-metode">Metode Pembayaran</label>
+          </div>
 
-        <button type="submit" class="btn btn-primary" id="btn-submit-iuran">
-          <i class="fa-solid fa-paper-plane"></i> Kirim Bukti Pembayaran
-        </button>
-      </form>
+          <div class="pro-form-group always-float">
+            <input type="file" id="iuran-bukti" accept="image/*" required>
+            <label for="iuran-bukti">Upload Bukti Transfer</label>
+          </div>
+          <span class="pro-helper-text">Otomatis terkompresi di bawah 200KB</span>
+
+          <div class="pro-form-group">
+            <input type="text" id="iuran-catatan" placeholder=" ">
+            <label for="iuran-catatan">Catatan Tambahan (Opsional)</label>
+          </div>
+
+          <button type="submit" class="pro-btn-primary" id="btn-submit-iuran">
+            <i class="fa-solid fa-paper-plane"></i> Kirim Bukti Pembayaran
+          </button>
+        </form>
+      </div>
     </div>
   </div>
 
@@ -2492,17 +2772,17 @@
 
           if (!error && approvedMembers && approvedMembers.length > 0) {
             container.innerHTML = approvedMembers.map(m => `
-              <div class="menu-admin-item" style="flex-direction:column; align-items:flex-start; gap:8px;">
+              <div class="menu-admin-item" style="flex-direction:column; align-items:flex-start; gap:10px; padding:14px; border-radius:12px; background:#F8FAFC;">
                 <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
                   <div>
-                    <strong style="font-size:var(--font-base); font-weight:var(--fw-bold);">${m.full_name || 'Anggota'}</strong>
+                    <strong style="font-size:var(--font-base); font-weight:700;">${m.full_name || 'Anggota'}</strong>
                     <span class="text-muted" style="display:block;">${m.email} (${m.phone || '-'})</span>
                   </div>
                   <span class="badge badge-primary">${m.role || 'Anggota Resmi'}</span>
                 </div>
                 
                 <div style="display:flex; gap:8px; width:100%; align-items:center; margin-top:4px;">
-                  <select class="input-control" style="padding:6px 10px; font-size:var(--font-xs);" id="role-select-${m.id}">
+                  <select class="input-control" style="padding:8px 12px; font-size:var(--font-xs); border-radius:8px;" id="role-select-${m.id}">
                     <option value="Anggota Resmi" ${m.role === 'Anggota Resmi' ? 'selected' : ''}>Anggota Resmi</option>
                     <option value="Admin" ${m.role === 'Admin' ? 'selected' : ''}>Admin</option>
                     <option value="Ketua" ${m.role === 'Ketua' ? 'selected' : ''}>Ketua</option>
@@ -2510,7 +2790,7 @@
                     <option value="Sekretaris" ${m.role === 'Sekretaris' ? 'selected' : ''}>Sekretaris</option>
                     <option value="Super Admin" ${m.role === 'Super Admin' ? 'selected' : ''}>Super Admin</option>
                   </select>
-                  <button type="button" class="btn btn-sm btn-gold" style="width:auto; white-space:nowrap;" onclick="app.adminUpdateMemberRole('${m.id}')">
+                  <button type="button" class="btn btn-sm btn-gold" style="width:auto; white-space:nowrap; padding:8px 14px; border-radius:8px;" onclick="app.adminUpdateMemberRole('${m.id}')">
                     <i class="fa-solid fa-floppy-disk"></i> Simpan
                   </button>
                 </div>
@@ -2614,11 +2894,11 @@
 
           if (!error && prods && prods.length > 0) {
             container.innerHTML = prods.map(p => `
-              <div class="menu-admin-item">
+              <div class="menu-admin-item" style="padding:12px; border-radius:12px;">
                 <div class="menu-admin-info">
-                  <img src="${p.image_url || 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500'}" style="border-radius:6px;">
+                  <img src="${p.image_url || 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500'}" style="border-radius:8px; width:40px; height:40px; object-fit:cover;">
                   <div>
-                    <strong style="font-size:var(--font-base); font-weight:var(--fw-bold);">${p.title}</strong>
+                    <strong style="font-size:var(--font-base); font-weight:700;">${p.title}</strong>
                     <span class="text-muted" style="display:block;">Rp ${parseFloat(p.price).toLocaleString('id-ID')} (${p.stock_status})</span>
                   </div>
                 </div>
@@ -2806,11 +3086,11 @@
         if (!container) return;
 
         container.innerHTML = this.menus.map(m => `
-          <div class="menu-admin-item">
+          <div class="menu-admin-item" style="padding:12px; border-radius:12px;">
             <div class="menu-admin-info">
               ${m.image_url ? `<img src="${m.image_url}">` : `<i class="${m.icon_class}" style="color: ${m.icon_color || '#00875A'}"></i>`}
               <div>
-                <strong style="font-size:var(--font-base); font-weight:var(--fw-bold);">${m.title}</strong>
+                <strong style="font-size:var(--font-base); font-weight:700;">${m.title}</strong>
                 <span class="text-muted" style="display:block;">Bg: ${m.bg_color || '#F1F5F9'} | Icon: ${m.icon_color || '#00875A'}</span>
               </div>
             </div>
@@ -2978,17 +3258,17 @@
 
           if (!error && pendingMembers && pendingMembers.length > 0) {
             container.innerHTML = pendingMembers.map(m => `
-              <div class="card" style="padding: 12px; margin-bottom: 10px; border-left: 4px solid #F59E0B;">
+              <div class="card" style="padding: 14px; margin-bottom: 12px; border-left: 4px solid #F59E0B; border-radius:14px;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <h4 style="font-size:var(--font-base); font-weight:var(--fw-bold);">${m.full_name || 'Calon Anggota'}</h4>
+                  <h4 style="font-size:var(--font-base); font-weight:700;">${m.full_name || 'Calon Anggota'}</h4>
                   <span class="badge badge-warning">Pending Approval</span>
                 </div>
-                <p class="text-muted" style="margin-top:2px;"><i class="fa-solid fa-envelope"></i> ${m.email} | <i class="fa-brands fa-whatsapp"></i> ${m.phone || '-'}</p>
+                <p class="text-muted" style="margin-top:4px;"><i class="fa-solid fa-envelope"></i> ${m.email} | <i class="fa-brands fa-whatsapp"></i> ${m.phone || '-'}</p>
                 <p class="text-muted"><i class="fa-solid fa-motorcycle"></i> ${m.bike || '-'} (${m.plate || '-'})</p>
 
-                <div style="display: flex; gap: 8px; margin-top: 10px;">
-                  <button type="button" class="btn btn-sm btn-primary" onclick="app.adminApproveMember('${m.id}', 'Approved')"><i class="fa-solid fa-check"></i> Setujui Anggota</button>
-                  <button type="button" class="btn btn-sm btn-danger" onclick="app.adminApproveMember('${m.id}', 'Rejected')"><i class="fa-solid fa-xmark"></i> Tolak</button>
+                <div style="display: flex; gap: 8px; margin-top: 12px;">
+                  <button type="button" class="btn btn-sm btn-primary" style="border-radius:10px;" onclick="app.adminApproveMember('${m.id}', 'Approved')"><i class="fa-solid fa-check"></i> Setujui</button>
+                  <button type="button" class="btn btn-sm btn-danger" style="border-radius:10px;" onclick="app.adminApproveMember('${m.id}', 'Rejected')"><i class="fa-solid fa-xmark"></i> Tolak</button>
                 </div>
               </div>
             `).join('');
@@ -3025,17 +3305,17 @@
 
           if (!error && orders && orders.length > 0) {
             container.innerHTML = orders.map(o => `
-              <div class="card" style="padding: 12px; margin-bottom: 10px; border-left: 4px solid ${o.status === 'Completed' ? '#10B981' : '#9333EA'}">
+              <div class="card" style="padding: 14px; margin-bottom: 12px; border-left: 4px solid ${o.status === 'Completed' ? '#10B981' : '#9333EA'}; border-radius:14px;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <h4 style="font-size:var(--font-base); font-weight:var(--fw-bold);">${o.member_name}</h4>
+                  <h4 style="font-size:var(--font-base); font-weight:700;">${o.member_name}</h4>
                   <span class="badge ${o.status === 'Completed' ? 'badge-success' : 'badge-warning'}">${o.status}</span>
                 </div>
-                <p style="font-weight:var(--fw-bold); color:var(--primary); margin-top:2px;">${o.item_name} - Rp ${parseFloat(o.price).toLocaleString('id-ID')}</p>
-                <p class="text-muted">${new Date(o.created_at).toLocaleDateString('id-ID')}</p>
+                <p style="font-weight:700; color:var(--primary); margin-top:4px;">${o.item_name} - Rp ${parseFloat(o.price).toLocaleString('id-ID')}</p>
+                <p class="text-muted" style="margin-top:2px;">${new Date(o.created_at).toLocaleDateString('id-ID')}</p>
 
-                <div style="display: flex; gap: 8px; margin-top: 10px;">
-                  <button type="button" class="btn btn-sm btn-primary" onclick="app.adminVerifyOrder('${o.id}', 'Completed')"><i class="fa-solid fa-check"></i> Selesai</button>
-                  <button type="button" class="btn btn-sm btn-danger" onclick="app.adminVerifyOrder('${o.id}', 'Cancelled')"><i class="fa-solid fa-xmark"></i> Batal</button>
+                <div style="display: flex; gap: 8px; margin-top: 12px;">
+                  <button type="button" class="btn btn-sm btn-primary" style="border-radius:10px;" onclick="app.adminVerifyOrder('${o.id}', 'Completed')"><i class="fa-solid fa-check"></i> Selesai</button>
+                  <button type="button" class="btn btn-sm btn-danger" style="border-radius:10px;" onclick="app.adminVerifyOrder('${o.id}', 'Cancelled')"><i class="fa-solid fa-xmark"></i> Batal</button>
                 </div>
               </div>
             `).join('');
@@ -3285,18 +3565,18 @@
 
           if (!error && dues && dues.length > 0) {
             container.innerHTML = dues.map(item => `
-              <div class="card" style="padding: 12px; margin-bottom: 10px; border-left: 4px solid ${item.status === 'Verified' ? '#10B981' : item.status === 'Rejected' ? '#EF4444' : '#F59E0B'}">
+              <div class="card" style="padding: 14px; margin-bottom: 12px; border-left: 4px solid ${item.status === 'Verified' ? '#10B981' : item.status === 'Rejected' ? '#EF4444' : '#F59E0B'}; border-radius:14px;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <h4 style="font-size:var(--font-base); font-weight:var(--fw-bold);">${item.member_name}</h4>
+                  <h4 style="font-size:var(--font-base); font-weight:700;">${item.member_name}</h4>
                   <span class="badge ${item.status === 'Verified' ? 'badge-success' : item.status === 'Rejected' ? 'badge-danger' : 'badge-warning'}">${item.status}</span>
                 </div>
-                <p style="font-weight:var(--fw-bold); color:var(--primary); margin-top:2px;">Rp ${parseFloat(item.amount).toLocaleString('id-ID')} (${item.period_month})</p>
+                <p style="font-weight:700; color:var(--primary); margin-top:4px;">Rp ${parseFloat(item.amount).toLocaleString('id-ID')} (${item.period_month})</p>
                 <p class="text-muted">Metode: ${item.payment_method} | ${new Date(item.payment_date).toLocaleDateString('id-ID')}</p>
-                ${item.receipt_url ? `<p style="margin-top:4px;"><a href="${item.receipt_url}" target="_blank" style="color:var(--primary); font-weight:var(--fw-semibold);"><i class="fa-solid fa-image"></i> Cek Foto Bukti Transfer</a></p>` : ''}
+                ${item.receipt_url ? `<p style="margin-top:4px;"><a href="${item.receipt_url}" target="_blank" style="color:var(--primary); font-weight:600;"><i class="fa-solid fa-image"></i> Cek Foto Bukti Transfer</a></p>` : ''}
                 
-                <div style="display: flex; gap: 8px; margin-top: 10px;">
-                  <button type="button" class="btn btn-sm btn-primary" onclick="app.adminVerifyDue('${item.id}', 'Verified')"><i class="fa-solid fa-check"></i> Setujui</button>
-                  <button type="button" class="btn btn-sm btn-danger" onclick="app.adminVerifyDue('${item.id}', 'Rejected')"><i class="fa-solid fa-xmark"></i> Tolak</button>
+                <div style="display: flex; gap: 8px; margin-top: 12px;">
+                  <button type="button" class="btn btn-sm btn-primary" style="border-radius:10px;" onclick="app.adminVerifyDue('${item.id}', 'Verified')"><i class="fa-solid fa-check"></i> Setujui</button>
+                  <button type="button" class="btn btn-sm btn-danger" style="border-radius:10px;" onclick="app.adminVerifyDue('${item.id}', 'Rejected')"><i class="fa-solid fa-xmark"></i> Tolak</button>
                 </div>
               </div>
             `).join('');
