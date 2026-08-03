@@ -1,0 +1,22 @@
+{
+  "short_name": "ITORA",
+  "name": "ITORA BSN SURABAYA - App Komunitas",
+  "icons": [
+    {
+      "src": "https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=192&auto=format&fit=crop&q=80",
+      "type": "image/jpeg",
+      "sizes": "192x192"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=512&auto=format&fit=crop&q=80",
+      "type": "image/jpeg",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#F8FAFC",
+  "theme_color": "#00875A",
+  "display": "standalone",
+  "orientation": "portrait",
+  "description": "Aplikasi Resmi Komunitas ITORA BSN Surabaya Club"
+}
