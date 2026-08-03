@@ -97,7 +97,7 @@
     <div class="spinner"></div>
   </div>
 
-  <!-- LANDING PAGE (DITAMPILKAN JIKA BELUM LOGIN) -->
+  <!-- LANDING PAGE -->
   <div id="landing-screen" style="display: block;">
     
     <header class="emerald-gradient text-white shadow-xl relative overflow-hidden">
@@ -162,7 +162,7 @@
             <div id="board-tier-divisi" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
         </div>
 
-        <!-- SECTION FORM REGISTRASI CEBAT -->
+        <!-- REGISTRASI CEPAT -->
         <section class="bg-gradient-to-br from-emerald-900 via-emerald-800 to-emerald-950 rounded-3xl text-white p-8 md:p-12 shadow-2xl relative overflow-hidden">
             <div class="max-w-4xl mx-auto relative z-10">
                 <div class="text-center mb-8">
@@ -230,7 +230,7 @@
 
   </div>
 
-  <!-- AUTH MODAL (POP-UP LOGIN / DAFTAR) -->
+  <!-- AUTH MODAL -->
   <div id="auth-screen" class="auth-overlay" style="display: none;">
     <div class="auth-card">
       <button type="button" onclick="app.hideAuthModal()" style="position:absolute; top:16px; right:18px; border:none; background:#F1F5F9; color:#64748B; width:32px; height:32px; border-radius:50%; cursor:pointer;">
@@ -290,7 +290,7 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT LOGIC INDEX.HTML -->
+  <!-- JAVASCRIPT INDEX.HTML -->
   <script>
     const SUPABASE_URL = 'https://lfusrctizdydnsiopzfi.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxmdXNyY3RpemR5ZG5zaW9wemZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU2NjI0OTQsImV4cCI6MjEwMTIzODQ5NH0.vWd4l9zbRg3HxHVECN8I67h7gGUsZdaRJ9bD-gmEDUY';
@@ -344,21 +344,17 @@
       async validateUserFlow() {
         if (!this.currentUser) return;
 
-        // 1. Super Admin langsung ke dashboard.html
         if (this.currentUser.email === 'mastrisnobpb@gmail.com') {
           window.location.href = 'dashboard.html';
           return;
         }
 
-        // 2. Cek status persetujuan akun anggota
         const { data } = await this.supabase.from('members').select('*').eq('id', this.currentUser.id).single();
         this.currentProfile = data;
 
         if (data && data.approval_status === 'Approved') {
-          // PENGGUNA TERSETUJUI -> REDIRECT KETAT KE dashboard.html
           window.location.href = 'dashboard.html';
         } else {
-          // PENGGUNA PENDING -> TAMPILKAN STATUS PENINJAUAN
           document.getElementById('landing-screen').style.display = 'none';
           document.getElementById('auth-screen').style.display = 'none';
           document.getElementById('pending-approval-screen').style.display = 'flex';
@@ -370,13 +366,8 @@
         document.getElementById('landing-screen').style.display = 'block';
       }
 
-      showAuthModal() {
-        document.getElementById('auth-screen').style.display = 'flex';
-      }
-
-      hideAuthModal() {
-        document.getElementById('auth-screen').style.display = 'none';
-      }
+      showAuthModal() { document.getElementById('auth-screen').style.display = 'flex'; }
+      hideAuthModal() { document.getElementById('auth-screen').style.display = 'none'; }
 
       toggleAuthMode() {
         const title = document.getElementById('auth-title');
