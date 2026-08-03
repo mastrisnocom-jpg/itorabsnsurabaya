@@ -331,7 +331,6 @@
     .stat-card h3 { font-size: var(--font-md); font-weight: var(--fw-bold); margin-top: 4px; color: var(--text-main-dark); }
     .stat-card span { font-size: var(--font-xs); color: var(--text-muted-dark); font-weight: var(--fw-medium); }
 
-    /* WIDGET KARTU UTAMA QUICK MENU */
     .quick-menu-card {
       background: #FFFFFF;
       border: 1px solid var(--border-dark);
@@ -356,9 +355,7 @@
       transition: transform 0.15s ease;
     }
 
-    .quick-item:active {
-      transform: scale(0.94);
-    }
+    .quick-item:active { transform: scale(0.94); }
 
     .quick-icon {
       width: 52px; 
@@ -730,93 +727,62 @@
         </div>
       </section>
 
-      <!-- 5. TOURING -->
+      <!-- 5. TOURING (MULTIPLE TOURING & OTOMATIS BERPINDAH KE RIWAYAT JIKA SUDAH LEWAT) -->
       <section id="page-touring" class="page">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <h2 style="font-size: var(--font-lg); font-weight: var(--fw-bold);">Jadwal & Rute Touring</h2>
-          <button type="button" class="btn btn-sm btn-gold" id="admin-add-touring-btn" style="display:none; width:auto;" onclick="app.openModal('modal-admin-touring')">
-            <i class="fa-solid fa-plus"></i> Tambah
+          <button type="button" class="btn btn-sm btn-gold" id="admin-add-touring-btn" style="display:none; width:auto;" onclick="app.openAddTouringModal()">
+            <i class="fa-solid fa-plus"></i> Tambah Touring
           </button>
         </div>
 
-        <div id="touring-upcoming-container">
-          <div class="card" style="margin-top: 12px; position: relative;" id="touring-active-card">
-            
-            <div id="touring-admin-actions" style="position: absolute; top: 16px; right: 16px; display: none; gap: 6px;">
-              <button type="button" class="btn btn-sm btn-gold" style="padding: 5px 8px;" onclick="app.openModal('modal-admin-touring')" title="Edit Touring">
-                <i class="fa-solid fa-pen-to-square"></i>
-              </button>
-              <button type="button" class="btn btn-sm btn-danger" style="padding: 5px 8px;" onclick="app.adminDeleteTouring()" title="Hapus Touring">
-                <i class="fa-solid fa-trash"></i>
-              </button>
-            </div>
-
-            <span class="badge badge-gold" id="touring-badge-tag">Destinasi Utama</span>
-            <h3 style="margin-top: 6px; font-size: var(--font-base); font-weight: var(--fw-bold); padding-right: 70px;" id="touring-page-title">Bromo Sunrise Ride</h3>
-            
-            <p class="text-muted" style="margin-top: 6px;"><i class="fa-regular fa-calendar"></i> <span id="touring-page-schedule">17 Agustus 2026 | 05:00 WIB</span></p>
-            <p class="text-muted"><i class="fa-solid fa-location-dot"></i> Meeting Point: <span id="touring-page-meeting">Alun-Alun Surabaya</span></p>
-            
-            <p class="text-muted" style="color: var(--primary); font-weight: var(--fw-bold); margin-top: 4px;">
-              <i class="fa-solid fa-gauge-high"></i> Estimasi Jarak Tempuh: <span id="touring-page-distance">± 110 KM</span>
-            </p>
-
-            <button type="button" class="btn btn-primary" style="margin-top: 14px;" id="touring-maps-btn" onclick="window.open('https://maps.google.com/?q=Bromo', '_blank')">
-              <i class="fa-solid fa-map-location-dot"></i> Buka Rute Google Maps
-            </button>
+        <!-- CONTAINER DAFTAR AGENDA TOURING MENDATANG (UPCOMING) -->
+        <div style="margin-top:12px;">
+          <h3 style="font-size: var(--font-md); font-weight: var(--fw-bold); margin-bottom: 8px;">
+            <i class="fa-solid fa-compass" style="color: var(--accent-gold);"></i> Agenda Mendatang
+          </h3>
+          <div id="touring-upcoming-list">
+            <p class="text-muted" style="text-align:center; padding: 15px; background: #fff; border-radius: 12px; border: 1px solid var(--border-dark);">Memuat agenda touring mendatang...</p>
           </div>
+        </div>
 
-          <div class="card" style="background: #F8FAFC; border: 1px dashed var(--border-dark);">
-            <h3 style="font-size: var(--font-sm); font-weight: var(--fw-bold); color: var(--text-muted-dark); text-transform: uppercase;">
-              <i class="fa-solid fa-chart-pie"></i> Partisipasi Saya
-            </h3>
-            <div style="display: flex; gap: 12px; margin-top: 10px;">
-              <div style="flex:1; background: #D1FAE5; padding: 10px; border-radius: 10px; text-align: center;">
-                <strong style="color: #059669; font-size: 1.2rem; display: block;" id="my-ikut-count">0</strong>
-                <span style="font-size: 0.7rem; color: #065F46; font-weight: 600;">Kali Ikut</span>
-              </div>
-              <div style="flex:1; background: #FEE2E2; padding: 10px; border-radius: 10px; text-align: center;">
-                <strong style="color: #DC2626; font-size: 1.2rem; display: block;" id="my-absen-count">0</strong>
-                <span style="font-size: 0.7rem; color: #991B1B; font-weight: 600;">Kali Absen</span>
-              </div>
+        <!-- STATISTIK RINGKASAN PARTICIPATION MEMBER -->
+        <div class="card" style="background: #F8FAFC; border: 1px dashed var(--border-dark); margin-top: 15px;">
+          <h3 style="font-size: var(--font-sm); font-weight: var(--fw-bold); color: var(--text-muted-dark); text-transform: uppercase;">
+            <i class="fa-solid fa-chart-pie"></i> Partisipasi Saya
+          </h3>
+          <div style="display: flex; gap: 12px; margin-top: 10px;">
+            <div style="flex:1; background: #D1FAE5; padding: 10px; border-radius: 10px; text-align: center;">
+              <strong style="color: #059669; font-size: 1.2rem; display: block;" id="my-ikut-count">0</strong>
+              <span style="font-size: 0.7rem; color: #065F46; font-weight: 600;">Kali Ikut</span>
             </div>
-          </div>
-
-          <div class="card" id="touring-rsvp-card">
-            <h3 style="font-size: var(--font-md); font-weight: var(--fw-bold); margin-bottom: 6px;">
-              <i class="fa-solid fa-clipboard-check" style="color: var(--primary);"></i> Konfirmasi Kehadiran Anda
-            </h3>
-            <p class="text-muted" style="margin-bottom: 12px;">Pilih status partisipasi Anda untuk mendata rombongan touring.</p>
-            
-            <div style="display: flex; gap: 10px;">
-              <button type="button" class="btn btn-primary" style="flex:1;" onclick="app.submitTouringRSVP('Ikut')">
-                <i class="fa-solid fa-circle-check"></i> Saya Ikut
-              </button>
-              <button type="button" class="btn btn-danger" style="flex:1;" onclick="app.submitTouringRSVP('Absen')">
-                <i class="fa-solid fa-circle-xmark"></i> Tidak Ikut
-              </button>
-            </div>
-          </div>
-
-          <div class="card">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
-              <h3 style="font-size: var(--font-md); font-weight: var(--fw-bold);">
-                <i class="fa-solid fa-users-viewfinder" style="color: var(--accent-gold);"></i> Pendataan Anggota
-              </h3>
-              <span class="badge badge-primary" id="touring-count-badge">0 Ikut</span>
-            </div>
-
-            <div id="touring-participants-list">
-              <p class="text-muted" style="text-align:center;">Memuat data partisipasi...</p>
-            </div>
-
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
-              <button type="button" class="btn btn-primary btn-sm" onclick="app.exportData('Touring', 'PDF')"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
-              <button type="button" class="btn btn-primary btn-sm" onclick="app.exportData('Touring', 'Excel')"><i class="fa-solid fa-file-excel"></i> Export Excel</button>
+            <div style="flex:1; background: #FEE2E2; padding: 10px; border-radius: 10px; text-align: center;">
+              <strong style="color: #DC2626; font-size: 1.2rem; display: block;" id="my-absen-count">0</strong>
+              <span style="font-size: 0.7rem; color: #991B1B; font-weight: 600;">Kali Absen</span>
             </div>
           </div>
         </div>
 
+        <!-- DAFTAR PENDATAAN ANGGOTA & TOMBOL EXPORT -->
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
+            <h3 style="font-size: var(--font-md); font-weight: var(--fw-bold);">
+              <i class="fa-solid fa-users-viewfinder" style="color: var(--accent-gold);"></i> Pendataan Anggota
+            </h3>
+            <span class="badge badge-primary" id="touring-count-badge">0 Ikut</span>
+          </div>
+
+          <div id="touring-participants-list">
+            <p class="text-muted" style="text-align:center;">Memuat data partisipasi...</p>
+          </div>
+
+          <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <button type="button" class="btn btn-primary btn-sm" onclick="app.exportData('Touring', 'PDF')"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
+            <button type="button" class="btn btn-primary btn-sm" onclick="app.exportData('Touring', 'Excel')"><i class="fa-solid fa-file-excel"></i> Export Excel</button>
+          </div>
+        </div>
+
+        <!-- DAFTAR RIWAYAT TOURING YANG SUDAH LEWAT -->
         <div style="margin-top: 25px;">
           <h3 style="font-size: var(--font-md); font-weight: var(--fw-bold); margin-bottom: 10px;">
             <i class="fa-solid fa-clock-rotate-left" style="color: var(--primary);"></i> Riwayat Touring Selesai
@@ -1158,20 +1124,25 @@
     </div>
   </div>
 
-  <!-- MODAL POP-UP ADMIN 6: UPDATE JADWAL TOURING -->
+  <!-- MODAL POP-UP ADMIN 6: UPDATE / TAMBAH JADWAL TOURING -->
   <div class="modal-overlay" id="modal-admin-touring">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-touring')"><i class="fa-solid fa-xmark"></i></button>
-      <h3 style="margin-bottom: 12px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-route" style="color: var(--primary);"></i> Kelola Jadwal Touring</h3>
+      <h3 style="margin-bottom: 12px; font-size: var(--font-md); font-weight: var(--fw-bold);"><i class="fa-solid fa-route" style="color: var(--primary);"></i> Kelola Agenda Touring</h3>
       
-      <form onsubmit="app.adminUpdateTouring(event)">
+      <form onsubmit="app.handleSaveTouring(event)">
+        <input type="hidden" id="admin-touring-id">
         <div class="form-group">
           <label>Nama Destinasi / Judul Touring</label>
-          <input type="text" class="input-control" id="admin-touring-title" required>
+          <input type="text" class="input-control" id="admin-touring-title" placeholder="e.g. Bromo Sunrise Ride" required>
         </div>
         <div class="form-group">
-          <label>Tanggal & Waktu</label>
-          <input type="text" class="input-control" id="admin-touring-date" required>
+          <label>Tanggal Acara (Untuk Penentuan Status Otomatis)</label>
+          <input type="date" class="input-control" id="admin-touring-date-picker" required>
+        </div>
+        <div class="form-group">
+          <label>Teks Jadwal & Jam</label>
+          <input type="text" class="input-control" id="admin-touring-schedule-text" placeholder="17 Agustus 2026 | 05:00 WIB" required>
         </div>
         <div class="form-group">
           <label>Titik Kumpul (Meeting Point)</label>
@@ -1185,7 +1156,7 @@
           <label>Link Google Maps Rute</label>
           <input type="text" class="input-control" id="admin-touring-maps" placeholder="https://maps.google.com/?q=..." required>
         </div>
-        <button type="submit" class="btn btn-gold"><i class="fa-solid fa-floppy-disk"></i> Simpan Jadwal Touring</button>
+        <button type="submit" class="btn btn-gold" id="btn-save-touring"><i class="fa-solid fa-floppy-disk"></i> Simpan Agenda Touring</button>
       </form>
     </div>
   </div>
@@ -1224,7 +1195,7 @@
     </div>
   </div>
 
-  <!-- MODAL ADD/EDIT MENU DINAMIS (DENGAN PENGATURAN WARNA BACKGROUND & WARNA IKON) -->
+  <!-- MODAL ADD/EDIT MENU DINAMIS -->
   <div class="modal-overlay" id="modal-add-menu">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-add-menu')"><i class="fa-solid fa-xmark"></i></button>
@@ -1410,16 +1381,10 @@
         this.products = [];
         this.iuranHistory = [];
         this.touringParticipants = [];
+        this.tourings = [];
         this.baseKas = 0;
         this.approvedKasTotal = 0;
         this.adminWANumber = "6281234567890";
-        this.touringData = {
-          title: "Touring Kemerdekaan 2",
-          schedule: "17 Maret 2026 | 09:00 WIB",
-          meeting: "Parkir BSN KC Surabaya",
-          distance: "± 70 KM",
-          maps: "https://maps.google.com/?q=Bromo"
-        };
         this.initSupabase();
       }
 
@@ -1447,12 +1412,6 @@
         const savedWA = localStorage.getItem('itora_admin_wa');
         if (savedWA) this.adminWANumber = savedWA;
         this.updateWAUI();
-
-        const savedTouring = localStorage.getItem('itora_touring_data');
-        if (savedTouring) {
-          try { this.touringData = JSON.parse(savedTouring); } catch(e){}
-        }
-        this.updateTouringUI();
 
         // Sync warna background
         const colorInput = document.getElementById('menu-bg-color');
@@ -1514,103 +1473,193 @@
         if (displayWA) displayWA.innerText = `+${this.adminWANumber}`;
       }
 
-      updateTouringUI() {
-        const scheduleText = this.touringData.schedule || "";
-        let isPastEvent = false;
-
+      // FITUR BANYAK TOURING (LOAD MULTIPLE TOURING DARI SUPABASE & MEMISAHKAN UTAMA / RIWAYAT)
+      async loadTouringsFromSupabase() {
+        if (!this.supabase) return;
         try {
-          const dateMatch = scheduleText.match(/(\d{1,2})\s+([a-zA-Z]+)\s+(\d{4})/);
-          if (dateMatch) {
-            const day = parseInt(dateMatch[1]);
-            const monthNames = ["januari","februari","maret","april","mei","juni","juli","agustus","september","oktober","november","desember"];
-            const monthIndex = monthNames.indexOf(dateMatch[2].toLowerCase());
-            const year = parseInt(dateMatch[3]);
+          const { data, error } = await this.supabase
+            .from('tourings')
+            .select('*')
+            .order('event_date', { ascending: true });
 
-            if (monthIndex !== -1) {
-              const eventDate = new Date(year, monthIndex, day, 23, 59, 59);
-              const currentDate = new Date();
-              if (eventDate < currentDate) {
-                isPastEvent = true;
-              }
-            }
+          if (!error && data) {
+            this.tourings = data;
+          } else {
+            this.tourings = [];
           }
+          this.renderTouringsUI();
         } catch (e) {
-          console.error("Error parsing touring date:", e);
+          console.error("Load tourings error:", e);
         }
+      }
+
+      renderTouringsUI() {
+        const currentDate = new Date();
+        
+        // Memisahkan mana touring mendatang (upcoming) dan mana yang sudah lewat (history)
+        const upcomingList = this.tourings.filter(t => new Date(t.event_date) >= currentDate);
+        const historyList = this.tourings.filter(t => new Date(t.event_date) < currentDate);
 
         const statTouringEl = document.getElementById('stat-touring-count');
-        if (statTouringEl) statTouringEl.innerText = isPastEvent ? 0 : 1;
+        if (statTouringEl) statTouringEl.innerText = upcomingList.length;
 
+        // Render Home Widget Beranda
         const homeTitle = document.getElementById('home-touring-title');
         const homeSchedule = document.getElementById('home-touring-schedule');
         const homeMeeting = document.getElementById('home-touring-meeting');
 
-        const pageTitle = document.getElementById('touring-page-title');
-        const pageSchedule = document.getElementById('touring-page-schedule');
-        const pageMeeting = document.getElementById('touring-page-meeting');
-        const pageDistance = document.getElementById('touring-page-distance');
-        const pageMapsBtn = document.getElementById('touring-maps-btn');
-
-        const historyContainer = document.getElementById('touring-history-list');
-        const rsvpCard = document.getElementById('touring-rsvp-card');
-
-        if (isPastEvent) {
+        if (upcomingList.length > 0) {
+          const mainEvent = upcomingList[0];
+          if (homeTitle) homeTitle.innerText = mainEvent.title;
+          if (homeSchedule) homeSchedule.innerText = mainEvent.schedule_text;
+          if (homeMeeting) homeMeeting.innerText = mainEvent.meeting_point;
+        } else {
           if (homeTitle) homeTitle.innerText = "Belum Ada Agenda Mendatang";
           if (homeSchedule) homeSchedule.innerText = "-";
           if (homeMeeting) homeMeeting.innerText = "-";
+        }
 
-          if (pageTitle) pageTitle.innerText = "Belum Ada Agenda Mendatang";
-          if (pageSchedule) pageSchedule.innerText = "-";
-          if (pageMeeting) pageMeeting.innerText = "-";
-          if (pageDistance) pageDistance.innerText = "-";
-          if (pageMapsBtn) pageMapsBtn.style.display = "none";
-          if (rsvpCard) rsvpCard.style.display = "none";
+        const isSuperAdmin = (this.currentUser && this.currentUser.email === 'mastrisnobpb@gmail.com');
+        const isAdmin = (this.currentProfile?.role === 'Admin' || isSuperAdmin);
 
-          if (historyContainer) {
-            historyContainer.innerHTML = `
-              <div class="card" style="border-left: 4px solid var(--accent-gold);">
-                <span class="badge badge-warning">Selesai</span>
-                <h4 style="font-size: var(--font-base); font-weight: var(--fw-bold); margin-top: 6px;">${this.touringData.title}</h4>
-                <p class="text-muted" style="margin-top: 4px;"><i class="fa-regular fa-calendar"></i> ${this.touringData.schedule}</p>
-                <p class="text-muted"><i class="fa-solid fa-location-dot"></i> ${this.touringData.meeting}</p>
-                <p class="text-muted"><i class="fa-solid fa-gauge-high"></i> ${this.touringData.distance}</p>
+        // Render Agenda Touring Mendatang di Halaman Touring
+        const upcomingContainer = document.getElementById('touring-upcoming-list');
+        if (upcomingContainer) {
+          if (upcomingList.length === 0) {
+            upcomingContainer.innerHTML = '<p class="text-muted" style="text-align:center; padding: 15px; background: #fff; border-radius: 12px; border: 1px solid var(--border-dark);">Belum ada agenda touring mendatang.</p>';
+          } else {
+            upcomingContainer.innerHTML = upcomingList.map(t => `
+              <div class="card" style="margin-top: 12px; position: relative;">
+                ${isAdmin ? `
+                  <div style="position: absolute; top: 16px; right: 16px; display: flex; gap: 6px;">
+                    <button type="button" class="btn btn-sm btn-gold" style="padding: 5px 8px;" onclick="app.openEditTouringModal('${t.id}')"><i class="fa-solid fa-pen-to-square"></i></button>
+                    <button type="button" class="btn btn-sm btn-danger" style="padding: 5px 8px;" onclick="app.adminDeleteTouring('${t.id}')"><i class="fa-solid fa-trash"></i></button>
+                  </div>
+                ` : ''}
+                <span class="badge badge-gold">Destinasi Utama</span>
+                <h3 style="margin-top: 6px; font-size: var(--font-base); font-weight: var(--fw-bold); padding-right: 70px;">${t.title}</h3>
+                <p class="text-muted" style="margin-top: 6px;"><i class="fa-regular fa-calendar"></i> ${t.schedule_text}</p>
+                <p class="text-muted"><i class="fa-solid fa-location-dot"></i> Meeting Point: ${t.meeting_point}</p>
+                <p class="text-muted" style="color: var(--primary); font-weight: var(--fw-bold); margin-top: 4px;">
+                  <i class="fa-solid fa-gauge-high"></i> Estimasi Jarak Tempuh: ${t.distance}
+                </p>
+                <button type="button" class="btn btn-primary" style="margin-top: 14px;" onclick="window.open('${t.maps_url}', '_blank')">
+                  <i class="fa-solid fa-map-location-dot"></i> Buka Rute Google Maps
+                </button>
               </div>
-            `;
-          }
-
-        } else {
-          if (homeTitle) homeTitle.innerText = this.touringData.title;
-          if (homeSchedule) homeSchedule.innerText = this.touringData.schedule;
-          if (homeMeeting) homeMeeting.innerText = this.touringData.meeting;
-
-          if (pageTitle) pageTitle.innerText = this.touringData.title;
-          if (pageSchedule) pageSchedule.innerText = this.touringData.schedule;
-          if (pageMeeting) pageMeeting.innerText = this.touringData.meeting;
-          if (pageDistance) pageDistance.innerText = this.touringData.distance || '± 0 KM';
-          if (pageMapsBtn) {
-            pageMapsBtn.style.display = "block";
-            pageMapsBtn.setAttribute('onclick', `window.open('${this.touringData.maps}', '_blank')`);
-          }
-          if (rsvpCard) rsvpCard.style.display = "block";
-
-          if (historyContainer) {
-            historyContainer.innerHTML = `<p class="text-muted" style="text-align:center; padding: 15px; background: #fff; border-radius: 12px; border: 1px solid var(--border-dark);">Belum ada riwayat touring terdahulu.</p>`;
+            `).join('');
           }
         }
 
-        const adminTitle = document.getElementById('admin-touring-title');
-        const adminDate = document.getElementById('admin-touring-date');
-        const adminMeeting = document.getElementById('admin-touring-meeting');
-        const adminDistance = document.getElementById('admin-touring-distance');
-        const adminMaps = document.getElementById('admin-touring-maps');
-        
-        if (adminTitle) adminTitle.value = this.touringData.title;
-        if (adminDate) adminDate.value = this.touringData.schedule;
-        if (adminMeeting) adminMeeting.value = this.touringData.meeting;
-        if (adminDistance) adminDistance.value = this.touringData.distance || '';
-        if (adminMaps) adminMaps.value = this.touringData.maps;
+        // Render Riwayat Touring Selesai
+        const historyContainer = document.getElementById('touring-history-list');
+        if (historyContainer) {
+          if (historyList.length === 0) {
+            historyContainer.innerHTML = '<p class="text-muted" style="text-align:center; padding: 15px; background: #fff; border-radius: 12px; border: 1px solid var(--border-dark);">Belum ada riwayat touring terdahulu.</p>';
+          } else {
+            historyContainer.innerHTML = historyList.map(t => `
+              <div class="card" style="border-left: 4px solid var(--accent-gold); position: relative;">
+                ${isAdmin ? `
+                  <div style="position: absolute; top: 16px; right: 16px; display: flex; gap: 6px;">
+                    <button type="button" class="btn btn-sm btn-danger" style="padding: 5px 8px;" onclick="app.adminDeleteTouring('${t.id}')"><i class="fa-solid fa-trash"></i></button>
+                  </div>
+                ` : ''}
+                <span class="badge badge-warning">Selesai</span>
+                <h4 style="font-size: var(--font-base); font-weight: var(--fw-bold); margin-top: 6px; padding-right: 40px;">${t.title}</h4>
+                <p class="text-muted" style="margin-top: 4px;"><i class="fa-regular fa-calendar"></i> ${t.schedule_text}</p>
+                <p class="text-muted"><i class="fa-solid fa-location-dot"></i> ${t.meeting_point}</p>
+                <p class="text-muted"><i class="fa-solid fa-gauge-high"></i> Jarak: ${t.distance}</p>
+              </div>
+            `).join('');
+          }
+        }
 
         this.loadTouringParticipants();
+      }
+
+      openAddTouringModal() {
+        document.getElementById('admin-touring-id').value = '';
+        document.getElementById('admin-touring-title').value = '';
+        document.getElementById('admin-touring-date-picker').value = '';
+        document.getElementById('admin-touring-schedule-text').value = '';
+        document.getElementById('admin-touring-meeting').value = '';
+        document.getElementById('admin-touring-distance').value = '';
+        document.getElementById('admin-touring-maps').value = '';
+        this.openModal('modal-admin-touring');
+      }
+
+      openEditTouringModal(id) {
+        const item = this.tourings.find(t => t.id === id);
+        if (!item) return;
+
+        document.getElementById('admin-touring-id').value = item.id;
+        document.getElementById('admin-touring-title').value = item.title;
+        document.getElementById('admin-touring-date-picker').value = item.event_date ? new Date(item.event_date).toISOString().split('T')[0] : '';
+        document.getElementById('admin-touring-schedule-text').value = item.schedule_text;
+        document.getElementById('admin-touring-meeting').value = item.meeting_point;
+        document.getElementById('admin-touring-distance').value = item.distance;
+        document.getElementById('admin-touring-maps').value = item.maps_url;
+
+        this.openModal('modal-admin-touring');
+      }
+
+      async handleSaveTouring(e) {
+        e.preventDefault();
+        if (!this.supabase) return;
+
+        const btnSave = document.getElementById('btn-save-touring');
+        btnSave.disabled = true;
+
+        const id = document.getElementById('admin-touring-id').value;
+        const title = document.getElementById('admin-touring-title').value.trim();
+        const datePicker = document.getElementById('admin-touring-date-picker').value;
+        const scheduleText = document.getElementById('admin-touring-schedule-text').value.trim();
+        const meeting = document.getElementById('admin-touring-meeting').value.trim();
+        const distance = document.getElementById('admin-touring-distance').value.trim();
+        const maps = document.getElementById('admin-touring-maps').value.trim();
+
+        const payload = {
+          title,
+          event_date: new Date(datePicker).toISOString(),
+          schedule_text: scheduleText,
+          meeting_point: meeting,
+          distance,
+          maps_url: maps
+        };
+
+        try {
+          let err;
+          if (id) {
+            ({ error: err } = await this.supabase.from('tourings').update(payload).eq('id', id));
+          } else {
+            ({ error: err } = await this.supabase.from('tourings').insert([payload]));
+          }
+
+          if (err) throw err;
+
+          this.showToast('Agenda Touring Berhasil Disimpan!', 'success');
+          this.closeModal('modal-admin-touring');
+          this.loadTouringsFromSupabase();
+
+        } catch (error) {
+          this.showToast('Gagal menyimpan touring: ' + error.message, 'error');
+        } finally {
+          btnSave.disabled = false;
+        }
+      }
+
+      async adminDeleteTouring(id) {
+        if (!confirm('Apakah Anda yakin ingin menghapus agenda touring ini?')) return;
+        if (!this.supabase) return;
+
+        try {
+          const { error } = await this.supabase.from('tourings').delete().eq('id', id);
+          if (error) throw error;
+          this.showToast('Agenda touring berhasil dihapus!', 'info');
+          this.loadTouringsFromSupabase();
+        } catch (e) {
+          this.showToast('Gagal menghapus touring.', 'error');
+        }
       }
 
       async loadTouringParticipants() {
@@ -1690,45 +1739,13 @@
 
           if (status === 'Ikut') {
             const targetWA = this.adminWANumber || "6281234567890";
-            const msg = `Halo Admin ITORA,%0ASaya *${name}* (${plate}) mengonfirmasi *IKUT* pada kegiatan Touring ${this.touringData.title}.`;
+            const msg = `Halo Admin ITORA,%0ASaya *${name}* (${plate}) mengonfirmasi *IKUT* pada kegiatan Touring.`;
             setTimeout(() => window.open(`https://wa.me/${targetWA}?text=${msg}`, '_blank'), 1000);
           }
 
         } catch (e) {
           this.showToast('Gagal menyimpan konfirmasi: ' + e.message, 'error');
         }
-      }
-
-      adminUpdateTouring(e) {
-        e.preventDefault();
-        this.touringData = {
-          title: document.getElementById('admin-touring-title').value.trim(),
-          schedule: document.getElementById('admin-touring-date').value.trim(),
-          meeting: document.getElementById('admin-touring-meeting').value.trim(),
-          distance: document.getElementById('admin-touring-distance').value.trim(),
-          maps: document.getElementById('admin-touring-maps').value.trim()
-        };
-
-        localStorage.setItem('itora_touring_data', JSON.stringify(this.touringData));
-        this.updateTouringUI();
-        this.closeModal('modal-admin-touring');
-        this.showToast('Jadwal & Rute Touring Berhasil Diperbarui!', 'success');
-      }
-
-      adminDeleteTouring() {
-        if (!confirm('Apakah Anda yakin ingin menghapus jadwal touring ini?')) return;
-
-        this.touringData = {
-          title: "Belum Ada Agenda",
-          schedule: "-",
-          meeting: "-",
-          distance: "0 KM",
-          maps: "#"
-        };
-
-        localStorage.setItem('itora_touring_data', JSON.stringify(this.touringData));
-        this.updateTouringUI();
-        this.showToast('Jadwal touring berhasil dihapus!', 'info');
       }
 
       compressImage(file, maxKB = 200) {
@@ -1891,6 +1908,7 @@
         this.loadIuranHistory();
         this.calculateTotalKas();
         this.loadBreakingNewsText();
+        this.loadTouringsFromSupabase();
 
         this.checkRealtimeNotifications();
         this.subscribeToRealtimeChanges();
@@ -2107,9 +2125,7 @@
         const adminProfileBtn = document.getElementById('btn-admin-panel-profile');
         if (adminProfileBtn) adminProfileBtn.style.display = canManageAdmin ? 'flex' : 'none';
 
-        const touringAdminActions = document.getElementById('touring-admin-actions');
         const adminAddBtn = document.getElementById('admin-add-touring-btn');
-        if (touringAdminActions) touringAdminActions.style.display = canManageAdmin ? 'flex' : 'none';
         if (adminAddBtn) adminAddBtn.style.display = canManageAdmin ? 'inline-block' : 'none';
 
         if (canManageAdmin) {
@@ -2442,7 +2458,6 @@
           ];
         }
 
-        // QUICK MENU BERANDA (LENGKAP DENGAN KUSTOMISASI WARNA BACKGROUND LINGKARAN DAN WARNA IKON)
         const quickMenuContainer = document.getElementById('dynamic-quick-menu');
         if (quickMenuContainer) {
           const quickItems = this.menus.filter(m => m.is_active && m.show_in_quick_menu);
