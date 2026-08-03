@@ -1991,7 +1991,7 @@ class App {
         .on('postgres_changes', { event: '*', schema: 'public', table: 'notifications' }, () => {
           this.updateUnreadCountBadge();
           const modal = document.getElementById('notificationModal');
-          if (modal && modal.style.display === 'flex') {
+          if (modal && window.getComputedStyle(modal).display === 'flex') {
             this.loadNotifications();
           }
         })
@@ -2554,22 +2554,33 @@ class App {
 function toggleNotificationModal() {
   const modal = document.getElementById('notificationModal');
   if (!modal) return;
-  if (modal.style.display === 'flex') {
-    modal.style.setProperty('display', 'none', 'important');
-  } else {
+
+  // Menggunakan window.getComputedStyle agar deteksi status pembukaan modal selalu akurat
+  const computedDisplay = window.getComputedStyle(modal).display;
+
+  if (computedDisplay === 'none') {
     modal.style.setProperty('display', 'flex', 'important');
-    app.loadNotifications();
+    if (window.app) {
+      app.loadNotifications();
+    }
+  } else {
+    modal.style.setProperty('display', 'none', 'important');
   }
 }
 
 function closeNotifModalOuter(event) {
   if (event.target.id === 'notificationModal') {
-    document.getElementById('notificationModal').style.setProperty('display', 'none', 'important');
+    const modal = document.getElementById('notificationModal');
+    if (modal) {
+      modal.style.setProperty('display', 'none', 'important');
+    }
   }
 }
 
 function markAllNotificationsAsRead() {
-  app.markAllNotificationsAsRead();
+  if (window.app) {
+    app.markAllNotificationsAsRead();
+  }
 }
 
 // INISIALISASI APLIKASI
