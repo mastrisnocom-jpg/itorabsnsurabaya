@@ -86,7 +86,6 @@
     #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 99999; width: 90%; max-width: 400px; }
     .toast { padding: 14px 18px; border-radius: 16px; color: white; font-size: 0.85rem; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
 
-    /* CAROUSEL STYLES */
     .slide-fade { transition: opacity 0.7s ease-in-out; }
     .dot-indicator { transition: all 0.3s ease; }
     .dot-indicator.active { width: 28px; background-color: #F59E0B; border-radius: 8px; }
@@ -118,22 +117,18 @@
                 </div>
 
                 <div class="flex items-center gap-2">
-                  <!-- TOMBOL PENGATURAN SUPERADMIN -->
                   <button type="button" id="btn-admin-landing-setting" onclick="app.showAdminBoardModal()" style="display:none;" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-4 py-2 rounded-full font-bold text-xs shadow-lg transition flex items-center gap-2 border border-amber-300">
                       <i class="fa-solid fa-gear"></i> Pengaturan Landing Page
                   </button>
 
-                  <!-- TOMBOL KE DASHBOARD APP (MUNCUL JIKA USER/ADMIN SUDAH LOGIN) -->
                   <button type="button" id="btn-go-dashboard" onclick="window.location.href='dashboard.html'" style="display:none;" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-5 py-2 rounded-full font-bold text-xs shadow-lg transition flex items-center gap-2">
                       <i class="fa-solid fa-gauge-high"></i> Dashboard App
                   </button>
 
-                  <!-- TOMBOL LOGOUT (MUNCUL JIKA USER SUDAH LOGIN) -->
                   <button type="button" id="btn-logout-main" onclick="app.handleLogout()" style="display:none;" class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-full font-bold text-xs shadow-lg transition flex items-center gap-2">
                       <i class="fa-solid fa-right-from-bracket"></i> Keluar
                   </button>
 
-                  <!-- TOMBOL MASUK ANGGOTA (MUNCUL JIKA BELUM LOGIN) -->
                   <button type="button" id="btn-login-main" onclick="app.showAuthModal()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-5 py-2 rounded-full font-bold text-xs shadow-lg transition flex items-center gap-2">
                       <i class="fa-solid fa-right-to-bracket"></i> Masuk Anggota
                   </button>
@@ -190,7 +185,7 @@
             <div id="board-tier-divisi" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
         </div>
 
-        <!-- REGISTRASI CEPAT (TAMPIL HANYA UNTUK GUEST / BELUM LOGIN) -->
+        <!-- REGISTRASI CEPAT -->
         <section id="section-landing-register" class="bg-gradient-to-br from-emerald-900 via-emerald-800 to-emerald-950 rounded-3xl text-white p-8 md:p-12 shadow-2xl relative overflow-hidden">
             <div class="max-w-4xl mx-auto relative z-10">
                 <div class="text-center mb-8">
@@ -248,7 +243,7 @@
             </div>
         </section>
 
-        <!-- SLIDE DOKUMENTASI PROFESIONAL (OTOMATIS MUNCUL SETELAH USER LOGIN) -->
+        <!-- SLIDE DOKUMENTASI PROFESIONAL -->
         <section id="section-landing-gallery" style="display: none;" class="relative">
             <div class="text-center mb-8">
                 <span class="inline-block bg-amber-100 border border-amber-300 text-amber-800 text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest mb-2">
@@ -258,11 +253,9 @@
                 <p class="text-slate-500 text-xs md:text-sm mt-1">Momen kebersamaan seluruh anggota ITORA Chapter BSN Surabaya</p>
             </div>
 
-            <!-- CAROUSEL SLIDE CONTAINER -->
             <div class="relative w-full max-w-5xl mx-auto h-[260px] sm:h-[380px] md:h-[480px] rounded-3xl overflow-hidden shadow-2xl border border-slate-200 bg-slate-900 group" onmouseenter="app.stopSliderAutoplay()" onmouseleave="app.startSliderAutoplay()">
                 
                 <div id="carousel-slides-wrapper" class="w-full h-full relative">
-                    <!-- Slide 1 -->
                     <div class="slide-item absolute inset-0 opacity-100 slide-fade flex items-end">
                         <img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=1200&auto=format&fit=crop&q=80" class="absolute inset-0 w-full h-full object-cover">
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent"></div>
@@ -273,7 +266,6 @@
                         </div>
                     </div>
 
-                    <!-- Slide 2 -->
                     <div class="slide-item absolute inset-0 opacity-0 slide-fade flex items-end">
                         <img src="https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=1200&auto=format&fit=crop&q=80" class="absolute inset-0 w-full h-full object-cover">
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent"></div>
@@ -284,7 +276,6 @@
                         </div>
                     </div>
 
-                    <!-- Slide 3 -->
                     <div class="slide-item absolute inset-0 opacity-0 slide-fade flex items-end">
                         <img src="https://images.unsplash.com/photo-1558980664-3a031cf67ea8?w=1200&auto=format&fit=crop&q=80" class="absolute inset-0 w-full h-full object-cover">
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent"></div>
@@ -296,12 +287,10 @@
                     </div>
                 </div>
 
-                <!-- WATERMARK LOGO -->
                 <div class="absolute top-4 right-4 z-20 bg-slate-950/60 backdrop-blur-md border border-white/20 text-white px-3 py-1.5 rounded-full text-[10px] sm:text-xs font-bold flex items-center gap-2 shadow-lg">
                     <i class="fa-solid fa-shield text-emerald-400"></i> ITORA BSN SURABAYA
                 </div>
 
-                <!-- PANAH NAVIGASI -->
                 <button type="button" onclick="app.prevSlide()" class="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-950/40 hover:bg-emerald-600 text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition shadow-lg opacity-80 group-hover:opacity-100 cursor-pointer">
                     <i class="fa-solid fa-chevron-left text-sm sm:text-base"></i>
                 </button>
@@ -309,7 +298,6 @@
                     <i class="fa-solid fa-chevron-right text-sm sm:text-base"></i>
                 </button>
 
-                <!-- INDIKATOR TITIK (DOTS) -->
                 <div id="carousel-dots-container" class="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 bg-slate-950/40 px-4 py-2 rounded-full backdrop-blur-md border border-white/10">
                     <button type="button" onclick="app.goToSlide(0)" class="dot-indicator w-2.5 h-2.5 rounded-full bg-white/50 hover:bg-white active"></button>
                     <button type="button" onclick="app.goToSlide(1)" class="dot-indicator w-2.5 h-2.5 rounded-full bg-white/50 hover:bg-white"></button>
@@ -367,7 +355,7 @@
     </div>
   </div>
 
-  <!-- MODAL LUPA PASSWORD (RESET PASSWORD) -->
+  <!-- MODAL LUPA PASSWORD -->
   <div id="forgot-modal" class="auth-overlay" style="display: none; z-index: 10002;">
     <div class="auth-card">
       <button type="button" onclick="app.hideForgotPasswordModal()" style="position:absolute; top:16px; right:18px; border:none; background:#F1F5F9; color:#64748B; width:32px; height:32px; border-radius:50%; cursor:pointer;">
@@ -397,7 +385,7 @@
     </div>
   </div>
 
-  <!-- MODAL SET KATA SANDI BARU (SETELAH KLIK LINK DI EMAIL) -->
+  <!-- MODAL SET KATA SANDI BARU -->
   <div id="reset-password-modal" class="auth-overlay" style="display: none; z-index: 10003;">
     <div class="auth-card">
       <div style="text-align:center; margin-bottom:20px;">
@@ -546,7 +534,6 @@
       async init() {
         await this.loadBoardFromSupabase();
 
-        // DETEKSI EVENT RECOVERY / RESET PASSWORD DARI EMAIL
         if (this.supabase) {
           this.supabase.auth.onAuthStateChange((event) => {
             if (event === 'PASSWORD_RECOVERY') {
@@ -623,7 +610,6 @@
         if (gallerySection) gallerySection.style.display = 'none';
       }
 
-      /* LOGIC SLIDER CAROUSEL DOKUMENTASI */
       goToSlide(index) {
         const slides = document.querySelectorAll('.slide-item');
         const dots = document.querySelectorAll('.dot-indicator');
@@ -863,24 +849,27 @@
         document.getElementById('modal-add-board').style.display = 'flex';
       }
 
+      // LOGIKA SIMPAN PENGURUS & PERBAIKAN UPLOAD FOTO PROFIL (STORE TO SUPABASE)
       async handleSaveBoardMember(e) {
         e.preventDefault();
         const btn = document.getElementById('btn-save-board');
         btn.disabled = true;
 
         const id = document.getElementById('board-id').value;
-        const file = document.getElementById('board-photo-file').files[0];
-        let photoUrl = '';
+        const fileInput = document.getElementById('board-photo-file');
+        const file = fileInput.files[0];
+        let photoUrl = null;
 
         try {
+          // Jika ada berkas foto baru yang diunggah
           if (file) {
-            const fileName = `board_${Date.now()}_${file.name}`;
+            const fileName = `board_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
             const { error: uploadErr } = await this.supabase.storage.from('gallery-images').upload(fileName, file, { upsert: true });
             
-            if (!uploadErr) {
-              const { data: urlData } = this.supabase.storage.from('gallery-images').getPublicUrl(fileName);
-              photoUrl = urlData ? urlData.publicUrl : '';
-            }
+            if (uploadErr) throw uploadErr;
+
+            const { data: urlData } = this.supabase.storage.from('gallery-images').getPublicUrl(fileName);
+            if (urlData) photoUrl = urlData.publicUrl;
           }
 
           const payload = {
@@ -890,6 +879,7 @@
             sort_order: parseInt(document.getElementById('board-sort-order').value) || 1
           };
 
+          // Hanya perbarui foto jika ada file baru yang dipilih
           if (photoUrl) payload.photo_url = photoUrl;
 
           let err;
@@ -901,8 +891,9 @@
 
           if (err) throw err;
 
-          this.showToast('Data Pengurus Disimpan!', 'success');
+          this.showToast('Data & Foto Pengurus Berhasil Disimpan!', 'success');
           this.closeAddBoardForm();
+          fileInput.value = '';
           await this.loadBoardFromSupabase();
           this.loadAdminBoardList();
 
