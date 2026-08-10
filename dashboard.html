@@ -3358,7 +3358,12 @@
               <button class="btn btn-sm ${m.is_active ? 'btn-primary' : 'btn-danger'}" onclick="app.toggleMenuStatus('${m.id}', ${!m.is_active})">
                 ${m.is_active ? 'Aktif' : 'Nonaktif'}
               </button>
-              <button class="btn btn-sm btn-gold" onclick="app.editMenuModal('${m.id}')"><i class="fa-solid fa-pen"></i></button>
+              <button class="btn btn-sm btn-gold" style="width:auto;" onclick="app.editMenuModal('${m.id}')">
+                <i class="fa-solid fa-pen"></i>
+              </button>
+              <button class="btn btn-sm btn-danger" style="width:auto;" onclick="app.deleteMenu('${m.id}')">
+                <i class="fa-solid fa-trash"></i>
+              </button>
             </div>
           </div>
         `).join('');
@@ -3455,6 +3460,21 @@
           this.showToast('Gagal menyimpan menu: ' + err.message, 'error');
         } finally {
           btnSave.disabled = false;
+        }
+      }
+
+      async deleteMenu(menuId) {
+        if (!confirm('Apakah Anda yakin ingin menghapus menu ini?')) return;
+        if (!this.supabase) return;
+
+        try {
+          const { error } = await this.supabase.from('menus').delete().eq('id', menuId);
+          if (error) throw error;
+
+          this.showToast('Menu berhasil dihapus!', 'success');
+          this.loadMenusFromSupabase();
+        } catch (e) {
+          this.showToast('Gagal menghapus menu: ' + e.message, 'error');
         }
       }
 
