@@ -317,24 +317,12 @@
 
     /* --- SISTEM DESAIN MODAL POP-UP UTAMA --- */
     .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.65);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      z-index: 90000;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      overflow-y: auto;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      z-index: 90000; display: none; align-items: center; justify-content: center;
+      padding: 16px; overflow-y: auto; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
-
-    .modal-overlay.active {
-      display: flex;
-      animation: modalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
+    .modal-overlay.active { display: flex; animation: modalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
 
     @keyframes modalFadeIn {
       from { opacity: 0; transform: scale(0.96); }
@@ -342,222 +330,80 @@
     }
 
     .modal-card {
-      width: 100%;
-      max-width: 450px;
-      border-radius: var(--radius-lg);
-      padding: 0;
-      background: #FFFFFF;
-      position: relative;
-      max-height: 88vh;
-      display: flex;
-      flex-direction: column;
-      border: 1px solid rgba(226, 232, 240, 0.9);
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
-      overflow: hidden;
-      font-family: var(--font-pro);
+      width: 100%; max-width: 450px; border-radius: var(--radius-lg); padding: 0;
+      background: #FFFFFF; position: relative; max-height: 88vh; display: flex;
+      flex-direction: column; border: 1px solid rgba(226, 232, 240, 0.9);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2); overflow: hidden; font-family: var(--font-pro);
     }
 
     .pro-modal-header {
-      padding: 20px 24px;
-      background: #FFFFFF;
-      border-bottom: 1px solid #F1F5F9;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 10;
+      padding: 20px 24px; background: #FFFFFF; border-bottom: 1px solid #F1F5F9;
+      display: flex; justify-between: space-between; align-items: center; position: sticky;
+      top: 0; z-index: 10;
     }
-
-    .pro-modal-header .title-wrap {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .pro-modal-header .title-wrap i {
-      color: var(--primary);
-      font-size: 20px;
-    }
-
-    .pro-modal-header h3 {
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: #0F172A;
-      margin: 0;
-      letter-spacing: -0.02em;
-    }
+    .pro-modal-header .title-wrap { display: flex; align-items: center; gap: 12px; }
+    .pro-modal-header .title-wrap i { color: var(--primary); font-size: 20px; }
+    .pro-modal-header h3 { font-size: 1.05rem; font-weight: 700; color: #0F172A; margin: 0; letter-spacing: -0.02em; }
 
     .close-modal-btn {
-      position: absolute;
-      top: 16px;
-      right: 18px;
-      background: #F1F5F9;
-      border: none;
-      color: #64748B;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 15px;
-      transition: all 0.2s ease;
-      z-index: 12;
+      position: absolute; top: 16px; right: 18px; background: #F1F5F9; border: none;
+      color: #64748B; width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; font-size: 15px;
+      transition: all 0.2s ease; z-index: 12;
     }
+    .close-modal-btn:hover { background: #FEE2E2; color: #EF4444; }
 
-    .close-modal-btn:hover {
-      background: #FEE2E2;
-      color: #EF4444;
-    }
+    .pro-modal-body { padding: 24px; overflow-y: auto; flex: 1; }
 
-    .pro-modal-body {
-      padding: 24px;
-      overflow-y: auto;
-      flex: 1;
-    }
-
-    .pro-form-group {
-      position: relative;
-      margin-bottom: 20px;
-    }
-
+    .pro-form-group { position: relative; margin-bottom: 20px; }
     .pro-form-group label {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #8899a6;
-      font-size: 13px;
-      pointer-events: none;
-      transition: all 0.2s ease;
-      background-color: #FFFFFF;
-      padding: 0 4px;
-      font-weight: 500;
+      position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+      color: #8899a6; font-size: 13px; pointer-events: none; transition: all 0.2s ease;
+      background-color: #FFFFFF; padding: 0 4px; font-weight: 500;
     }
 
-    .pro-form-group input,
-    .pro-form-group select,
-    .pro-form-group textarea {
-      width: 100%;
-      padding: 14px 15px;
-      font-size: 14px;
-      border: 2px solid #E1E8ED;
-      border-radius: 12px;
-      outline: none;
-      color: #0F172A;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      background: #FFFFFF;
-      font-family: var(--font-pro);
+    .pro-form-group input, .pro-form-group select, .pro-form-group textarea {
+      width: 100%; padding: 14px 15px; font-size: 14px; border: 2px solid #E1E8ED;
+      border-radius: 12px; outline: none; color: #0F172A; transition: border-color 0.2s, box-shadow 0.2s;
+      background: #FFFFFF; font-family: var(--font-pro);
     }
 
-    .pro-form-group textarea {
-      min-height: 80px;
-      resize: vertical;
-    }
-
-    .pro-form-group.has-prefix input {
-      padding-left: 42px;
-    }
+    .pro-form-group textarea { min-height: 80px; resize: vertical; }
+    .pro-form-group.has-prefix input { padding-left: 42px; }
 
     .pro-input-prefix {
-      position: absolute;
-      left: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #0F172A;
-      font-weight: 600;
-      font-size: 14px;
-      display: none;
+      position: absolute; left: 15px; top: 50%; transform: translateY(-50%);
+      color: #0F172A; font-weight: 600; font-size: 14px; display: none;
     }
 
-    .pro-form-group input:focus,
-    .pro-form-group select:focus,
-    .pro-form-group textarea:focus,
-    .pro-form-group input:not(:placeholder-shown),
-    .pro-form-group textarea:not(:placeholder-shown) {
-      border-color: #3498DB;
-    }
+    .pro-form-group input:focus, .pro-form-group select:focus, .pro-form-group textarea:focus,
+    .pro-form-group input:not(:placeholder-shown), .pro-form-group textarea:not(:placeholder-shown) { border-color: #3498DB; }
 
-    .pro-form-group input:focus + label,
-    .pro-form-group select:focus + label,
-    .pro-form-group textarea:focus + label,
-    .pro-form-group input:not(:placeholder-shown) + label,
-    .pro-form-group textarea:not(:placeholder-shown) + label,
-    .pro-form-group.always-float label {
-      top: 0;
-      font-size: 11px;
-      color: #3498DB;
-      font-weight: 600;
-    }
+    .pro-form-group input:focus + label, .pro-form-group select:focus + label, .pro-form-group textarea:focus + label,
+    .pro-form-group input:not(:placeholder-shown) + label, .pro-form-group textarea:not(:placeholder-shown) + label,
+    .pro-form-group.always-float label { top: 0; font-size: 11px; color: #3498DB; font-weight: 600; }
 
     .pro-form-group.has-prefix input:focus ~ .pro-input-prefix,
-    .pro-form-group.has-prefix input:not(:placeholder-shown) ~ .pro-input-prefix {
-      display: block;
-    }
+    .pro-form-group.has-prefix input:not(:placeholder-shown) ~ .pro-input-prefix { display: block; }
 
-    .pro-helper-text {
-      font-size: 11px;
-      color: #8899a6;
-      margin-top: -14px;
-      margin-bottom: 16px;
-      display: block;
-      margin-left: 4px;
-    }
+    .pro-helper-text { font-size: 11px; color: #8899a6; margin-top: -14px; margin-bottom: 16px; display: block; margin-left: 4px; }
 
     .pro-btn-gold {
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.3s ease;
-      background: linear-gradient(135deg, #E6B94A 0%, #D4A017 100%);
-      color: #FFFFFF;
-      box-shadow: 0 4px 12px rgba(212, 160, 23, 0.25);
+      width: 100%; padding: 14px; border: none; border-radius: 12px; font-size: 14px;
+      font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center;
+      gap: 8px; transition: all 0.3s ease; background: linear-gradient(135deg, #E6B94A 0%, #D4A017 100%);
+      color: #FFFFFF; box-shadow: 0 4px 12px rgba(212, 160, 23, 0.25);
     }
-
-    .pro-btn-gold:hover {
-      background: linear-gradient(135deg, #D4A017 0%, #B8860B 100%);
-      box-shadow: 0 6px 16px rgba(212, 160, 23, 0.35);
-      transform: translateY(-1px);
-    }
-
-    .pro-btn-gold:active {
-      transform: translateY(1px);
-      box-shadow: 0 2px 4px rgba(212, 160, 23, 0.2);
-    }
+    .pro-btn-gold:hover { background: linear-gradient(135deg, #D4A017 0%, #B8860B 100%); box-shadow: 0 6px 16px rgba(212, 160, 23, 0.35); transform: translateY(-1px); }
+    .pro-btn-gold:active { transform: translateY(1px); box-shadow: 0 2px 4px rgba(212, 160, 23, 0.2); }
 
     .pro-btn-primary {
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.3s ease;
-      background: linear-gradient(135deg, #00875A 0%, #005E3E 100%);
-      color: #FFFFFF;
-      box-shadow: 0 4px 12px rgba(0, 135, 90, 0.25);
+      width: 100%; padding: 14px; border: none; border-radius: 12px; font-size: 14px;
+      font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center;
+      gap: 8px; transition: all 0.3s ease; background: linear-gradient(135deg, #00875A 0%, #005E3E 100%);
+      color: #FFFFFF; box-shadow: 0 4px 12px rgba(0, 135, 90, 0.25);
     }
-
-    .pro-btn-primary:hover {
-      background: linear-gradient(135deg, #00704A 0%, #004D33 100%);
-      box-shadow: 0 6px 16px rgba(0, 135, 90, 0.35);
-      transform: translateY(-1px);
-    }
+    .pro-btn-primary:hover { background: linear-gradient(135deg, #00704A 0%, #004D33 100%); box-shadow: 0 6px 16px rgba(0, 135, 90, 0.35); transform: translateY(-1px); }
   </style>
 </head>
 <body>
@@ -775,10 +621,19 @@
       <!-- 2. PANEL SUPER ADMIN & ADMIN -->
       <section id="page-admin" class="page">
         <h2 style="color: var(--primary); font-size: var(--font-lg); font-weight: var(--fw-bold);"><i class="fa-solid fa-user-shield"></i> Panel Kelola Admin</h2>
-        <p class="text-muted" style="margin-bottom: 15px;">Kontrol penuh sistem, role pengurus, persetujuan anggota, kas, & merchandise</p>
+        <p class="text-muted" style="margin-bottom: 15px;">Kontrol penuh sistem, pengurus, sponsor, kas, & merchandise</p>
 
         <div class="quick-menu" style="grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px;">
           
+          <!-- KELOLA SPONSOR UTAMA FORM (NEW) -->
+          <div class="card" style="margin:0; padding:16px; text-align:center; cursor:pointer;" onclick="app.openModal('modal-admin-sponsor')">
+            <div class="quick-icon" style="margin: 0 auto 8px; width:48px; height:48px; background:#FEF3C7; color:#D97706;">
+              <i class="fa-solid fa-building-columns"></i>
+            </div>
+            <strong style="font-size:var(--font-base); font-weight:var(--fw-bold);">Sponsor Utama</strong>
+            <span class="text-muted" style="display:block; font-size:var(--font-xs);">Edit Nama / Logo Sponsor</span>
+          </div>
+
           <!-- KELOLA PENGURUS LANDING PAGE -->
           <div class="card" style="margin:0; padding:16px; text-align:center; cursor:pointer;" onclick="app.openModal('modal-admin-board')">
             <div class="quick-icon" style="margin: 0 auto 8px; width:48px; height:48px; background:#D1FAE5; color:#047857;">
@@ -857,7 +712,6 @@
 
         </div>
       </section>
-
       <!-- 3. ANGGOTA -->
       <section id="page-anggota" class="page">
         <h2 style="font-size: var(--font-lg); font-weight: var(--fw-bold);">Daftar Anggota</h2>
@@ -968,12 +822,15 @@
         </div>
       </section>
 
-      <!-- 10. SPONSOR -->
+      <!-- 10. SPONSOR (TAMPILAN DINAMIS) -->
       <section id="page-sponsor" class="page">
-        <h2 style="font-size: var(--font-lg); font-weight: var(--fw-bold);">Sponsor Utama</h2>
-        <div class="card" style="margin-top: 12px; text-align: center;">
-          <i class="fa-solid fa-building-columns" style="font-size: 3rem; color: var(--primary);"></i>
-          <h3 style="margin-top: 10px; font-size: var(--font-md); font-weight: var(--fw-bold);">Bank Syariah Nasional Cabang Surabaya</h3>
+        <h2 style="font-size: var(--font-lg); font-weight: var(--fw-bold); margin-bottom: 12px;">Sponsor Utama</h2>
+        <div class="card" style="text-align: center; padding: 28px 20px;" id="sponsor-display-card">
+          <div id="sponsor-logo-container" style="margin-bottom: 12px;">
+            <i class="fa-solid fa-building-columns" style="font-size: 3.5rem; color: var(--primary);" id="sponsor-display-icon"></i>
+          </div>
+          <h3 style="font-size: var(--font-md); font-weight: var(--fw-bold); color: var(--text-main-dark);" id="sponsor-display-title">Bank Syariah Nasional Cabang Surabaya</h3>
+          <p class="text-muted" style="margin-top: 6px;" id="sponsor-display-subtitle">Mitra Strategis Komunitas ITORA BSN</p>
         </div>
       </section>
 
@@ -1065,6 +922,49 @@
 
   <!-- ALL MODALS -->
 
+  <!-- MODAL ADMIN: KELOLA SPONSOR UTAMA (NEW FORM) -->
+  <div class="modal-overlay" id="modal-admin-sponsor">
+    <div class="modal-card">
+      <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-sponsor')"><i class="fa-solid fa-xmark"></i></button>
+
+      <div class="pro-modal-header">
+        <div class="title-wrap">
+          <i class="fa-solid fa-building-columns" style="color:var(--accent-gold);"></i>
+          <h3>Kelola Sponsor Utama</h3>
+        </div>
+      </div>
+
+      <div class="pro-modal-body">
+        <form id="form-sponsor-settings" onsubmit="app.handleSaveSponsorSettings(event)">
+          <div class="pro-form-group">
+            <input type="text" id="sponsor-input-name" placeholder=" " required value="Bank Syariah Nasional Cabang Surabaya">
+            <label for="sponsor-input-name">Nama Sponsor Utama</label>
+          </div>
+
+          <div class="pro-form-group">
+            <input type="text" id="sponsor-input-sub" placeholder=" " value="Mitra Strategis Komunitas ITORA BSN">
+            <label for="sponsor-input-sub">Deskripsi / Sub-Judul Sponsor</label>
+          </div>
+
+          <div class="pro-form-group">
+            <input type="text" id="sponsor-input-icon" placeholder=" " value="fa-solid fa-building-columns">
+            <label for="sponsor-input-icon">FontAwesome Icon Class (Jika tanpa logo gambar)</label>
+          </div>
+
+          <div class="pro-form-group always-float">
+            <input type="file" id="sponsor-input-logo-file" accept="image/*">
+            <label for="sponsor-input-logo-file">Upload Logo Gambar Sponsor (Opsional)</label>
+          </div>
+          <span class="pro-helper-text">Jika file dikosongkan, ikon FontAwesome yang akan ditampilkan.</span>
+
+          <button type="submit" class="pro-btn-gold" id="btn-save-sponsor">
+            <i class="fa-solid fa-floppy-disk"></i> Simpan Sponsor Utama
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL ADMIN: KELOLA PENGURUS LANDING PAGE -->
   <div class="modal-overlay" id="modal-admin-board">
     <div class="modal-card">
@@ -1085,7 +985,6 @@
       </div>
     </div>
   </div>
-
   <!-- MODAL FORM TAMBAH / EDIT PENGURUS -->
   <div class="modal-overlay" id="modal-add-board" style="z-index:90005;">
     <div class="modal-card">
@@ -1842,6 +1741,15 @@
         this.approvedKasTotal = 0;
         this.adminWANumber = "6281234567890";
         this.selectedTouringId = null;
+
+        // STATE SPONSOR UTAMA
+        this.sponsorData = {
+          title: "Bank Syariah Nasional Cabang Surabaya",
+          subtitle: "Mitra Strategis Komunitas ITORA BSN",
+          icon: "fa-solid fa-building-columns",
+          logo_url: ""
+        };
+
         this.initSupabase();
       }
 
@@ -1942,6 +1850,100 @@
         localStorage.setItem('itora_admin_wa', val);
         this.updateWAUI();
         this.showToast('Nomor WhatsApp Berhasil Disimpan!', 'success');
+      }
+
+      /* LOGIKA INTEGRASI KELOLA SPONSOR UTAMA */
+      async loadSponsorSettings() {
+        // Cek LocalStorage
+        const localSponsor = localStorage.getItem('itora_sponsor_data');
+        if (localSponsor) {
+          try { this.sponsorData = JSON.parse(localSponsor); } catch(e){}
+        }
+
+        // Cek Supabase Settings Table
+        if (this.supabase) {
+          try {
+            const { data, error } = await this.supabase.from('app_settings').select('*').eq('key', 'main_sponsor').single();
+            if (!error && data && data.value) {
+              this.sponsorData = data.value;
+              localStorage.setItem('itora_sponsor_data', JSON.stringify(data.value));
+            }
+          } catch(e) {}
+        }
+
+        this.renderSponsorUI();
+      }
+
+      renderSponsorUI() {
+        const titleEl = document.getElementById('sponsor-display-title');
+        const subEl = document.getElementById('sponsor-display-subtitle');
+        const logoContainer = document.getElementById('sponsor-logo-container');
+
+        if (titleEl) titleEl.innerText = this.sponsorData.title || "Bank Syariah Nasional Cabang Surabaya";
+        if (subEl) subEl.innerText = this.sponsorData.subtitle || "Mitra Strategis Komunitas ITORA BSN";
+
+        if (logoContainer) {
+          if (this.sponsorData.logo_url) {
+            logoContainer.innerHTML = `<img src="${this.sponsorData.logo_url}" alt="Logo Sponsor Utama" style="max-width:220px; max-height:120px; object-fit:contain;">`;
+          } else {
+            const iconClass = this.sponsorData.icon || "fa-solid fa-building-columns";
+            logoContainer.innerHTML = `<i class="${iconClass}" style="font-size: 3.5rem; color: var(--primary);" id="sponsor-display-icon"></i>`;
+          }
+        }
+
+        // Populasikan nilai awal form modal admin
+        const nameInput = document.getElementById('sponsor-input-name');
+        const subInput = document.getElementById('sponsor-input-sub');
+        const iconInput = document.getElementById('sponsor-input-icon');
+
+        if (nameInput) nameInput.value = this.sponsorData.title || '';
+        if (subInput) subInput.value = this.sponsorData.subtitle || '';
+        if (iconInput) iconInput.value = this.sponsorData.icon || 'fa-solid fa-building-columns';
+      }
+
+      async handleSaveSponsorSettings(e) {
+        e.preventDefault();
+        const btnSave = document.getElementById('btn-save-sponsor');
+        btnSave.disabled = true;
+
+        const title = document.getElementById('sponsor-input-name').value.trim();
+        const subtitle = document.getElementById('sponsor-input-sub').value.trim();
+        const icon = document.getElementById('sponsor-input-icon').value.trim() || 'fa-solid fa-building-columns';
+        const fileInput = document.getElementById('sponsor-input-logo-file').files[0];
+
+        let logoUrl = this.sponsorData.logo_url || '';
+
+        try {
+          if (fileInput && this.supabase) {
+            const compressed = await this.compressImage(fileInput, 200);
+            const fileName = `sponsor_${Date.now()}_${compressed.name}`;
+            const { error: uploadErr } = await this.supabase.storage.from('gallery-images').upload(fileName, compressed, { upsert: true });
+
+            if (!uploadErr) {
+              const { data: urlData } = this.supabase.storage.from('gallery-images').getPublicUrl(fileName);
+              logoUrl = urlData ? urlData.publicUrl : '';
+            }
+          }
+
+          this.sponsorData = { title, subtitle, icon, logo_url: logoUrl };
+          localStorage.setItem('itora_sponsor_data', JSON.stringify(this.sponsorData));
+
+          if (this.supabase) {
+            await this.supabase.from('app_settings').upsert({
+              key: 'main_sponsor',
+              value: this.sponsorData
+            });
+          }
+
+          this.showToast('Sponsor Utama Berhasil Diperbarui!', 'success');
+          this.closeModal('modal-admin-sponsor');
+          this.renderSponsorUI();
+
+        } catch (err) {
+          this.showToast('Gagal menyimpan sponsor: ' + err.message, 'error');
+        } finally {
+          btnSave.disabled = false;
+        }
       }
 
       async loadGalleryFromSupabase() {
@@ -2128,7 +2130,6 @@
         const statTouringEl = document.getElementById('stat-touring-count');
         if (statTouringEl) statTouringEl.innerText = upcomingList.length;
 
-        // BINDING HERO WIDGET AGENDA UTAMA BERANDA
         const homeTitle = document.getElementById('home-touring-title');
         const homeSchedule = document.getElementById('home-touring-schedule');
         const homeMeeting = document.getElementById('home-touring-meeting');
@@ -2140,7 +2141,6 @@
           if (homeSchedule) homeSchedule.innerText = mainEvent.schedule_text || mainEvent.event_date;
           if (homeMeeting) homeMeeting.innerText = mainEvent.meeting_point || 'Surabaya';
 
-          // Dapatkan hitungan riil member yang join untuk event utama
           if (homeJoinedBadge) {
             const joinedCount = this.touringParticipants.filter(
               p => p.touring_id === mainEvent.id && (p.status === 'Ikut' || p.status === '✓ Ikut')
@@ -2258,7 +2258,6 @@
         }
       }
 
-      /* KELOLA PENGURUS LANDING PAGE LOGIC */
       async loadAdminBoardList() {
         const container = document.getElementById('admin-board-list');
         if (!container || !this.supabase) return;
@@ -2728,6 +2727,7 @@
         this.loadBreakingNewsText();
         this.loadTouringsFromSupabase();
         this.loadGalleryFromSupabase();
+        this.loadSponsorSettings();
 
         this.checkRealtimeNotifications();
         this.subscribeToRealtimeChanges();
