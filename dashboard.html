@@ -338,7 +338,7 @@
 
     .pro-modal-header {
       padding: 20px 24px; background: #FFFFFF; border-bottom: 1px solid #F1F5F9;
-      display: flex; justify-between: space-between; align-items: center; position: sticky;
+      display: flex; justify-content: space-between; align-items: center; position: sticky;
       top: 0; z-index: 10;
     }
     .pro-modal-header .title-wrap { display: flex; align-items: center; gap: 12px; }
@@ -625,7 +625,7 @@
 
         <div class="quick-menu" style="grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px;">
           
-          <!-- KELOLA SPONSOR UTAMA FORM (NEW) -->
+          <!-- KELOLA SPONSOR UTAMA FORM -->
           <div class="card" style="margin:0; padding:16px; text-align:center; cursor:pointer;" onclick="app.openModal('modal-admin-sponsor')">
             <div class="quick-icon" style="margin: 0 auto 8px; width:48px; height:48px; background:#FEF3C7; color:#D97706;">
               <i class="fa-solid fa-building-columns"></i>
@@ -822,7 +822,7 @@
         </div>
       </section>
 
-      <!-- 10. SPONSOR (TAMPILAN DINAMIS) -->
+      <!-- 10. SPONSOR -->
       <section id="page-sponsor" class="page">
         <h2 style="font-size: var(--font-lg); font-weight: var(--fw-bold); margin-bottom: 12px;">Sponsor Utama</h2>
         <div class="card" style="text-align: center; padding: 28px 20px;" id="sponsor-display-card">
@@ -922,7 +922,7 @@
 
   <!-- ALL MODALS -->
 
-  <!-- MODAL ADMIN: KELOLA SPONSOR UTAMA (NEW FORM) -->
+  <!-- MODAL ADMIN: KELOLA SPONSOR UTAMA -->
   <div class="modal-overlay" id="modal-admin-sponsor">
     <div class="modal-card">
       <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-admin-sponsor')"><i class="fa-solid fa-xmark"></i></button>
@@ -959,6 +959,87 @@
 
           <button type="submit" class="pro-btn-gold" id="btn-save-sponsor">
             <i class="fa-solid fa-floppy-disk"></i> Simpan Sponsor Utama
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL ADD/EDIT MENU DINAMIS (TERMASUK FIELD LINK URL MEDIA SOSIAL) -->
+  <div class="modal-overlay" id="modal-add-menu">
+    <div class="modal-card">
+      <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-add-menu')"><i class="fa-solid fa-xmark"></i></button>
+
+      <div class="pro-modal-header">
+        <div class="title-wrap">
+          <i class="fa-solid fa-plus" style="color:var(--primary);"></i>
+          <h3>Tambah / Edit Menu</h3>
+        </div>
+      </div>
+
+      <div class="pro-modal-body">
+        <form id="form-menu" onsubmit="app.handleSaveMenu(event)">
+          <input type="hidden" id="menu-id">
+
+          <div class="pro-form-group">
+            <input type="text" id="menu-key" placeholder=" " required>
+            <label for="menu-key">Key Identifier (Misal: youtube / instagram)</label>
+          </div>
+
+          <div class="pro-form-group">
+            <input type="text" id="menu-title" placeholder=" " required>
+            <label for="menu-title">Judul Tampilan Menu</label>
+          </div>
+
+          <div class="pro-form-group">
+            <input type="text" id="menu-icon" placeholder=" ">
+            <label for="menu-icon">FontAwesome Icon (e.g. fa-brands fa-youtube)</label>
+          </div>
+
+          <!-- FIELD LINK URL EKSTERNAL UNTUK MEDSOS -->
+          <div class="pro-form-group">
+            <input type="url" id="menu-external-url" placeholder=" ">
+            <label for="menu-external-url">Link URL Eksternal (e.g. https://youtube.com/@itora)</label>
+          </div>
+          <span class="pro-helper-text" style="margin-top:-14px; margin-bottom:16px;">Isi untuk menu Medsos (YouTube, TikTok, dll) agar langsung membuka link.</span>
+
+          <div class="pro-form-group always-float">
+            <div style="display:flex; gap:10px; align-items:center;">
+              <input type="color" id="menu-bg-color" value="#F1F5F9" style="width: 50px; height: 42px; border: none; cursor: pointer; border-radius: 8px;">
+              <input type="text" id="menu-bg-color-text" value="#F1F5F9" style="flex:1;">
+            </div>
+            <label>Warna Background Lingkaran</label>
+          </div>
+
+          <div class="pro-form-group always-float">
+            <div style="display:flex; gap:10px; align-items:center;">
+              <input type="color" id="menu-icon-color" value="#00875A" style="width: 50px; height: 42px; border: none; cursor: pointer; border-radius: 8px;">
+              <input type="text" id="menu-icon-color-text" value="#00875A" style="flex:1;">
+            </div>
+            <label>Warna Ikon</label>
+          </div>
+
+          <div class="pro-form-group always-float">
+            <input type="file" id="menu-image-file" accept="image/*">
+            <label for="menu-image-file">Ikon Gambar Kustom (Opsional)</label>
+          </div>
+
+          <div class="pro-form-group">
+            <input type="number" id="menu-order" value="1" placeholder=" " required>
+            <label for="menu-order">Urutan Tampil (Sort Order)</label>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px;">
+            <label style="display:flex; gap:10px; align-items:center; cursor:pointer; font-size:13px; font-weight:600; color:#334155;">
+              <input type="checkbox" id="menu-show-quick" checked style="width:18px; height:18px;"> Tampilkan di Quick Menu Beranda
+            </label>
+            <label style="display:flex; gap:10px; align-items:center; cursor:pointer; font-size:13px; font-weight:600; color:#334155;">
+              <input type="checkbox" id="menu-show-bottom" style="width:18px; height:18px;"> Tampilkan di Bottom Navigation Bar
+            </label>
+          </div>
+
+          <button type="submit" class="pro-btn-gold" id="btn-save-menu">
+            <i class="fa-solid fa-floppy-disk"></i> Simpan Menu
           </button>
         </form>
       </div>
@@ -1512,80 +1593,6 @@
     </div>
   </div>
 
-  <!-- MODAL ADD/EDIT MENU DINAMIS -->
-  <div class="modal-overlay" id="modal-add-menu">
-    <div class="modal-card">
-      <button type="button" class="close-modal-btn" onclick="app.closeModal('modal-add-menu')"><i class="fa-solid fa-xmark"></i></button>
-
-      <div class="pro-modal-header">
-        <div class="title-wrap">
-          <i class="fa-solid fa-plus" style="color:var(--primary);"></i>
-          <h3>Tambah / Edit Menu</h3>
-        </div>
-      </div>
-
-      <div class="pro-modal-body">
-        <form id="form-menu" onsubmit="app.handleSaveMenu(event)">
-          <input type="hidden" id="menu-id">
-
-          <div class="pro-form-group">
-            <input type="text" id="menu-key" placeholder=" " required>
-            <label for="menu-key">Key Identifier (Misal: pengumuman)</label>
-          </div>
-
-          <div class="pro-form-group">
-            <input type="text" id="menu-title" placeholder=" " required>
-            <label for="menu-title">Judul Tampilan Menu</label>
-          </div>
-
-          <div class="pro-form-group">
-            <input type="text" id="menu-icon" placeholder=" ">
-            <label for="menu-icon">FontAwesome Icon Class (e.g. fa-solid fa-bullhorn)</label>
-          </div>
-
-          <div class="pro-form-group always-float">
-            <div style="display:flex; gap:10px; align-items:center;">
-              <input type="color" id="menu-bg-color" value="#F1F5F9" style="width: 50px; height: 42px; border: none; cursor: pointer; border-radius: 8px;">
-              <input type="text" id="menu-bg-color-text" value="#F1F5F9" style="flex:1;">
-            </div>
-            <label>Warna Background Lingkaran</label>
-          </div>
-
-          <div class="pro-form-group always-float">
-            <div style="display:flex; gap:10px; align-items:center;">
-              <input type="color" id="menu-icon-color" value="#00875A" style="width: 50px; height: 42px; border: none; cursor: pointer; border-radius: 8px;">
-              <input type="text" id="menu-icon-color-text" value="#00875A" style="flex:1;">
-            </div>
-            <label>Warna Ikon</label>
-          </div>
-
-          <div class="pro-form-group always-float">
-            <input type="file" id="menu-image-file" accept="image/*">
-            <label for="menu-image-file">Ikon Gambar Kustom (Opsional)</label>
-          </div>
-
-          <div class="pro-form-group">
-            <input type="number" id="menu-order" value="1" placeholder=" " required>
-            <label for="menu-order">Urutan Tampil (Sort Order)</label>
-          </div>
-
-          <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px;">
-            <label style="display:flex; gap:10px; align-items:center; cursor:pointer; font-size:13px; font-weight:600; color:#334155;">
-              <input type="checkbox" id="menu-show-quick" checked style="width:18px; height:18px;"> Tampilkan di Quick Menu Beranda
-            </label>
-            <label style="display:flex; gap:10px; align-items:center; cursor:pointer; font-size:13px; font-weight:600; color:#334155;">
-              <input type="checkbox" id="menu-show-bottom" style="width:18px; height:18px;"> Tampilkan di Bottom Navigation Bar
-            </label>
-          </div>
-
-          <button type="submit" class="pro-btn-gold" id="btn-save-menu">
-            <i class="fa-solid fa-floppy-disk"></i> Simpan Menu
-          </button>
-        </form>
-      </div>
-    </div>
-  </div>
-
   <!-- QR CARD MODAL -->
   <div class="modal-overlay" id="qr-modal">
     <div class="modal-card" style="text-align: center;">
@@ -1742,7 +1749,6 @@
         this.adminWANumber = "6281234567890";
         this.selectedTouringId = null;
 
-        // STATE SPONSOR UTAMA
         this.sponsorData = {
           title: "Bank Syariah Nasional Cabang Surabaya",
           subtitle: "Mitra Strategis Komunitas ITORA BSN",
@@ -1852,15 +1858,12 @@
         this.showToast('Nomor WhatsApp Berhasil Disimpan!', 'success');
       }
 
-      /* LOGIKA INTEGRASI KELOLA SPONSOR UTAMA */
       async loadSponsorSettings() {
-        // Cek LocalStorage
         const localSponsor = localStorage.getItem('itora_sponsor_data');
         if (localSponsor) {
           try { this.sponsorData = JSON.parse(localSponsor); } catch(e){}
         }
 
-        // Cek Supabase Settings Table
         if (this.supabase) {
           try {
             const { data, error } = await this.supabase.from('app_settings').select('*').eq('key', 'main_sponsor').single();
@@ -1891,7 +1894,6 @@
           }
         }
 
-        // Populasikan nilai awal form modal admin
         const nameInput = document.getElementById('sponsor-input-name');
         const subInput = document.getElementById('sponsor-input-sub');
         const iconInput = document.getElementById('sponsor-input-icon');
@@ -3289,8 +3291,13 @@
               if (m.menu_key === 'admin' && !isAdmin) return '';
 
               let actionCall = `app.navigateTo('${m.menu_key}')`;
-              if (m.menu_key === 'setor_iuran') actionCall = `app.openModal('modal-iuran')`;
-              if (m.menu_key === 'keluar') actionCall = `app.handleLogout()`;
+              if (m.external_url) {
+                actionCall = `window.open('${m.external_url}', '_blank')`;
+              } else if (m.menu_key === 'setor_iuran') {
+                actionCall = `app.openModal('modal-iuran')`;
+              } else if (m.menu_key === 'keluar') {
+                actionCall = `app.handleLogout()`;
+              }
 
               const customBg = m.bg_color || '#F1F5F9';
               const customIconColor = m.icon_color || '#00875A';
@@ -3319,8 +3326,13 @@
               ? `<img src="${m.image_url}" alt="${m.title}" style="width: 20px; height: 20px; object-fit: contain;">`
               : `<i class="${m.icon_class}"></i>`;
 
+            let actionNav = `app.navigateTo('${m.menu_key}')`;
+            if (m.external_url) {
+              actionNav = `window.open('${m.external_url}', '_blank')`;
+            }
+
             return `
-              <a class="nav-item ${index === 0 ? 'active' : ''}" onclick="app.navigateTo('${m.menu_key}')" id="nav-${m.menu_key}">
+              <a class="nav-item ${index === 0 ? 'active' : ''}" onclick="${actionNav}" id="nav-${m.menu_key}">
                 ${iconContent}
                 <span>${m.title}</span>
               </a>
@@ -3339,7 +3351,7 @@
               ${m.image_url ? `<img src="${m.image_url}">` : `<i class="${m.icon_class}" style="color: ${m.icon_color || '#00875A'}"></i>`}
               <div>
                 <strong style="font-size:var(--font-base); font-weight:700;">${m.title}</strong>
-                <span class="text-muted" style="display:block;">Bg: ${m.bg_color || '#F1F5F9'} | Icon: ${m.icon_color || '#00875A'}</span>
+                <span class="text-muted" style="display:block;">${m.external_url ? 'URL: ' + m.external_url : 'Navigasi Internal'}</span>
               </div>
             </div>
             <div style="display:flex; gap:6px; align-items:center;">
@@ -3372,6 +3384,7 @@
         document.getElementById('menu-key').value = menu.menu_key;
         document.getElementById('menu-title').value = menu.title;
         document.getElementById('menu-icon').value = menu.icon_class;
+        document.getElementById('menu-external-url').value = menu.external_url || '';
         document.getElementById('menu-order').value = menu.sort_order;
         document.getElementById('menu-bg-color').value = menu.bg_color || '#F1F5F9';
         document.getElementById('menu-bg-color-text').value = menu.bg_color || '#F1F5F9';
@@ -3413,6 +3426,7 @@
             menu_key: document.getElementById('menu-key').value.trim().toLowerCase(),
             title: document.getElementById('menu-title').value.trim(),
             icon_class: document.getElementById('menu-icon').value.trim() || 'fa-solid fa-square',
+            external_url: document.getElementById('menu-external-url').value.trim() || null,
             bg_color: document.getElementById('menu-bg-color').value,
             icon_color: document.getElementById('menu-icon-color').value,
             sort_order: parseInt(document.getElementById('menu-order').value) || 0,
